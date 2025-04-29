@@ -1,0 +1,329 @@
+/* Новый обновленный style.css */
+
+:root {
+  --font-main: 'Inter', sans-serif;
+  --font-heading: 'Poppins', sans-serif;
+  --text-main: #111827;
+  --text-secondary: #4b5563;
+  --gradient-content: linear-gradient(90deg, #e9c6f4 0%, #a9d2fa 100%);
+  --gradient-process: linear-gradient(90deg, #c1f0bd 0%, #ffd1dc 100%);
+  --gradient-benefits: linear-gradient(90deg, #fef9c3 0%, #d6e4ff 100%);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  color: var(--text-main);
+  background: url('img/fon2.png') no-repeat center center fixed;
+  background-size: cover;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section {
+  position: relative;
+  text-align: center;
+  padding: 100px 20px;
+  background: url('img/фон3.jpg') no-repeat center center;
+  background-size: cover;
+  border-radius: 24px;
+  color: #fff;
+  margin-bottom: 20px;
+  font-family: var(--font-heading);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.hero-section h1, .hero-section p {
+  position: relative;
+  z-index: 1;
+  font-weight: 800;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.hero-section p {
+  font-size: 1.25rem;
+}
+
+/* Sections */
+.section-container {
+  position: relative;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  min-height: 100px;
+}
+
+.section-button {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111;
+  transition: background 0.3s;
+}
+
+.section-button .icon {
+  font-size: 1.2rem;
+}
+
+.section-button .arrow {
+  margin-left: auto;
+  font-size: 1rem;
+  transition: transform 0.3s;
+}
+
+.visual-background {
+  background: var(--gradient-content);
+}
+
+.tech-background {
+  background: var(--gradient-process);
+}
+
+.process-background {
+  background: var(--gradient-process);
+}
+
+.benefits-background {
+  background: var(--gradient-benefits);
+}
+
+.section-content {
+  background: url('img/общийфон1.png') no-repeat center center;
+  background-size: cover;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease, padding 0.45s ease;
+  padding: 0;
+  text-align: center;
+}
+
+.section-content.show {
+  padding: 20px;
+  max-height: 800px;
+}
+
+/* Contact Block */
+.contact {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.contact h2 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  margin-bottom: 16px;
+}
+
+.contact p {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.contact .button {
+  background: var(--gradient-content);
+  padding: 12px 32px;
+  border-radius: 9999px;
+  color: #111;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+.section-content ul {
+  list-style: none; /* убирает точки у списка */
+  padding-left: 0;  /* убирает отступ слева */
+  margin: 0;        /* убирает лишний отступ */
+}
+
+.section-content ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.section-content.show ul {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Оформление заголовков кнопок */
+.section-button {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+  transition: background 0.3s;
+}
+
+.section-button span {
+  color: #1a1a2e;
+  text-shadow: none;
+}
+
+/* Иконки на кнопках */
+.section-button .icon {
+  font-size: 1.5rem;
+}
+.section-button .arrow {
+  margin-left: auto;
+  font-size: 1.2rem;
+  transition: transform 0.3s;
+}
+
+/* Оформление текста услуг внутри раскрывающихся блоков */
+.section-content ul {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.section-content ul li {
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 20px;
+  }
+
+  .hero-section h1 {
+    font-size: 2.4rem;
+  }
+
+  .section-button {
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  .section-button span {
+    text-shadow: 
+      0 1px 2px rgba(0, 0, 0, 0.7), /* Лёгкая чёрная тень */
+      0 0 1px rgba(255, 255, 255, 0.9); /* Мягкая белая подсветка */
+      /* Стили для чата */
+#chat-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(90deg, #fca5a5, #fcd34d);
+  color: #111;
+  padding: 12px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+#chat-button:hover {
+  background: linear-gradient(90deg, #fcd34d, #fca5a5);
+}
+
+#chat-box {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 300px;
+  max-height: 400px;
+  background: #ffffffcc;
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9998;
+}
+
+#chat-box.hidden {
+  display: none;
+}
+
+#chat-window {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  font-family: var(--font-main);
+}
+
+#chat-input {
+  border: none;
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  width: calc(100% - 20px);
+  font-size: 1rem;
+  outline: none;
+}
+
+#chat-send {
+  background: var(--gradient-content);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: var(--font-heading);
+}
+
+.chat-message {
+  margin: 5px 0;
+}
+
+.chat-message.user {
+  text-align: right;
+  color: #374151;
+}
+
+.chat-message.bro {
+  text-align: left;
+  color: #7c3aed;
+}
+
+  }
+}
