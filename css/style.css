@@ -1,4 +1,4 @@
-/* Новый обновленный style.css */
+/* Исправленный style.css */
 
 :root {
   --font-main: 'Inter', sans-serif;
@@ -18,7 +18,8 @@ body {
   margin: 0;
   font-family: var(--font-main);
   color: var(--text-main);
-  background: url('img/fon2.png') no-repeat center center fixed;
+  /* ИСПРАВЛЕННЫЙ ПУТЬ: ../img/ */
+  background: url('../img/fon2.png') no-repeat center center fixed; 
   background-size: cover;
   line-height: 1.6;
 }
@@ -35,7 +36,9 @@ body {
   position: relative;
   text-align: center;
   padding: 100px 20px;
-  background: url('img/фон3.jpg') no-repeat center center;
+  /* ИСПРАВЛЕННЫЙ ПУТЬ И ИМЯ ФАЙЛА: ../img/ и новое имя */
+  /* !!! УБЕДИСЬ, ЧТО ИМЯ hero-bg.jpg ВЕРНОЕ !!! */
+  background: url('../img/hero-bg.jpg') no-repeat center center; 
   background-size: cover;
   border-radius: 24px;
   color: #fff;
@@ -60,15 +63,19 @@ body {
   font-size: 1.25rem;
 }
 
-/* Sections */
+/* Секции */
 .section-container {
   position: relative;
   margin-bottom: 20px;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  min-height: 100px;
 }
+
+.visual-background { background: var(--gradient-content); }
+.tech-background { background: var(--gradient-process); }
+.process-background { background: var(--gradient-process); }
+.benefits-background { background: var(--gradient-benefits); }
 
 .section-button {
   width: 100%;
@@ -81,40 +88,32 @@ body {
   gap: 10px;
   padding: 16px;
   font-family: var(--font-heading);
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #111;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
   transition: background 0.3s;
 }
 
+.section-button span {
+  color: #1a1a2e;
+  text-shadow: none;
+}
+
 .section-button .icon {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .section-button .arrow {
   margin-left: auto;
-  font-size: 1rem;
+  font-size: 1.2rem;
   transition: transform 0.3s;
 }
 
-.visual-background {
-  background: var(--gradient-content);
-}
-
-.tech-background {
-  background: var(--gradient-process);
-}
-
-.process-background {
-  background: var(--gradient-process);
-}
-
-.benefits-background {
-  background: var(--gradient-benefits);
-}
-
 .section-content {
-  background: url('img/общийфон1.png') no-repeat center center;
+  /* ИСПРАВЛЕННЫЙ ПУТЬ И ИМЯ ФАЙЛА: ../img/ и новое имя */
+  /* !!! УБЕДИСЬ, ЧТО ИМЯ section-bg.png ВЕРНОЕ !!! */
+  background: url('../img/section-bg.png') no-repeat center center; 
   background-size: cover;
   max-height: 0;
   overflow: hidden;
@@ -125,10 +124,31 @@ body {
 
 .section-content.show {
   padding: 20px;
-  max-height: 800px;
+  max-height: 800px; 
 }
 
-/* Contact Block */
+.section-content ul {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s; /* Добавил небольшую задержку */
+}
+
+.section-content.show ul {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-content ul li {
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+/* Контактный блок */
 .contact {
   text-align: center;
   margin: 20px 0;
@@ -158,93 +178,7 @@ body {
   font-weight: 600;
 }
 
-.section-content ul {
-  list-style: none; /* убирает точки у списка */
-  padding-left: 0;  /* убирает отступ слева */
-  margin: 0;        /* убирает лишний отступ */
-}
-
-.section-content ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.section-content.show ul {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Оформление заголовков кнопок */
-.section-button {
-  width: 100%;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 16px;
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #ffffff;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
-  transition: background 0.3s;
-}
-
-.section-button span {
-  color: #1a1a2e;
-  text-shadow: none;
-}
-
-/* Иконки на кнопках */
-.section-button .icon {
-  font-size: 1.5rem;
-}
-.section-button .arrow {
-  margin-left: auto;
-  font-size: 1.2rem;
-  transition: transform 0.3s;
-}
-
-/* Оформление текста услуг внутри раскрывающихся блоков */
-.section-content ul {
-  list-style: none;
-  padding: 20px 0;
-  margin: 0;
-}
-
-.section-content ul li {
-  font-family: var(--font-main);
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 10px 0;
-}
-
-@media (max-width: 768px) {
-  .hero-section {
-    padding: 60px 20px;
-  }
-
-  .hero-section h1 {
-    font-size: 2.4rem;
-  }
-
-  .section-button {
-    font-size: 1rem;
-    padding: 12px;
-  }
-
-  .section-button span {
-    text-shadow: 
-      0 1px 2px rgba(0, 0, 0, 0.7), /* Лёгкая чёрная тень */
-      0 0 1px rgba(255, 255, 255, 0.9); /* Мягкая белая подсветка */
-      /* Стили для чата */
+/* Чат Бро 🐾 */
 #chat-button {
   position: fixed;
   bottom: 20px;
@@ -297,9 +231,12 @@ body {
   border: none;
   border-top: 1px solid #ddd;
   padding: 10px;
-  width: calc(100% - 20px);
+  width: calc(100% - 20px); /* Учитываем padding */
+  margin: 0 10px 10px 10px; /* Добавим отступы */
+  box-sizing: border-box;  /* Чтобы padding не увеличивал ширину */
   font-size: 1rem;
   outline: none;
+  border-radius: 10px; /* Скруглим поле ввода */
 }
 
 #chat-send {
@@ -309,21 +246,83 @@ body {
   cursor: pointer;
   font-weight: bold;
   font-family: var(--font-heading);
+  width: 100%; /* Кнопка на всю ширину */
+  border-bottom-left-radius: 20px; /* Скругляем углы под контейнер */
+  border-bottom-right-radius: 20px;
 }
 
 .chat-message {
-  margin: 5px 0;
+  margin: 8px 0; /* Увеличим отступ */
+  padding: 6px 10px; /* Добавим внутренний отступ */
+  border-radius: 10px; /* Скруглим сообщения */
+  max-width: 80%; /* Ограничим ширину сообщения */
+  word-wrap: break-word; /* Перенос длинных слов */
 }
 
 .chat-message.user {
   text-align: right;
-  color: #374151;
+  color: #fff; /* Белый текст */
+  background-color: #4a5568; /* Темно-серый фон */
+  margin-left: auto; /* Прижимаем к правому краю */
+  margin-right: 0;
 }
 
 .chat-message.bro {
   text-align: left;
-  color: #7c3aed;
+  color: #fff; /* Белый текст */
+  background-color: #7c3aed; /* Фиолетовый фон */
+  margin-right: auto; /* Прижимаем к левому краю */
+  margin-left: 0;
 }
 
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 20px;
   }
+
+  .hero-section h1 {
+    font-size: 2.4rem;
+  }
+
+  .section-button {
+    font-size: 1.2rem; /* Сделал чуть крупнее для мобильных */
+    padding: 14px; /* Чуть больше padding */
+    flex-direction: column; /* Иконка и текст друг под другом */
+    gap: 5px; /* Меньше отступ */
+    text-align: center;
+  }
+
+  .section-button .arrow {
+     margin-left: 0; /* Убираем авто-отступ слева */
+     margin-top: 5px; /* Небольшой отступ сверху */
+     /* Позиционирование может потребовать доработки в зависимости от вида */
+  }
+
+  .section-button span {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7), 0 0 1px rgba(255, 255, 255, 0.9);
+  }
+
+  .contact h2 {
+    font-size: 1.8rem;
+  }
+
+   /* Чат на мобильных */
+   #chat-box {
+     width: calc(100% - 40px); /* Шире на мобильных */
+     max-height: 60%; /* Больше высоты */
+   }
+}
+
+@media (max-width: 480px) {
+   .hero-section h1 {
+     font-size: 2rem;
+   }
+   .hero-section p {
+     font-size: 1.1rem;
+   }
+    .section-button {
+      font-size: 1.1rem;
+    }
 }

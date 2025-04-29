@@ -11,7 +11,8 @@
   <!-- FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <!-- Стили подключаются из папки css - ПРАВИЛЬНО -->
+  <link rel="stylesheet" href="css/style.css"> 
 </head>
 
 <body>
@@ -103,18 +104,20 @@
 
   </div>
 
-  <!-- ПРАВИЛЬНО ПОДКЛЮЧЕННЫЙ СКРИПТ -->
-  <script src="script.js"></script>
+  <!-- ИСПРАВЛЕННЫЙ ПУТЬ к основному скрипту -->
+  <script src="js/script.js"></script> 
+
   <!-- Chat Button and Window -->
-<div id="chat-button">Чат с Бро 🐾</div>
+  <div id="chat-button">Чат с Бро 🐾</div>
 
-<div id="chat-box" class="hidden">
-  <div id="chat-window"></div>
-  <input id="chat-input" type="text" placeholder="Спросите что-нибудь..." />
-  <button id="chat-send">Отправить</button>
-</div>
+  <div id="chat-box" class="hidden">
+    <div id="chat-window"></div>
+    <input id="chat-input" type="text" placeholder="Спросите что-нибудь..." />
+    <button id="chat-send">Отправить</button>
+  </div>
 
-<script src="js/chat.js"></script>
+  <!-- Скрипт чата подключается из папки js - ПРАВИЛЬНО -->
+  <script src="js/chat.js"></script> 
 
 </body>
 </html>

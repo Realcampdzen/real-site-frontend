@@ -1,0 +1,17 @@
+.DS_Store
+Thumbs.db
+
+# Логи
+*.log
+
+# Секретные файлы
+.env
+apikey.txt
+
+# Временные файлы редакторов
+.vscode/
+.idea/
+
+# Кеши и папки билдов
+node_modules/
+dist/
