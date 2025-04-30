@@ -1,46 +1,44 @@
-// js/chat.js
-
-const OPENAI_API_KEY = 'ТВОЙ_КЛЮЧ_СЮДА'; // Вставь сюда свой OpenAI API-ключ
+const OPENAI_API_URL = 'http://localhost:3001/chat';
 
 async function sendMessageToBro(message) {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch(OPENAI_API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`
     },
-    body: JSON.stringify({
-      model: 'gpt-4o', // Или 'gpt-4o-mini', если будет доступен
-      messages: [
-        { role: 'system', content: 'Ты рыжий кот Бро, нейроассистент Степана. Пиши коротко, дружелюбно, с лёгкой иронией.' },
-        { role: 'user', content: message }
-      ],
-      max_tokens: 200,
-      temperature: 0.7
-    })
+    body: JSON.stringify({ message })
   });
 
   const data = await response.json();
-  return data.choices[0].message.content.trim();
+  return data.reply.trim();
 }
 
-document.getElementById('chat-send').addEventListener('click', async () => {
-  const input = document.getElementById('chat-input');
-  const chatWindow = document.getElementById('chat-window');
-  const userMessage = input.value.trim();
-
-  if (!userMessage) return;
-
-  chatWindow.innerHTML += `<div class="chat-message user">Вы: ${userMessage}</div>`;
-  input.value = '';
-
-  const broReply = await sendMessageToBro(userMessage);
-
-  chatWindow.innerHTML += `<div class="chat-message bro">Бро: ${broReply}</div>`;
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-});
-
-document.getElementById('chat-button').addEventListener('click', () => {
+document.addEventListener('DOMContentLoaded', () => {
+  const chatButton = document.getElementById('chat-button');
   const chatBox = document.getElementById('chat-box');
-  chatBox.classList.toggle('hidden');
+  const chatWindow = document.getElementById('chat-window');
+  const input = document.getElementById('chat-input');
+  const sendButton = document.getElementById('chat-send');
+
+  // Открытие и закрытие чата
+  chatButton.addEventListener('click', () => {
+    chatBox.classList.toggle('hidden');
+  });
+
+  // Отправка сообщения
+  sendButton.addEventListener('click', async () => {
+    const userMessage = input.value.trim();
+    if (!userMessage) return;
+
+    chatWindow.innerHTML += `<div class="chat-message user">Вы: ${userMessage}</div>`;
+    input.value = '';
+
+    try {
+      const broReply = await sendMessageToBro(userMessage);
+      chatWindow.innerHTML += `<div class="chat-message bro">Бро: ${broReply}</div>`;
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    } catch (err) {
+      chatWindow.innerHTML += `<div class="chat-message bro">Ошибка: ${err.message}</div>`;
+    }
+  });
 });
