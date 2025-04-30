@@ -1,4 +1,4 @@
-const OPENAI_API_URL = 'http://localhost:3001/chat';
+const OPENAI_API_URL = 'https://real-site-1749.onrender.com/chat';
 
 async function sendMessageToBro(message) {
   const response = await fetch(OPENAI_API_URL, {
