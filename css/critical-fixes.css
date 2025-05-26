@@ -1,0 +1,174 @@
+/* Критические исправления для AI Studio */
+
+/* ===== ПРИНУДИТЕЛЬНОЕ ОТОБРАЖЕНИЕ АВАТАРОК ===== */
+
+/* Отключаем все fallback правила */
+.btn-bro-avatar.fallback,
+.chat-avatar.fallback,
+.message-avatar.fallback,
+.hipych-avatar.fallback,
+.bro-cat-avatar.fallback,
+.hipych-message-avatar.fallback,
+.bro-cat-message-avatar.fallback {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.btn-bro-avatar.fallback::after,
+.chat-avatar.fallback::after,
+.message-avatar.fallback::after,
+.hipych-avatar.fallback::after,
+.bro-cat-avatar.fallback::after,
+.hipych-message-avatar.fallback::after,
+.bro-cat-message-avatar.fallback::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+}
+
+/* ===== GLASS UI КНОПКИ - ПРИНУДИТЕЛЬНОЕ ОТОБРАЖЕНИЕ ===== */
+
+/* Принудительное отображение Glass UI кнопок и их содержимого */
+.glass-ui-hipych-button,
+.glass-ui-bro-cat-button {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+
+/* Принудительное отображение изображений в Glass UI кнопках */
+.glass-ui-hipych-button img,
+.glass-ui-bro-cat-button img {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  position: relative !important;
+  z-index: 10 !important;
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Убираем все псевдоэлементы из Glass UI кнопок */
+.glass-ui-hipych-button::before,
+.glass-ui-bro-cat-button::before,
+.glass-ui-hipych-button::after,
+.glass-ui-bro-cat-button::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Убираем текстовое содержимое из Glass UI кнопок */
+.glass-ui-hipych-button {
+  font-size: 0 !important;
+  text-indent: -9999px !important;
+  color: transparent !important;
+}
+
+.glass-ui-bro-cat-button {
+  font-size: 0 !important;
+  text-indent: -9999px !important;
+  color: transparent !important;
+}
+
+/* ===== ПРИНУДИТЕЛЬНЫЕ ПУТИ К ИЗОБРАЖЕНИЯМ ===== */
+
+/* Hipych аватар */
+.glass-ui-hipych-button img {
+  content: url('../images/hipych-avatar.jpg') !important;
+}
+
+/* Bro Cat аватар */
+.glass-ui-bro-cat-button img {
+  content: url('../images/bro-avatar.jpg') !important;
+}
+
+/* ===== ВОССТАНОВЛЕНИЕ АНИМАЦИИ ЧАСТИЦ ===== */
+
+/* Показываем анимацию частиц на всех устройствах */
+.bg-animation {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#particle-canvas {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* На мобильных уменьшаем интенсивность */
+@media screen and (max-width: 768px) {
+  .bg-animation {
+    opacity: 0.4 !important;
+  }
+  
+  #particle-canvas {
+    opacity: 0.4 !important;
+  }
+}
+
+/* ===== ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ КАРТОЧЕК ===== */
+
+.service-card::before,
+.assistant-card::before,
+.process-step::before {
+  display: block !important;
+}
+
+/* На мобильных уменьшаем интенсивность */
+@media screen and (max-width: 768px) {
+  .service-card::before,
+  .assistant-card::before,
+  .process-step::before {
+    opacity: 0.3 !important;
+  }
+}
+
+/* ===== ДОПОЛНИТЕЛЬНЫЕ ИСПРАВЛЕНИЯ ===== */
+
+/* Принудительное отображение всех аватарок в чатах */
+.hipych-avatar,
+.bro-cat-avatar,
+.chat-avatar,
+.message-avatar,
+.hipych-message-avatar,
+.bro-cat-message-avatar,
+.btn-bro-avatar {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+}
+
+/* Специфичные пути к изображениям для чатов */
+.hipych-avatar,
+.hipych-message-avatar,
+.chat-avatar.hipych,
+.message-avatar.hipych {
+  background-image: url('../images/hipych-avatar.jpg') !important;
+}
+
+.bro-cat-avatar,
+.bro-cat-message-avatar,
+.chat-avatar.bro-cat,
+.message-avatar.bro-cat,
+.btn-bro-avatar {
+  background-image: url('../images/bro-avatar.jpg') !important;
+} 
