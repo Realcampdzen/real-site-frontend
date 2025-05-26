@@ -1046,10 +1046,17 @@ function optimizeImages() {
   const images = document.querySelectorAll('img');
   
   images.forEach(img => {
+    // Убираем замену на мобильные версии аватарок - файлы не существуют
+    // if (isMobile() && img.src.includes('avatar')) {
+    //   // Заменяем большие аватары на мобильные версии
+    //   const mobileSrc = img.src.replace('.jpg', '-mobile.jpg');
+    //   img.src = mobileSrc;
+    // }
+    
+    // Вместо этого просто оптимизируем качество для мобильных
     if (isMobile() && img.src.includes('avatar')) {
-      // Заменяем большие аватары на мобильные версии
-      const mobileSrc = img.src.replace('.jpg', '-mobile.jpg');
-      img.src = mobileSrc;
+      img.style.imageRendering = 'auto';
+      img.style.transform = 'translateZ(0)'; // GPU acceleration
     }
   });
 }
