@@ -3,6 +3,7 @@ Thumbs.db
 
 # Логи
 *.log
+logs/
 
 # Секретные файлы
 .env
@@ -15,3 +16,12 @@ apikey.txt
 # Кеши и папки билдов
 node_modules/
 dist/
+
+# Временные файлы разработки
+*_temp.css
+*_backup.css
+*_fixed.css
+debug*.html
+test-*.html
+fix-*.html
+deep-debug.html

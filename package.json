@@ -18,9 +18,17 @@
   "homepage": "https://github.com/Realcampdzen/real-site#readme",
   "description": "",
   "dependencies": {
+    "@minchat/react-chat-ui": "^0.16.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "openai": "^3.3.0"
+    "express-rate-limit": "^7.5.0",
+    "express-winston": "^4.2.0",
+    "helmet": "^8.1.0",
+    "joi": "^17.13.3",
+    "openai": "^4.103.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "winston": "^3.17.0"
   }
 }
