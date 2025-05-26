@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Studio - Glass UI Chat Bots</title>
+    
+    <!-- Glass UI CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/glass-ui@1.0.0/dist/glass.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-orange: #f97316;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .particle:nth-child(2) {
+            width: 80px;
+            height: 80px;
+            top: 70%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .particle:nth-child(3) {
+            width: 40px;
+            height: 40px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .particle:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 30%;
+            right: 30%;
+            animation-delay: 6s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(20px) rotate(240deg); }
+        }
+
+        /* Glass containers */
+        .glass-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        /* Hero section */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e0e7ff, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3)); }
+            to { filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5)); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        /* Features grid with glass effect */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .feature-card {
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .feature-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .feature-description {
+            opacity: 0.9;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Chat demo section */
+        .chat-demo-section {
+            padding: 4rem 2rem;
+            margin-top: 2rem;
+        }
+
+        .demo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        .demo-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .demo-description {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* Interactive buttons */
+        .chat-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .glass-button {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .glass-button:hover::before {
+            left: 100%;
+        }
+
+        .glass-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .glass-button.hipych {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(29, 78, 216, 0.3));
+        }
+
+        .glass-button.cat {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(234, 88, 12, 0.3));
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Tech showcase */
+        .tech-showcase {
+            margin: 3rem auto;
+            max-width: 900px;
+            padding: 2.5rem;
+        }
+
+        .tech-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #10b981;
+            text-align: center;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tech-item {
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tech-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .chat-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .demo-container {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Status indicator -->
+    <div class="status-indicator">
+        <span class="status-dot"></span>
+        Glass UI чат-боты активны
+    </div>
+
+    <!-- Hero section -->
+    <section class="hero-section">
+        <h1 class="hero-title">AI Studio Glass</h1>
+        <p class="hero-subtitle">Современные чат-боты с glassmorphism дизайном</p>
+        
+        <div class="features-grid">
+            <div class="feature-card glass-container">
+                <span class="feature-icon">🤖</span>
+                <h3 class="feature-title">Хипыч AI</h3>
+                <p class="feature-description">
+                    Умный помощник с современным стеклянным дизайном. Использует передовые технологии glassmorphism для создания невероятного визуального опыта.
+                </p>
+            </div>
+            
+            <div class="feature-card glass-container">
+                <span class="feature-icon">🐱</span>
+                <h3 class="feature-title">Кот Бро</h3>
+                <p class="feature-description">
+                    Дружелюбный кот-помощник с прозрачными эффектами. Сочетает функциональность с красотой современного UI дизайна.
+                </p>
+            </div>
+            
+            <div class="feature-card glass-container">
+                <span class="feature-icon">✨</span>
+                <h3 class="feature-title">Glass UI</h3>
+                <p class="feature-description">
+                    Революционный glassmorphism интерфейс с backdrop-filter эффектами, создающий ощущение глубины и современности.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tech showcase -->
+        <div class="tech-showcase glass-container">
+            <h3 class="tech-title">🚀 Технологии Glass UI</h3>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-icon">🔍</div>
+                    <div class="tech-name">Backdrop Filter</div>
+                    <div class="tech-desc">Размытие фона для стеклянного эффекта</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🎨</div>
+                    <div class="tech-name">CSS Gradients</div>
+                    <div class="tech-desc">Многослойные градиенты для глубины</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">⚡</div>
+                    <div class="tech-name">Hardware Acceleration</div>
+                    <div class="tech-desc">GPU ускорение для плавности</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">📱</div>
+                    <div class="tech-name">Responsive Design</div>
+                    <div class="tech-desc">Адаптивность для всех устройств</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo section -->
+    <section class="chat-demo-section">
+        <div class="demo-container glass-container">
+            <h2 class="demo-title">Протестируйте Glass UI</h2>
+            <p class="demo-description">
+                Испытайте новый уровень взаимодействия с AI-помощниками через современный glassmorphism интерфейс. 
+                Каждый элемент создан с вниманием к деталям и производительности.
+            </p>
+            
+            <div class="chat-buttons">
+                <button class="glass-button hipych" onclick="openHipychChat()">
+                    🤖 Тест Хипыч Glass UI
+                </button>
+                <button class="glass-button cat" onclick="openBroCatChat()">
+                    🐱 Тест Кот Бро Glass UI
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подключаем улучшенный чат-виджет -->
+    <script src="chat-components/GlassUIWidget.js?v=1.1"></script>
+    
+    <!-- Подключаем Glass UI версии ботов -->
+    <script src="js/glass-ui-hipych.js?v=1.1"></script>
+    <script src="js/glass-ui-bro-cat.js?v=1.1"></script>
+
+    <script>
+        // Функции для открытия чатов
+        function openHipychChat() {
+            if (window.glassUIHipych) {
+                window.glassUIHipych.showChat();
+            }
+        }
+
+        function openBroCatChat() {
+            if (window.glassUIBroCat) {
+                window.glassUIBroCat.showChat();
+            }
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('%c🚀 Glass UI Chat System Loaded!', 'color: #3b82f6; font-size: 20px; font-weight: bold;');
+            console.log('%c✨ Glassmorphism effects active', 'color: #10b981; font-size: 14px;');
+            console.log('%c🎨 Modern UI with backdrop-filter', 'color: #f97316; font-size: 14px;');
+            
+            // Добавляем интерактивность
+            addInteractiveEffects();
+        });
+
+        // Интерактивные эффекты
+        function addInteractiveEffects() {
+            // Параллакс эффект для частиц
+            document.addEventListener('mousemove', (e) => {
+                const particles = document.querySelectorAll('.particle');
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                particles.forEach((particle, index) => {
+                    const speed = (index + 1) * 0.5;
+                    const xPos = (x - 0.5) * speed * 20;
+                    const yPos = (y - 0.5) * speed * 20;
+                    
+                    particle.style.transform = `translate(${xPos}px, ${yPos}px)`;
+                });
+            });
+
+            // Анимация появления карточек
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 200);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.feature-card, .tech-item').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = `opacity 0.6s ease, transform 0.6s ease`;
+                observer.observe(card);
+            });
+        }
+
+        // Обработка ошибок
+        window.addEventListener('error', function(e) {
+            console.error('Glass UI Error:', e.error);
+        });
+    </script>
+</body>
+</html> 

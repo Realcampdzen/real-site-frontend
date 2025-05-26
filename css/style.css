@@ -3455,3 +3455,43 @@ body {
   font-weight: normal !important;
   font-size: 1em !important;
 }
+
+/* ===== CRITICAL MOBILE FIXES ===== */
+
+/* Предотвращение zoom на iOS при фокусе на input */
+@media (max-width: 768px) {
+  .chat-input,
+  .hipych-input,
+  .bro-cat-input,
+  #chat-input,
+  .ai-assistant-input {
+    font-size: 16px !important;
+  }
+  
+  /* Увеличение минимальных touch targets до 44px */
+  .btn-primary, 
+  .btn-secondary,
+  .try-assistant-btn,
+  .hipych-trigger,
+  .bro-cat-trigger,
+  .mobile-nav-link,
+  .quick-btn,
+  .hipych-quick-btn,
+  .bro-cat-quick-btn,
+  .ai-assistant-quick-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    touch-action: manipulation;
+  }
+  
+  /* Отключение тяжелых анимаций на мобильных */
+  .bg-animation {
+    display: none !important;
+  }
+  
+  .service-card::before,
+  .process-step::before,
+  .assistant-card::before {
+    display: none !important;
+  }
+}

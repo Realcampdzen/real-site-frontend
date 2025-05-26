@@ -1,0 +1,382 @@
+/* Mobile UX Improvements for AI Studio */
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* Отключение анимаций для пользователей с настройкой reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Оптимизация для мобильных устройств */
+@media (max-width: 768px) {
+  /* Отключение тяжелых анимаций */
+  .bg-animation {
+    display: none;
+  }
+  
+  .service-card::before,
+  .process-step::before,
+  .assistant-card::before {
+    display: none;
+  }
+  
+  /* Упрощение hover эффектов */
+  .service-card:hover,
+  .process-step:hover,
+  .assistant-card:hover {
+    transform: none;
+  }
+}
+
+/* ===== TOUCH-FRIENDLY INTERFACE ===== */
+
+/* Увеличение минимальных размеров для touch targets (44px стандарт) */
+@media (max-width: 768px) {
+  .btn-primary, 
+  .btn-secondary,
+  .try-assistant-btn,
+  .hipych-trigger,
+  .bro-cat-trigger {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 24px;
+    touch-action: manipulation; /* Быстрый отклик на touch */
+  }
+  
+  /* Навигационные элементы */
+  .nav-link, 
+  .mobile-nav-link {
+    padding: 16px 20px;
+    margin: 4px 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Кнопки в чатах */
+  .quick-btn,
+  .hipych-quick-btn,
+  .bro-cat-quick-btn {
+    min-height: 36px;
+    padding: 8px 16px;
+    margin: 4px;
+  }
+  
+  /* Кнопка закрытия */
+  .chat-close,
+  .hipych-close,
+  .bro-cat-close {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px;
+  }
+}
+
+/* ===== ENHANCED VISUAL FEEDBACK ===== */
+
+/* Улучшенные активные состояния для touch */
+@media (max-width: 768px) {
+  .btn-primary:active,
+  .btn-secondary:active {
+    transform: scale(0.95);
+    background: var(--gradient-accent);
+    transition: transform 0.1s ease;
+  }
+  
+  .service-card:active,
+  .assistant-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+  
+  .mobile-nav-link:active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+  }
+  
+  /* Визуальная обратная связь для кнопок чата */
+  .quick-btn:active,
+  .hipych-quick-btn:active,
+  .bro-cat-quick-btn:active {
+    transform: scale(0.95);
+    background: var(--gradient-primary);
+  }
+}
+
+/* ===== FULLSCREEN CHAT OPTIMIZATION ===== */
+
+@media (max-width: 768px) {
+  /* Полноэкранный чат */
+  .chat-container,
+  .hipych-widget,
+  .bro-cat-widget {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+  }
+  
+  /* Оптимизация области сообщений */
+  .chat-messages,
+  .hipych-messages,
+  .bro-cat-messages {
+    height: calc(100vh - 180px) !important;
+    padding: 16px !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
+  }
+  
+  /* Фиксация размера шрифта в input (предотвращает zoom на iOS) */
+  .chat-input,
+  .hipych-input,
+  .bro-cat-input,
+  #chat-input {
+    font-size: 16px !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+  
+  /* Улучшенная область ввода */
+  .chat-input-container,
+  .hipych-input-container,
+  .bro-cat-input-container {
+    padding: 16px !important;
+    background: var(--bg-primary);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ===== IMPROVED TYPOGRAPHY ===== */
+
+@media (max-width: 768px) {
+  /* Увеличение базового размера текста */
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  /* Заголовки */
+  .hero-title {
+    font-size: 2.2rem;
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+  
+  /* Описания */
+  .hero-description {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  
+  .service-description,
+  .assistant-description {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  /* Улучшение читаемости цен */
+  .price {
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+/* ===== SPACING IMPROVEMENTS ===== */
+
+@media (max-width: 768px) {
+  /* Увеличение отступов между секциями */
+  .services,
+  .assistants-section,
+  .testimonials,
+  .contact {
+    padding: 60px 0;
+  }
+  
+  /* Увеличение отступов в карточках */
+  .service-card,
+  .assistant-card {
+    padding: 32px 24px;
+    margin-bottom: 24px;
+  }
+  
+  /* Улучшение отступов в списках */
+  .service-card ul,
+  .assistant-features {
+    margin-top: 20px;
+  }
+  
+  .service-card li {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Отступы для кнопок */
+  .hero-actions {
+    gap: 20px;
+    margin-top: 32px;
+  }
+  
+  .contact-actions {
+    gap: 20px;
+    margin-top: 32px;
+  }
+}
+
+/* ===== NAVIGATION IMPROVEMENTS ===== */
+
+@media (max-width: 768px) {
+  /* Улучшенное мобильное меню */
+  .mobile-nav {
+    backdrop-filter: blur(20px);
+    background: rgba(10, 10, 10, 0.95);
+    padding: 20px 0;
+  }
+  
+  .mobile-nav-link {
+    font-size: 18px;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .mobile-nav-link:last-child {
+    border-bottom: none;
+  }
+  
+  /* Улучшенная кнопка меню */
+  .mobile-menu-btn {
+    padding: 12px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .mobile-menu-btn span {
+    transition: all 0.3s ease;
+  }
+}
+
+/* ===== SCROLL IMPROVEMENTS ===== */
+
+@media (max-width: 768px) {
+  /* Плавная прокрутка для всех контейнеров */
+  .chat-messages,
+  .hipych-messages,
+  .bro-cat-messages {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Улучшенные scrollbars для мобильных */
+  .chat-messages::-webkit-scrollbar,
+  .hipych-messages::-webkit-scrollbar,
+  .bro-cat-messages::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb,
+  .hipych-messages::-webkit-scrollbar-thumb,
+  .bro-cat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+@media (max-width: 768px) {
+  /* Улучшение фокуса для клавиатурной навигации */
+  .btn-primary:focus,
+  .btn-secondary:focus,
+  .mobile-nav-link:focus {
+    outline: 2px solid var(--gradient-primary);
+    outline-offset: 2px;
+  }
+  
+  /* Скрытие элементов для screen readers при необходимости */
+  .decorative-animation {
+    display: none;
+  }
+  
+  /* Улучшение контрастности для важных элементов */
+  .price,
+  .stat-number {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+}
+
+/* ===== LOADING STATES ===== */
+
+@media (max-width: 768px) {
+  /* Состояния загрузки для лучшего UX */
+  .loading-state {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  
+  .loading-state::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--text-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+/* ===== LANDSCAPE ORIENTATION ===== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Оптимизация для альбомной ориентации */
+  .hero {
+    padding: 40px 0;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-description {
+    font-size: 16px;
+  }
+  
+  /* Компактные чаты в landscape */
+  .chat-container,
+  .hipych-widget,
+  .bro-cat-widget {
+    height: 100vh !important;
+  }
+  
+  .chat-messages,
+  .hipych-messages,
+  .bro-cat-messages {
+    height: calc(100vh - 140px) !important;
+  }
+} 
