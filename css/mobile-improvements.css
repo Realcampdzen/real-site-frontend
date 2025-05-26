@@ -1,5 +1,96 @@
 /* Mobile UX Improvements for AI Studio */
 
+/* ===== КРИТИЧЕСКИЕ ИСПРАВЛЕНИЯ АВАТАРОК ===== */
+
+/* Принудительное отображение аватарок на всех устройствах */
+.glass-ui-hipych-button img,
+.glass-ui-bro-cat-button img,
+.glass-chat-header img,
+.hipych-avatar,
+.bro-cat-avatar,
+.chat-avatar,
+.message-avatar,
+.hipych-message-avatar,
+.bro-cat-message-avatar,
+.btn-bro-avatar {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Исправление z-index для Glass UI кнопок */
+.glass-ui-hipych-button,
+.glass-ui-bro-cat-button {
+  position: relative !important;
+}
+
+.glass-ui-hipych-button img,
+.glass-ui-bro-cat-button img {
+  position: relative !important;
+  z-index: 10 !important;
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Убираем псевдоэлементы, которые могут перекрывать аватарки */
+.glass-ui-hipych-button::before,
+.glass-ui-bro-cat-button::before {
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+
+/* Специфичные правила для каждого ассистента */
+.glass-ui-hipych-button img,
+.hipych-avatar,
+.hipych-message-avatar,
+.chat-avatar.hipych,
+.message-avatar.hipych {
+  background-image: url('../images/hipych-avatar.jpg') !important;
+}
+
+.glass-ui-bro-cat-button img,
+.bro-cat-avatar,
+.bro-cat-message-avatar,
+.chat-avatar.bro-cat,
+.message-avatar.bro-cat,
+.btn-bro-avatar {
+  background-image: url('../images/bro-avatar.jpg') !important;
+}
+
+/* Убираем все текстовые fallback */
+.glass-ui-hipych-button::after,
+.glass-ui-bro-cat-button::after,
+.glass-chat-header::before,
+.hipych-avatar::before,
+.bro-cat-avatar::before,
+.chat-avatar::before,
+.message-avatar::before,
+.hipych-message-avatar::before,
+.bro-cat-message-avatar::before,
+.btn-bro-avatar::before,
+.glass-chat-header::after,
+.hipych-avatar::after,
+.bro-cat-avatar::after,
+.chat-avatar::after,
+.message-avatar::after,
+.hipych-message-avatar::after,
+.bro-cat-message-avatar::after,
+.btn-bro-avatar::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+}
+
 /* ===== КРИТИЧЕСКИЕ МОБИЛЬНЫЕ ИСПРАВЛЕНИЯ ===== */
 
 /* Основная мобильная адаптация с высоким приоритетом */
@@ -106,13 +197,11 @@
 
 /* ===== ИСПРАВЛЕНИЕ АВАТАРОК ===== */
 
-/* Восстановление нормальных аватарок */
+/* Восстановление аватарки Хипыча */
 .hipych-avatar,
-.bro-cat-avatar,
-.chat-avatar,
-.message-avatar,
 .hipych-message-avatar,
-.bro-cat-message-avatar {
+.chat-avatar.hipych,
+.message-avatar.hipych {
   background-image: url('../images/hipych-avatar.jpg') !important;
   background-size: cover !important;
   background-position: center !important;
@@ -123,9 +212,20 @@
   border: 2px solid rgba(255, 255, 255, 0.2) !important;
 }
 
+/* Восстановление аватарки Кота Бро */
 .bro-cat-avatar,
-.bro-cat-message-avatar {
+.bro-cat-message-avatar,
+.chat-avatar.bro-cat,
+.message-avatar.bro-cat,
+.btn-bro-avatar {
   background-image: url('../images/bro-avatar.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 /* Скрытие текстовых fallback */
@@ -134,8 +234,10 @@
 .chat-avatar::before,
 .message-avatar::before,
 .hipych-message-avatar::before,
-.bro-cat-message-avatar::before {
+.bro-cat-message-avatar::before,
+.btn-bro-avatar::before {
   display: none !important;
+  content: none !important;
 }
 
 /* ===== PERFORMANCE OPTIMIZATIONS ===== */
@@ -705,5 +807,41 @@
   .contact-actions {
     flex-direction: column !important;
     gap: 12px !important;
+  }
+}
+
+/* Специальные правила для мобильных устройств */
+@media screen and (max-width: 768px) {
+  .glass-ui-hipych-button img,
+  .glass-ui-bro-cat-button img {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 100 !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  }
+  
+  /* Принудительное скрытие текстовых fallback на мобильных */
+  .glass-ui-hipych-button::before,
+  .glass-ui-bro-cat-button::before,
+  .glass-ui-hipych-button::after,
+  .glass-ui-bro-cat-button::after {
+    display: none !important;
+    content: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  
+  /* Убираем любые текстовые содержимые */
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button {
+    font-size: 0 !important;
+    text-indent: -9999px !important;
+    color: transparent !important;
   }
 } 

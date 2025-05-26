@@ -518,16 +518,12 @@ body {
 }
 
 .btn-bro-avatar.fallback {
-  background-image: none;
-  background: linear-gradient(135deg, #ff7849 0%, #ff4500 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
+  display: none !important;
 }
 
 .btn-bro-avatar.fallback::after {
-  content: '🐱';
+  display: none !important;
+  content: none !important;
 }
 
 /* Sections */
@@ -1248,7 +1244,7 @@ body {
 }
 
 .chat-avatar.fallback {
-  background-image: none;
+  display: none !important;
 }
 
 .chat-info h3 {
@@ -1325,7 +1321,7 @@ body {
 }
 
 .message-avatar.fallback {
-  background-image: none;
+  display: none !important;
 }
 
 .chat-message.user .message-avatar {
