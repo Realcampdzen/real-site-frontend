@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Простой тест аватарок</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        
+        .test-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #3b82f6;
+            margin: 20px;
+            display: inline-block;
+        }
+        
+        .glass-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #3b82f6dd, #3b82f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
+        .glass-button img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .success { background: #10b981; }
+        .error { background: #ef4444; }
+        .warning { background: #f59e0b; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Простой тест аватарок</h1>
+    
+    <h2>Прямая загрузка изображений:</h2>
+    <img src="images/hipych-avatar.jpg" alt="Хипыч" class="test-avatar" id="hipych-direct">
+    <img src="images/bro-avatar.jpg" alt="Кот Бро" class="test-avatar" id="bro-direct">
+    
+    <h2>Статус загрузки:</h2>
+    <div id="status-hipych" class="status warning">Хипыч: Загружается...</div>
+    <div id="status-bro" class="status warning">Кот Бро: Загружается...</div>
+    
+    <h2>Информация о файлах:</h2>
+    <div id="file-info"></div>
+    
+    <!-- Тестовая кнопка -->
+    <div class="glass-button" onclick="alert('Кнопка работает!')">
+        <img src="images/hipych-avatar.jpg" alt="Тест" id="button-img">
+    </div>
+    
+    <script>
+        // Проверка Хипыча
+        const hipychImg = document.getElementById('hipych-direct');
+        const hipychStatus = document.getElementById('status-hipych');
+        
+        hipychImg.onload = function() {
+            hipychStatus.textContent = 'Хипыч: ✅ Загружен успешно';
+            hipychStatus.className = 'status success';
+            console.log('Хипыч загружен:', this.naturalWidth, 'x', this.naturalHeight);
+        };
+        
+        hipychImg.onerror = function() {
+            hipychStatus.textContent = 'Хипыч: ❌ Ошибка загрузки';
+            hipychStatus.className = 'status error';
+            console.error('Ошибка загрузки Хипыча');
+        };
+        
+        // Проверка Кота Бро
+        const broImg = document.getElementById('bro-direct');
+        const broStatus = document.getElementById('status-bro');
+        
+        broImg.onload = function() {
+            broStatus.textContent = 'Кот Бро: ✅ Загружен успешно';
+            broStatus.className = 'status success';
+            console.log('Кот Бро загружен:', this.naturalWidth, 'x', this.naturalHeight);
+        };
+        
+        broImg.onerror = function() {
+            broStatus.textContent = 'Кот Бро: ❌ Ошибка загрузки';
+            broStatus.className = 'status error';
+            console.error('Ошибка загрузки Кота Бро');
+        };
+        
+        // Проверка кнопки
+        const buttonImg = document.getElementById('button-img');
+        buttonImg.onload = function() {
+            console.log('Изображение в кнопке загружено');
+        };
+        buttonImg.onerror = function() {
+            console.error('Ошибка загрузки изображения в кнопке');
+        };
+        
+        // Информация о браузере
+        document.getElementById('file-info').innerHTML = `
+            <strong>Браузер:</strong> ${navigator.userAgent}<br>
+            <strong>URL:</strong> ${window.location.href}<br>
+            <strong>Размер экрана:</strong> ${window.innerWidth}x${window.innerHeight}<br>
+            <strong>Pixel Ratio:</strong> ${window.devicePixelRatio}
+        `;
+        
+        // Проверка ошибок
+        window.addEventListener('error', function(e) {
+            console.error('Ошибка:', e.message, 'в', e.filename, 'строка', e.lineno);
+        });
+        
+        console.log('Тест запущен. Проверяем загрузку аватарок...');
+    </script>
+</body>
+</html> 
