@@ -1,5 +1,143 @@
 /* Mobile UX Improvements for AI Studio */
 
+/* ===== КРИТИЧЕСКИЕ МОБИЛЬНЫЕ ИСПРАВЛЕНИЯ ===== */
+
+/* Основная мобильная адаптация с высоким приоритетом */
+@media screen and (max-width: 768px) {
+  /* Контейнеры и отступы */
+  .container {
+    padding: 0 16px !important;
+    max-width: 100% !important;
+  }
+  
+  /* Hero секция */
+  .hero {
+    padding: 80px 0 60px !important;
+    min-height: auto !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .hero-description {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 24px !important;
+  }
+  
+  /* Кнопки */
+  .hero-actions {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+  }
+  
+  .btn-primary, .btn-secondary {
+    width: 100% !important;
+    padding: 16px 24px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
+  }
+  
+  /* Статистика */
+  .hero-stats {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    margin-top: 40px !important;
+  }
+  
+  /* Сетки */
+  .services-grid,
+  .stats-grid,
+  .assistants-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  
+  /* Карточки */
+  .service-card,
+  .stat-card,
+  .assistant-card {
+    padding: 24px 20px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  /* Навигация */
+  .nav-links {
+    display: none !important;
+  }
+  
+  .mobile-menu-btn {
+    display: block !important;
+  }
+  
+  /* Секции */
+  .services, .stats-section, .about, .testimonials, .contact {
+    padding: 60px 0 !important;
+  }
+  
+  .section-title {
+    font-size: 1.75rem !important;
+    margin-bottom: 32px !important;
+    text-align: center !important;
+  }
+}
+
+/* Очень маленькие экраны */
+@media screen and (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem !important;
+  }
+  
+  .hero-stats {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  
+  .service-card,
+  .stat-card,
+  .assistant-card {
+    padding: 20px 16px !important;
+  }
+}
+
+/* ===== ИСПРАВЛЕНИЕ АВАТАРОК ===== */
+
+/* Восстановление нормальных аватарок */
+.hipych-avatar,
+.bro-cat-avatar,
+.chat-avatar,
+.message-avatar,
+.hipych-message-avatar,
+.bro-cat-message-avatar {
+  background-image: url('../images/hipych-avatar.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.bro-cat-avatar,
+.bro-cat-message-avatar {
+  background-image: url('../images/bro-avatar.jpg') !important;
+}
+
+/* Скрытие текстовых fallback */
+.hipych-avatar::before,
+.bro-cat-avatar::before,
+.chat-avatar::before,
+.message-avatar::before,
+.hipych-message-avatar::before,
+.bro-cat-message-avatar::before {
+  display: none !important;
+}
+
 /* ===== PERFORMANCE OPTIMIZATIONS ===== */
 
 /* Отключение анимаций для пользователей с настройкой reduced-motion */
@@ -378,5 +516,194 @@
   .hipych-messages,
   .bro-cat-messages {
     height: calc(100vh - 140px) !important;
+  }
+}
+
+/* ===== МОБИЛЬНЫЕ ЧАТЫ И АССИСТЕНТЫ ===== */
+
+@media screen and (max-width: 768px) {
+  /* Триггеры чатов */
+  .hipych-trigger,
+  .bro-cat-trigger {
+    width: 60px !important;
+    height: 60px !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 24px !important;
+  }
+  
+  .bro-cat-trigger {
+    bottom: 90px !important;
+  }
+  
+  /* Полноэкранные чаты */
+  .hipych-widget,
+  .bro-cat-widget {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    z-index: 9999 !important;
+  }
+  
+  /* Заголовки чатов */
+  .hipych-header,
+  .bro-cat-header {
+    padding: 20px 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* Области сообщений */
+  .hipych-messages,
+  .bro-cat-messages {
+    height: calc(100vh - 200px) !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Области ввода */
+  .hipych-input-container,
+  .bro-cat-input-container {
+    padding: 16px !important;
+    background: var(--bg-primary) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .hipych-input,
+  .bro-cat-input {
+    font-size: 16px !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+    width: 100% !important;
+  }
+  
+  /* Быстрые кнопки */
+  .hipych-quick-actions,
+  .bro-cat-quick-actions {
+    padding: 12px 16px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  
+  .hipych-quick-btn,
+  .bro-cat-quick-btn {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+    min-height: 36px !important;
+    flex: 1 1 auto !important;
+    max-width: calc(50% - 4px) !important;
+  }
+}
+
+/* ===== АССИСТЕНТЫ СЕКЦИЯ ===== */
+
+@media screen and (max-width: 768px) {
+  .assistants-section {
+    padding: 60px 0 !important;
+  }
+  
+  .assistants-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  
+  .assistant-card {
+    padding: 24px 20px !important;
+    text-align: center !important;
+  }
+  
+  .assistant-icon {
+    width: 60px !important;
+    height: 60px !important;
+    margin: 0 auto 16px !important;
+    font-size: 24px !important;
+  }
+  
+  .assistant-features {
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin: 16px 0 !important;
+  }
+  
+  .feature-tag {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+  }
+  
+  .try-assistant-btn {
+    width: 100% !important;
+    padding: 16px 24px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
+  }
+}
+
+/* ===== ДОПОЛНИТЕЛЬНЫЕ ИСПРАВЛЕНИЯ ===== */
+
+@media screen and (max-width: 768px) {
+  /* Отключение hover эффектов на мобильных */
+  .service-card:hover,
+  .assistant-card:hover,
+  .stat-card:hover,
+  .process-step:hover {
+    transform: none !important;
+  }
+  
+  /* Улучшение читаемости */
+  body {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* Отступы для секций */
+  .services,
+  .stats-section,
+  .about,
+  .testimonials,
+  .contact,
+  .assistants-section {
+    padding: 60px 0 !important;
+  }
+  
+  /* Процесс работы */
+  .process-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  
+  .process-step {
+    padding: 24px 20px !important;
+    text-align: center !important;
+  }
+  
+  /* Отзывы */
+  .testimonials-slider {
+    padding: 0 20px !important;
+  }
+  
+  .testimonial-card {
+    padding: 24px 20px !important;
+    text-align: center !important;
+  }
+  
+  /* Контакты */
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  
+  .contact-actions {
+    flex-direction: column !important;
+    gap: 12px !important;
   }
 } 
