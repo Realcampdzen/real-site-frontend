@@ -542,6 +542,465 @@ class MobileAccessibility {
   }
 }
 
+// ===== LAZY LOADING ДЛЯ ИЗОБРАЖЕНИЙ =====
+
+class LazyImageLoader {
+  constructor() {
+    this.imageObserver = null;
+    this.init();
+  }
+
+  init() {
+    if ('IntersectionObserver' in window) {
+      this.imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            this.loadImage(img);
+            observer.unobserve(img);
+          }
+        });
+      });
+
+      this.observeImages();
+    } else {
+      // Fallback для старых браузеров
+      this.loadAllImages();
+    }
+  }
+
+  observeImages() {
+    const images = document.querySelectorAll('img[data-src]');
+    images.forEach(img => this.imageObserver.observe(img));
+  }
+
+  loadImage(img) {
+    const src = img.getAttribute('data-src');
+    if (src) {
+      img.src = src;
+      img.classList.add('loaded');
+      img.removeAttribute('data-src');
+    }
+  }
+
+  loadAllImages() {
+    const images = document.querySelectorAll('img[data-src]');
+    images.forEach(img => this.loadImage(img));
+  }
+}
+
+// ===== SERVICE WORKER ДЛЯ КЭШИРОВАНИЯ =====
+
+class ServiceWorkerManager {
+  constructor() {
+    this.init();
+  }
+
+  async init() {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        console.log('✅ Service Worker зарегистрирован:', registration);
+        
+        // Обновление SW
+        registration.addEventListener('updatefound', () => {
+          console.log('🔄 Найдено обновление Service Worker');
+        });
+      } catch (error) {
+        console.log('❌ Ошибка регистрации Service Worker:', error);
+      }
+    }
+  }
+}
+
+// ===== ОПТИМИЗАЦИЯ ИЗОБРАЖЕНИЙ =====
+
+class ImageOptimizer {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    this.optimizeAvatars();
+    this.addWebPSupport();
+  }
+
+  optimizeAvatars() {
+    const avatars = document.querySelectorAll('.hipych-avatar, .bro-cat-avatar, .chat-avatar, .message-avatar');
+    
+    avatars.forEach(avatar => {
+      // Добавляем loading="lazy" для нативного lazy loading
+      if (avatar.tagName === 'IMG') {
+        avatar.loading = 'lazy';
+        avatar.decoding = 'async';
+      }
+      
+      // Оптимизируем размеры
+      const size = this.getOptimalSize(avatar);
+      if (size) {
+        avatar.style.width = size + 'px';
+        avatar.style.height = size + 'px';
+      }
+    });
+  }
+
+  getOptimalSize(element) {
+    const rect = element.getBoundingClientRect();
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    return Math.ceil(Math.max(rect.width, rect.height) * devicePixelRatio);
+  }
+
+  addWebPSupport() {
+    // Проверка поддержки WebP
+    const webpSupported = this.supportsWebP();
+    
+    if (webpSupported) {
+      document.documentElement.classList.add('webp-supported');
+      console.log('✅ WebP поддерживается');
+    } else {
+      document.documentElement.classList.add('webp-not-supported');
+      console.log('❌ WebP не поддерживается');
+    }
+  }
+
+  supportsWebP() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1;
+    canvas.height = 1;
+    return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  }
+}
+
+// ===== РАСШИРЕННЫЕ TOUCH ЖЕСТЫ =====
+
+class AdvancedTouchGestures {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    this.addSwipeGestures();
+    this.addPinchZoom();
+    this.addLongPress();
+  }
+
+  addSwipeGestures() {
+    let startX, startY, startTime;
+
+    document.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
+      startTime = Date.now();
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      if (!startX || !startY) return;
+
+      const touch = e.changedTouches[0];
+      const endX = touch.clientX;
+      const endY = touch.clientY;
+      const endTime = Date.now();
+
+      const deltaX = endX - startX;
+      const deltaY = endY - startY;
+      const deltaTime = endTime - startTime;
+
+      // Проверяем, что это свайп (быстрое движение)
+      if (deltaTime < 300 && Math.abs(deltaX) > 50) {
+        if (deltaX > 0) {
+          this.handleSwipeRight(e);
+        } else {
+          this.handleSwipeLeft(e);
+        }
+      }
+
+      startX = startY = null;
+    }, { passive: true });
+  }
+
+  handleSwipeRight(e) {
+    // Свайп вправо - закрытие мобильного меню или чата
+    const mobileNav = document.getElementById('mobile-nav');
+    const chatOverlay = document.getElementById('chat-overlay');
+    
+    if (mobileNav && mobileNav.classList.contains('active')) {
+      this.closeMobileMenu();
+    } else if (chatOverlay && !chatOverlay.classList.contains('hidden')) {
+      this.closeChat();
+    }
+  }
+
+  handleSwipeLeft(e) {
+    // Свайп влево - открытие мобильного меню
+    const target = e.target.closest('.navbar');
+    if (target) {
+      this.openMobileMenu();
+    }
+  }
+
+  addPinchZoom() {
+    let initialDistance = 0;
+    let scale = 1;
+
+    document.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        initialDistance = this.getDistance(e.touches[0], e.touches[1]);
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const currentDistance = this.getDistance(e.touches[0], e.touches[1]);
+        scale = currentDistance / initialDistance;
+        
+        // Ограничиваем масштаб
+        scale = Math.min(Math.max(scale, 0.5), 3);
+        
+        const target = e.target.closest('.service-card, .assistant-card');
+        if (target) {
+          target.style.transform = `scale(${scale})`;
+        }
+      }
+    });
+
+    document.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) {
+        // Возвращаем масштаб
+        const scaledElements = document.querySelectorAll('[style*="scale"]');
+        scaledElements.forEach(el => {
+          el.style.transform = '';
+        });
+        scale = 1;
+      }
+    }, { passive: true });
+  }
+
+  getDistance(touch1, touch2) {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  addLongPress() {
+    let pressTimer;
+
+    document.addEventListener('touchstart', (e) => {
+      pressTimer = setTimeout(() => {
+        this.handleLongPress(e);
+      }, 800);
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      clearTimeout(pressTimer);
+    }, { passive: true });
+
+    document.addEventListener('touchmove', () => {
+      clearTimeout(pressTimer);
+    }, { passive: true });
+  }
+
+  handleLongPress(e) {
+    const target = e.target.closest('.service-card, .assistant-card');
+    if (target) {
+      // Показываем дополнительную информацию
+      this.showCardDetails(target);
+    }
+  }
+
+  showCardDetails(card) {
+    // Создаем модальное окно с деталями
+    const modal = document.createElement('div');
+    modal.className = 'card-details-modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>${card.querySelector('h3').textContent}</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>${card.querySelector('.service-description, .assistant-description').textContent}</p>
+          <div class="modal-actions">
+            <button class="btn-primary">Заказать</button>
+            <button class="btn-secondary">Подробнее</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    
+    // Анимация появления
+    setTimeout(() => modal.classList.add('active'), 10);
+
+    // Закрытие модального окна
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.classList.contains('modal-close')) {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 300);
+      }
+    });
+  }
+
+  closeMobileMenu() {
+    const mobileNav = document.getElementById('mobile-nav');
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    
+    if (mobileNav) mobileNav.classList.remove('active');
+    if (menuBtn) menuBtn.classList.remove('active');
+  }
+
+  openMobileMenu() {
+    const mobileNav = document.getElementById('mobile-nav');
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    
+    if (mobileNav) mobileNav.classList.add('active');
+    if (menuBtn) menuBtn.classList.add('active');
+  }
+
+  closeChat() {
+    const chatOverlay = document.getElementById('chat-overlay');
+    if (chatOverlay) chatOverlay.classList.add('hidden');
+  }
+}
+
+// ===== BATTERY API ДЛЯ ОПТИМИЗАЦИИ =====
+
+class BatteryOptimizer {
+  constructor() {
+    this.init();
+  }
+
+  async init() {
+    if ('getBattery' in navigator) {
+      try {
+        const battery = await navigator.getBattery();
+        this.optimizeForBattery(battery);
+        
+        battery.addEventListener('levelchange', () => {
+          this.optimizeForBattery(battery);
+        });
+      } catch (error) {
+        console.log('Battery API недоступен:', error);
+      }
+    }
+  }
+
+  optimizeForBattery(battery) {
+    const level = battery.level;
+    const charging = battery.charging;
+
+    if (level < 0.2 && !charging) {
+      // Низкий заряд - включаем энергосберегающий режим
+      this.enablePowerSaveMode();
+    } else {
+      // Нормальный заряд - отключаем энергосберегающий режим
+      this.disablePowerSaveMode();
+    }
+  }
+
+  enablePowerSaveMode() {
+    document.body.classList.add('power-save-mode');
+    
+    // Отключаем анимации
+    const style = document.createElement('style');
+    style.id = 'power-save-styles';
+    style.textContent = `
+      .power-save-mode * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .power-save-mode .bg-animation {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    console.log('🔋 Энергосберегающий режим включен');
+  }
+
+  disablePowerSaveMode() {
+    document.body.classList.remove('power-save-mode');
+    
+    const powerSaveStyles = document.getElementById('power-save-styles');
+    if (powerSaveStyles) {
+      powerSaveStyles.remove();
+    }
+    
+    console.log('🔋 Энергосберегающий режим отключен');
+  }
+}
+
+// ===== NETWORK INFORMATION API =====
+
+class NetworkOptimizer {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    if ('connection' in navigator) {
+      const connection = navigator.connection;
+      this.optimizeForConnection(connection);
+      
+      connection.addEventListener('change', () => {
+        this.optimizeForConnection(connection);
+      });
+    }
+  }
+
+  optimizeForConnection(connection) {
+    const effectiveType = connection.effectiveType;
+    const saveData = connection.saveData;
+
+    if (effectiveType === 'slow-2g' || effectiveType === '2g' || saveData) {
+      this.enableDataSaveMode();
+    } else {
+      this.disableDataSaveMode();
+    }
+  }
+
+  enableDataSaveMode() {
+    document.body.classList.add('data-save-mode');
+    
+    // Отключаем тяжелые элементы
+    const heavyElements = document.querySelectorAll('.bg-animation, video, .particle-canvas');
+    heavyElements.forEach(el => {
+      el.style.display = 'none';
+    });
+    
+    console.log('📶 Режим экономии трафика включен');
+  }
+
+  disableDataSaveMode() {
+    document.body.classList.remove('data-save-mode');
+    
+    // Включаем обратно тяжелые элементы
+    const heavyElements = document.querySelectorAll('.bg-animation, video, .particle-canvas');
+    heavyElements.forEach(el => {
+      el.style.display = '';
+    });
+    
+    console.log('📶 Режим экономии трафика отключен');
+  }
+}
+
+// ===== ИНИЦИАЛИЗАЦИЯ НОВЫХ КОМПОНЕНТОВ =====
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Инициализируем новые компоненты
+  new LazyImageLoader();
+  new ServiceWorkerManager();
+  new ImageOptimizer();
+  new AdvancedTouchGestures();
+  new BatteryOptimizer();
+  new NetworkOptimizer();
+  
+  console.log('🚀 Расширенные мобильные улучшения загружены');
+});
+
 // ===== INITIALIZATION =====
 
 document.addEventListener('DOMContentLoaded', () => {

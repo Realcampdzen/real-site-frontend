@@ -844,4 +844,455 @@
     text-indent: -9999px !important;
     color: transparent !important;
   }
+}
+
+/* ===== МОДАЛЬНЫЕ ОКНА ДЛЯ КАРТОЧЕК ===== */
+
+.card-details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.card-details-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-details-modal.active .modal-content {
+  transform: scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.modal-actions .btn-primary,
+.modal-actions .btn-secondary {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 16px;
+  min-height: 44px;
+}
+
+/* ===== ЭНЕРГОСБЕРЕГАЮЩИЙ РЕЖИМ ===== */
+
+.power-save-mode {
+  filter: brightness(0.8) contrast(0.9);
+}
+
+.power-save-mode .bg-animation,
+.power-save-mode .particle-canvas,
+.power-save-mode .service-card::before,
+.power-save-mode .assistant-card::before {
+  display: none !important;
+}
+
+.power-save-mode * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* ===== РЕЖИМ ЭКОНОМИИ ТРАФИКА ===== */
+
+.data-save-mode .bg-animation,
+.data-save-mode video,
+.data-save-mode .particle-canvas {
+  display: none !important;
+}
+
+.data-save-mode img {
+  filter: blur(1px);
+  transition: filter 0.3s ease;
+}
+
+.data-save-mode img:hover {
+  filter: none;
+}
+
+/* ===== LAZY LOADING ИЗОБРАЖЕНИЙ ===== */
+
+img[data-src] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+img.loaded {
+  opacity: 1;
+}
+
+/* Placeholder для загружающихся изображений */
+img[data-src]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ===== WEBP ПОДДЕРЖКА ===== */
+
+.webp-supported .avatar-fallback {
+  background-image: url('../images/hipych-avatar.webp');
+}
+
+.webp-not-supported .avatar-fallback {
+  background-image: url('../images/hipych-avatar.jpg');
+}
+
+/* ===== УЛУЧШЕННЫЕ TOUCH СОСТОЯНИЯ ===== */
+
+@media (max-width: 768px) {
+  .service-card:active,
+  .assistant-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  .btn-primary:active,
+  .btn-secondary:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Улучшенная обратная связь для touch */
+  .touch-feedback {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .touch-feedback::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .touch-feedback:active::after {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+/* ===== УЛУЧШЕННЫЕ SCROLLBARS ===== */
+
+@media (max-width: 768px) {
+  /* Кастомные scrollbars для мобильных */
+  .chat-messages::-webkit-scrollbar,
+  .hipych-messages::-webkit-scrollbar,
+  .bro-cat-messages::-webkit-scrollbar,
+  .modal-content::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .chat-messages::-webkit-scrollbar-track,
+  .hipych-messages::-webkit-scrollbar-track,
+  .bro-cat-messages::-webkit-scrollbar-track,
+  .modal-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb,
+  .hipych-messages::-webkit-scrollbar-thumb,
+  .bro-cat-messages::-webkit-scrollbar-thumb,
+  .modal-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    transition: background 0.3s ease;
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb:hover,
+  .hipych-messages::-webkit-scrollbar-thumb:hover,
+  .bro-cat-messages::-webkit-scrollbar-thumb:hover,
+  .modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* ===== ИНДИКАТОРЫ СОСТОЯНИЯ ===== */
+
+.connection-status {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 9998;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.connection-status.online {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.connection-status.offline {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.battery-status {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 9998;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.battery-status.low {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.battery-status.normal {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.battery-status.charging {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* ===== УЛУЧШЕННЫЕ АНИМАЦИИ ДЛЯ МОБИЛЬНЫХ ===== */
+
+@media (max-width: 768px) {
+  /* Плавные переходы для карточек */
+  .service-card,
+  .assistant-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  /* Анимация появления элементов */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+  
+  .fade-in:nth-child(1) { animation-delay: 0.1s; }
+  .fade-in:nth-child(2) { animation-delay: 0.2s; }
+  .fade-in:nth-child(3) { animation-delay: 0.3s; }
+  .fade-in:nth-child(4) { animation-delay: 0.4s; }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Анимация для кнопок */
+  .btn-primary,
+  .btn-secondary {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-primary::before,
+  .btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+  }
+  
+  .btn-primary:active::before,
+  .btn-secondary:active::before {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* ===== ACCESSIBILITY УЛУЧШЕНИЯ ===== */
+
+@media (max-width: 768px) {
+  /* Улучшенный фокус для клавиатурной навигации */
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible,
+  .nav-link:focus-visible,
+  .mobile-nav-link:focus-visible {
+    outline: 3px solid var(--gradient-primary);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+  
+  /* Скрытие декоративных элементов для screen readers */
+  .decorative-only {
+    aria-hidden: true;
+  }
+  
+  /* Улучшенная читаемость */
+  .high-contrast {
+    filter: contrast(1.2);
+  }
+  
+  /* Увеличенный текст для лучшей читаемости */
+  .large-text {
+    font-size: 1.1em;
+    line-height: 1.7;
+  }
+}
+
+/* ===== DARK MODE ПОДДЕРЖКА ===== */
+
+@media (prefers-color-scheme: dark) {
+  .card-details-modal {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  .modal-content {
+    background: #1a1a1a;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* ===== REDUCED MOTION ПОДДЕРЖКА ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .bg-animation,
+  .particle-canvas {
+    display: none !important;
+  }
+}
+
+/* ===== PRINT СТИЛИ ===== */
+
+@media print {
+  .bg-animation,
+  .particle-canvas,
+  .chat-overlay,
+  .hipych-widget,
+  .bro-cat-widget,
+  .back-to-top,
+  .mobile-menu-btn,
+  .connection-status,
+  .battery-status {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .service-card,
+  .assistant-card {
+    border: 1px solid #ccc !important;
+    break-inside: avoid;
+  }
 } 
