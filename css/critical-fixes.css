@@ -115,11 +115,11 @@ body #particle-canvas {
 /* На мобильных уменьшаем интенсивность */
 @media screen and (max-width: 768px) {
   body .bg-animation {
-    opacity: 0.4 !important;
+    opacity: 0.6 !important;
   }
   
   body #particle-canvas {
-    opacity: 0.4 !important;
+    opacity: 0.6 !important;
   }
 }
 
