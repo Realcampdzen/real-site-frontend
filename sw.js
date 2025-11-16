@@ -20,6 +20,7 @@ const STATIC_ASSETS = [
   '/chat-components/GlassUIWidget.js',
   '/images/hipych-avatar.jpg',
   '/images/bro-avatar.jpg',
+  '/images/neon-room.png',
   '/public/фон1.png',
   // Внешние ресурсы
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap',

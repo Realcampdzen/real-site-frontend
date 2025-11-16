@@ -38,7 +38,7 @@ html {
 body {
   font-family: var(--font-secondary);
   background-color: var(--bg-primary);
-  background-image: url('../public/фон1.png');
+  background-image: url('../images/neon-room.png?v=20251116');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
