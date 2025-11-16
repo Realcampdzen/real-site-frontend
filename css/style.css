@@ -37,7 +37,12 @@ html {
 
 body {
   font-family: var(--font-secondary);
-  background: var(--bg-primary);
+  background-color: var(--bg-primary);
+  background-image: url('../public/фон1.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;

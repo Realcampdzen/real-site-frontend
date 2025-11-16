@@ -1,5 +1,13 @@
 /* Mobile UX Improvements for AI Studio */
 
+/* ===== АДАПТАЦИЯ ФОНОВОГО ИЗОБРАЖЕНИЯ ===== */
+@media screen and (max-width: 768px) {
+  body {
+    background-attachment: scroll !important;
+    background-position: center top !important;
+  }
+}
+
 /* ===== КРИТИЧЕСКИЕ ИСПРАВЛЕНИЯ АВАТАРОК ===== */
 
 /* Отключение fallback режима для всех аватарок */

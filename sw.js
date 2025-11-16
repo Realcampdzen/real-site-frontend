@@ -1,8 +1,8 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_NAME = 'ai-studio-v1.2';
-const STATIC_CACHE = 'ai-studio-static-v1.2';
-const DYNAMIC_CACHE = 'ai-studio-dynamic-v1.2';
+const CACHE_NAME = 'ai-studio-v1.3';
+const STATIC_CACHE = 'ai-studio-static-v1.3';
+const DYNAMIC_CACHE = 'ai-studio-dynamic-v1.3';
 
 // Ресурсы для кэширования
 const STATIC_ASSETS = [
@@ -12,7 +12,6 @@ const STATIC_ASSETS = [
   '/css/mobile-improvements.css',
   '/js/script.js',
   '/js/mobile-enhancements.js',
-  '/js/particles.js',
   '/js/chat.js',
   '/js/assistants.js',
   '/js/ai-assistant.js',
@@ -21,6 +20,7 @@ const STATIC_ASSETS = [
   '/chat-components/GlassUIWidget.js',
   '/images/hipych-avatar.jpg',
   '/images/bro-avatar.jpg',
+  '/public/фон1.png',
   // Внешние ресурсы
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
