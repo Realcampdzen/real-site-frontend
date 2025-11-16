@@ -104,7 +104,7 @@ JavaScript уже готов в `js/mobile-enhancements.js` - просто по�
 
 ```json
 {
-  "name": "Степан Иванов AI Studio",
+  "name": "Реальный Vайб AI Studio",
   "short_name": "AI Studio",
   "description": "Персональная AI студия для бизнеса",
   "start_url": "/",

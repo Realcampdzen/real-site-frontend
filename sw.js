@@ -1,8 +1,8 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_NAME = 'ai-studio-v1.3';
-const STATIC_CACHE = 'ai-studio-static-v1.3';
-const DYNAMIC_CACHE = 'ai-studio-dynamic-v1.3';
+const CACHE_NAME = 'ai-studio-v1.4';
+const STATIC_CACHE = 'ai-studio-static-v1.4';
+const DYNAMIC_CACHE = 'ai-studio-dynamic-v1.4';
 
 // Ресурсы для кэширования
 const STATIC_ASSETS = [
