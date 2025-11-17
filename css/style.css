@@ -19,8 +19,8 @@
   --gradient-gold: linear-gradient(135deg, #f1c27c, #f7931a);
   
   /* Fonts */
-  --font-display: 'Unbounded', 'sans-serif';
-  --font-body: 'Spline Sans', 'sans-serif';
+  --font-display: 'Unbounded', system-ui, -apple-system, sans-serif;
+  --font-body: 'Spline Sans', system-ui, -apple-system, sans-serif;
   
   /* Spacing */
   --container-max-width: 1200px;
