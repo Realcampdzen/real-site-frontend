@@ -1,10 +1,10 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_NAME = 'ai-studio-v1.4';
-const STATIC_CACHE = 'ai-studio-static-v1.4';
-const DYNAMIC_CACHE = 'ai-studio-dynamic-v1.4';
+const CACHE_NAME = 'ai-studio-v1.6';
+const STATIC_CACHE = 'ai-studio-static-v1.6';
+const DYNAMIC_CACHE = 'ai-studio-dynamic-v1.6';
 
-// Ресурсы для кэширования
+// Ресурсы для кэширования (только локальные, внешние ресурсы кэшируются динамически)
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -21,11 +21,7 @@ const STATIC_ASSETS = [
   '/images/hipych-avatar.jpg',
   '/images/bro-avatar.jpg',
   '/images/neon-room.png',
-  '/public/фон1.png',
-  // Внешние ресурсы
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
-  'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css'
+  '/public/фон1.png'
 ];
 
 // Установка Service Worker
@@ -36,7 +32,19 @@ self.addEventListener('install', (event) => {
     caches.open(STATIC_CACHE)
       .then((cache) => {
         console.log('📦 Service Worker: Кэширование статических ресурсов');
-        return cache.addAll(STATIC_ASSETS);
+        // Кэшируем ресурсы с обработкой ошибок для внешних CDN
+        return Promise.allSettled(
+          STATIC_ASSETS.map(url => {
+            return cache.add(url).catch(error => {
+              // Игнорируем ошибки для внешних ресурсов (CSP может блокировать)
+              if (url.startsWith('http://') || url.startsWith('https://')) {
+                console.warn('⚠️ Service Worker: Не удалось кэшировать внешний ресурс', url, error.message);
+                return null;
+              }
+              throw error;
+            });
+          })
+        );
       })
       .then(() => {
         console.log('✅ Service Worker: Установка завершена');
@@ -44,6 +52,8 @@ self.addEventListener('install', (event) => {
       })
       .catch((error) => {
         console.error('❌ Service Worker: Ошибка установки', error);
+        // Продолжаем работу даже при ошибках
+        return self.skipWaiting();
       })
   );
 });
@@ -57,7 +67,8 @@ self.addEventListener('activate', (event) => {
       .then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+            // Удаляем все старые версии кэша
+            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE && cacheName !== CACHE_NAME) {
               console.log('🗑️ Service Worker: Удаление старого кэша', cacheName);
               return caches.delete(cacheName);
             }
@@ -65,7 +76,7 @@ self.addEventListener('activate', (event) => {
         );
       })
       .then(() => {
-        console.log('✅ Service Worker: Активация завершена');
+        console.log('✅ Service Worker: Активация завершена, версия', CACHE_NAME);
         return self.clients.claim();
       })
   );
@@ -116,11 +127,21 @@ self.addEventListener('fetch', (event) => {
           
           return fetch(request)
             .then((networkResponse) => {
-              return caches.open(STATIC_CACHE)
-                .then((cache) => {
-                  cache.put(request, networkResponse.clone());
-                  return networkResponse;
-                });
+              // Кэшируем только успешные ответы
+              if (networkResponse.ok) {
+                return caches.open(STATIC_CACHE)
+                  .then((cache) => {
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
+                  });
+              }
+              return networkResponse;
+            })
+            .catch((error) => {
+              // Игнорируем ошибки для внешних ресурсов (CSP может блокировать)
+              console.warn('⚠️ Service Worker: Ошибка загрузки ресурса', request.url, error.message);
+              // Возвращаем ошибку, чтобы браузер мог обработать её самостоятельно
+              throw error;
             });
         })
     );
@@ -142,18 +163,29 @@ self.addEventListener('fetch', (event) => {
               if (networkResponse.status === 200) {
                 return caches.open(DYNAMIC_CACHE)
                   .then((cache) => {
-                    cache.put(request, networkResponse.clone());
+                    cache.put(request, networkResponse.clone()).catch(err => {
+                      console.warn('⚠️ Service Worker: Не удалось кэшировать изображение', request.url, err.message);
+                    });
                     return networkResponse;
                   });
               }
               return networkResponse;
             })
-            .catch(() => {
-              // Возвращаем placeholder изображение
-              return new Response(
-                '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#999">Изображение недоступно</text></svg>',
-                { headers: { 'Content-Type': 'image/svg+xml' } }
-              );
+            .catch((error) => {
+              // Игнорируем ошибки CSP для внешних ресурсов
+              if (error.message.includes('CSP') || error.message.includes('Content Security Policy')) {
+                console.warn('⚠️ Service Worker: Ресурс заблокирован CSP', request.url);
+                // Позволяем браузеру обработать запрос самостоятельно
+                return fetch(request);
+              }
+              // Возвращаем placeholder изображение только для локальных ресурсов
+              if (!request.url.startsWith('http://') && !request.url.startsWith('https://')) {
+                return new Response(
+                  '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#999">Изображение недоступно</text></svg>',
+                  { headers: { 'Content-Type': 'image/svg+xml' } }
+                );
+              }
+              throw error;
             });
         })
     );
@@ -169,13 +201,20 @@ self.addEventListener('fetch', (event) => {
           if (request.method === 'GET' && networkResponse.status === 200) {
             return caches.open(DYNAMIC_CACHE)
               .then((cache) => {
-                cache.put(request, networkResponse.clone());
+                cache.put(request, networkResponse.clone()).catch(err => {
+                  console.warn('⚠️ Service Worker: Не удалось кэшировать API ответ', request.url, err.message);
+                });
                 return networkResponse;
               });
           }
           return networkResponse;
         })
-        .catch(() => {
+        .catch((error) => {
+          // Игнорируем ошибки CSP
+          if (error.message.includes('CSP') || error.message.includes('Content Security Policy')) {
+            console.warn('⚠️ Service Worker: API запрос заблокирован CSP', request.url);
+            return fetch(request);
+          }
           // Возвращаем кэшированную версию для GET запросов
           if (request.method === 'GET') {
             return caches.match(request);
@@ -198,13 +237,31 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((networkResponse) => {
-        return caches.open(DYNAMIC_CACHE)
-          .then((cache) => {
-            cache.put(request, networkResponse.clone());
-            return networkResponse;
-          });
+        // Кэшируем только успешные ответы
+        if (networkResponse.status === 200) {
+          return caches.open(DYNAMIC_CACHE)
+            .then((cache) => {
+              cache.put(request, networkResponse.clone()).catch(err => {
+                console.warn('⚠️ Service Worker: Не удалось кэшировать ресурс', request.url, err.message);
+              });
+              return networkResponse;
+            });
+        }
+        return networkResponse;
       })
-      .catch(() => {
+      .catch((error) => {
+        // Игнорируем ошибки CSP для внешних ресурсов
+        if (error.message && (error.message.includes('CSP') || error.message.includes('Content Security Policy'))) {
+          console.warn('⚠️ Service Worker: Ресурс заблокирован CSP, пропускаем кэширование', request.url);
+          // Для внешних ресурсов просто возвращаем ошибку, браузер загрузит их напрямую
+          if (request.url.startsWith('http://') || request.url.startsWith('https://')) {
+            return fetch(request).catch(() => {
+              // Если и прямой fetch не работает, возвращаем ошибку
+              return new Response('Resource blocked by CSP', { status: 403 });
+            });
+          }
+        }
+        // Если сеть недоступна, возвращаем из кэша
         return caches.match(request);
       })
   );

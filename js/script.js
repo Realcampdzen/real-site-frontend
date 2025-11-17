@@ -201,10 +201,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', () => {
     updateScrollProgress();
     
+    if (!navbar) return;
     if (window.scrollY > 50) {
-      navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+      navbar.classList.add('navbar-solid');
     } else {
-      navbar.style.background = 'rgba(10, 10, 10, 0.9)';
+      navbar.classList.remove('navbar-solid');
     }
   });
 

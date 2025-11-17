@@ -44,7 +44,7 @@ body {
   background-image:
     radial-gradient(circle at 12% 20%, rgba(255, 155, 74, 0.25), transparent 55%),
     radial-gradient(circle at 80% 30%, rgba(126, 99, 255, 0.2), transparent 60%),
-    url('../images/neon-room.png?v=20251117-1845');
+    url('../images/neon-room.png?v=20251117-1850');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

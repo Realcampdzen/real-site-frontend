@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оптимизированная версия: AI-студия Cursor-style</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Cursor-style анимация */
+        @keyframes floatGradient {
+            0%   { transform: scale(1) translate(0,0) rotate(0deg); }
+            33%  { transform: scale(1.02) translate(-1%, -2%) rotate(0.5deg); }
+            66%  { transform: scale(1.05) translate(-2%, -3%) rotate(-0.5deg); }
+            100% { transform: scale(1) translate(0,0) rotate(0deg); }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(157, 125, 255, 0.3); }
+            50% { text-shadow: 0 0 30px rgba(157, 125, 255, 0.6), 0 0 40px rgba(157, 125, 255, 0.3); }
+        }
+
+        /* Hero секция */
+        .hero {
+            position: relative;
+            padding: 8vh 0 12vh;
+            min-height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Множественные градиентные слои для глубины */
+        .hero__bg {
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 90vw;
+            height: 65vh;
+            max-width: 1600px;
+            border-radius: 32px;
+            opacity: 0.95;
+        }
+
+        /* Основной градиентный слой */
+        .hero__bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background:
+                /* PNG шум (fallback на CSS если нет файла) */
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.15"/></svg>'),
+                /* Четыре основных радиальных градиента */
+                radial-gradient(farthest-corner at 15% 15%, #7d2aff 0%, rgba(125, 42, 255, 0.8) 25%, rgba(69, 39, 120, 0.3) 50%),
+                radial-gradient(farthest-corner at 85% 20%, #ff6c3e 0%, rgba(255, 108, 62, 0.7) 30%, rgba(255, 165, 52, 0.2) 60%),
+                radial-gradient(farthest-corner at 80% 80%, #18b53f 0%, rgba(24, 181, 63, 0.6) 35%, rgba(1, 109, 27, 0.2) 70%),
+                radial-gradient(farthest-corner at 20% 85%, #00aaff 0%, rgba(0, 170, 255, 0.7) 40%, rgba(0, 93, 137, 0.3) 80%);
+            background-size: 200px 200px, 120% 120%, 110% 110%, 115% 115%, 105% 105%;
+            filter: blur(8px) saturate(1.2);
+            animation: floatGradient 20s ease-in-out infinite;
+        }
+
+        /* Дополнительный слой для мягкости */
+        .hero__bg::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: inherit;
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.1) 100%);
+            filter: blur(20px);
+        }
+
+        /* Контент */
+        .hero__content {
+            position: relative;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            color: #fff;
+            z-index: 10;
+        }
+
+        .hero__content h1 {
+            font-size: clamp(2.8rem, 7vw, 7rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero__content h1 span {
+            background: linear-gradient(135deg, #9d7dff 0%, #7d2aff 30%, #ff6c3e 60%, #18b53f 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGlow 4s ease-in-out infinite;
+            position: relative;
+        }
+
+        .hero__content p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 3rem;
+            opacity: 0.85;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        /* Кнопки с Glass эффектом */
+        .btn-row {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.2rem 3rem;
+            border-radius: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: subtract;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, #7164ff 0%, #9d7dff 50%, #7164ff 100%);
+            color: #fff;
+            box-shadow: 
+                0 10px 40px rgba(113, 100, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .btn.primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 15px 50px rgba(113, 100, 255, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn.ghost {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            backdrop-filter: blur(20px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .btn.ghost:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 10px 30px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Настройки для демо */
+        .demo-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            font-size: 0.9rem;
+            z-index: 1000;
+            max-width: 350px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .demo-panel h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            margin: 0.3rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 5vh 0 8vh;
+            }
+            
+            .hero__bg {
+                width: 95vw;
+                height: 55vh;
+                border-radius: 20px;
+            }
+            
+            .btn-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .btn {
+                min-width: 250px;
+                justify-content: center;
+            }
+            
+            .demo-panel {
+                position: relative;
+                margin: 1rem;
+                width: auto;
+                max-width: none;
+            }
+        }
+
+        /* Скрыть элементы при загрузке */
+        .loading .hero__content {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .loaded .hero__content {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 1s ease-out 0.5s;
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- Панель настроек -->
+    <div class="demo-panel">
+        <h3>🎛️ Настройки градиента</h3>
+        
+        <div class="control-group">
+            <label>Размытие: <span id="blurValue">8px</span></label>
+            <input type="range" class="slider" id="blurSlider" min="0" max="20" value="8">
+        </div>
+        
+        <div class="control-group">
+            <label>Насыщенность: <span id="saturationValue">120%</span></label>
+            <input type="range" class="slider" id="saturationSlider" min="50" max="200" value="120">
+        </div>
+        
+        <div class="control-group">
+            <label>Прозрачность: <span id="opacityValue">95%</span></label>
+            <input type="range" class="slider" id="opacitySlider" min="50" max="100" value="95">
+        </div>
+        
+        <div class="control-group">
+            <label>Скорость анимации: <span id="speedValue">20s</span></label>
+            <input type="range" class="slider" id="speedSlider" min="5" max="40" value="20">
+        </div>
+        
+        <div style="margin-top: 1rem;">
+            <button class="demo-btn" onclick="toggleAnimation()">🎭 Анимация</button>
+            <button class="demo-btn" onclick="changePreset()">🎨 Пресет</button>
+            <button class="demo-btn" onclick="saveSettings()">💾 Сохранить</button>
+            <button class="demo-btn" onclick="resetSettings()">🔄 Сброс</button>
+        </div>
+        
+        <div style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.7;">
+            <div>FPS: <span id="fpsCounter">60</span></div>
+            <div>Размер: <span id="sizeInfo">-</span></div>
+        </div>
+    </div>
+
+    <!-- Hero секция -->
+    <section class="hero">
+        <div class="hero__bg" id="heroBg"></div>
+        <div class="hero__content">
+            <h1>
+                Персональная <span>AI студия</span><br>
+                для вашего бизнеса
+            </h1>
+            <p>
+                Создаём умных ботов, автоматизируем процессы и внедряем передовые AI-решения 
+                для максимальной эффективности вашей компании
+            </p>
+            <div class="btn-row">
+                <a href="#" class="btn primary" onclick="alert('🚀 Демо запущено! Готовы начать проект?')">
+                    Начать проект 🚀
+                </a>
+                <a href="#" class="btn ghost" onclick="alert('🧭 UX-проводник активирован!')">
+                    UX-Проводник
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Переменные
+        let animationEnabled = true;
+        let currentPreset = 0;
+        let fps = 60;
+        
+        const heroBg = document.getElementById('heroBg');
+        const body = document.body;
+        
+        // Пресеты градиентов
+        const presets = [
+            {
+                name: 'Cursor Original',
+                colors: ['#7d2aff', '#ff6c3e', '#18b53f', '#00aaff'],
+                positions: ['15% 15%', '85% 20%', '80% 80%', '20% 85%']
+            },
+            {
+                name: 'Deep Space',
+                colors: ['#1e40af', '#6366f1', '#8b5cf6', '#0ea5e9'],
+                positions: ['10% 30%', '90% 20%', '70% 80%', '30% 90%']
+            },
+            {
+                name: 'Sunset Vibes',
+                colors: ['#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'],
+                positions: ['20% 10%', '80% 30%', '60% 90%', '10% 80%']
+            },
+            {
+                name: 'Ocean Deep',
+                colors: ['#0891b2', '#06b6d4', '#3b82f6', '#6366f1'],
+                positions: ['25% 25%', '75% 15%', '85% 85%', '15% 75%']
+            },
+            {
+                name: 'Warm Gradient',
+                colors: ['#8B5A9D', '#D17A47', '#B8A657', '#6B8F5A'],
+                positions: ['20% 20%', '80% 30%', '70% 70%', '30% 80%']
+            }
+        ];
+        
+        // Функции управления
+        function updateGradient() {
+            const blur = document.getElementById('blurSlider').value;
+            const saturation = document.getElementById('saturationSlider').value;
+            const opacity = document.getElementById('opacitySlider').value;
+            const speed = document.getElementById('speedSlider').value;
+            
+            const beforeEl = heroBg;
+            beforeEl.style.filter = `blur(${blur}px) saturate(${saturation}%)`;
+            beforeEl.style.opacity = opacity / 100;
+            beforeEl.style.animationDuration = `${speed}s`;
+            
+            // Обновляем отображение значений
+            document.getElementById('blurValue').textContent = `${blur}px`;
+            document.getElementById('saturationValue').textContent = `${saturation}%`;
+            document.getElementById('opacityValue').textContent = `${opacity}%`;
+            document.getElementById('speedValue').textContent = `${speed}s`;
+        }
+        
+        function toggleAnimation() {
+            animationEnabled = !animationEnabled;
+            heroBg.style.animationPlayState = animationEnabled ? 'running' : 'paused';
+        }
+        
+        function changePreset() {
+            currentPreset = (currentPreset + 1) % presets.length;
+            const preset = presets[currentPreset];
+            
+            // Обновляем CSS переменные для градиента
+            const gradientBg = `
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.15"/></svg>'),
+                radial-gradient(farthest-corner at ${preset.positions[0]}, ${preset.colors[0]} 0%, rgba(125, 42, 255, 0.8) 25%, rgba(69, 39, 120, 0.3) 50%),
+                radial-gradient(farthest-corner at ${preset.positions[1]}, ${preset.colors[1]} 0%, rgba(255, 108, 62, 0.7) 30%, rgba(255, 165, 52, 0.2) 60%),
+                radial-gradient(farthest-corner at ${preset.positions[2]}, ${preset.colors[2]} 0%, rgba(24, 181, 63, 0.6) 35%, rgba(1, 109, 27, 0.2) 70%),
+                radial-gradient(farthest-corner at ${preset.positions[3]}, ${preset.colors[3]} 0%, rgba(0, 170, 255, 0.7) 40%, rgba(0, 93, 137, 0.3) 80%)
+            `;
+            
+            heroBg.style.backgroundImage = gradientBg;
+            console.log(`Пресет изменен на: ${preset.name}`);
+        }
+        
+        function saveSettings() {
+            const settings = {
+                blur: document.getElementById('blurSlider').value,
+                saturation: document.getElementById('saturationSlider').value,
+                opacity: document.getElementById('opacitySlider').value,
+                speed: document.getElementById('speedSlider').value,
+                preset: currentPreset,
+                animation: animationEnabled
+            };
+            
+            localStorage.setItem('heroGradientSettings', JSON.stringify(settings));
+            alert('✅ Настройки сохранены!');
+        }
+        
+        function loadSettings() {
+            const saved = localStorage.getItem('heroGradientSettings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                document.getElementById('blurSlider').value = settings.blur || 8;
+                document.getElementById('saturationSlider').value = settings.saturation || 120;
+                document.getElementById('opacitySlider').value = settings.opacity || 95;
+                document.getElementById('speedSlider').value = settings.speed || 20;
+                currentPreset = settings.preset || 0;
+                animationEnabled = settings.animation !== false;
+                
+                updateGradient();
+                if (currentPreset > 0) changePreset();
+            }
+        }
+        
+        function resetSettings() {
+            document.getElementById('blurSlider').value = 8;
+            document.getElementById('saturationSlider').value = 120;
+            document.getElementById('opacitySlider').value = 95;
+            document.getElementById('speedSlider').value = 20;
+            currentPreset = 0;
+            animationEnabled = true;
+            
+            updateGradient();
+            heroBg.style.backgroundImage = '';
+            heroBg.style.animationPlayState = 'running';
+            
+            localStorage.removeItem('heroGradientSettings');
+        }
+        
+        // FPS Counter
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        function measureFPS() {
+            frameCount++;
+            const now = performance.now();
+            
+            if (now - lastTime >= 1000) {
+                fps = Math.round((frameCount * 1000) / (now - lastTime));
+                document.getElementById('fpsCounter').textContent = fps;
+                document.getElementById('sizeInfo').textContent = `${heroBg.offsetWidth}×${heroBg.offsetHeight}`;
+                
+                frameCount = 0;
+                lastTime = now;
+            }
+            
+            requestAnimationFrame(measureFPS);
+        }
+        
+        // Инициализация
+        window.addEventListener('load', function() {
+            // Убираем загрузочный класс
+            setTimeout(() => {
+                body.classList.remove('loading');
+                body.classList.add('loaded');
+            }, 100);
+            
+            // Загружаем сохраненные настройки
+            loadSettings();
+            
+            // Привязываем слайдеры
+            document.getElementById('blurSlider').addEventListener('input', updateGradient);
+            document.getElementById('saturationSlider').addEventListener('input', updateGradient);
+            document.getElementById('opacitySlider').addEventListener('input', updateGradient);
+            document.getElementById('speedSlider').addEventListener('input', updateGradient);
+            
+            // Запускаем FPS counter
+            measureFPS();
+            
+            console.log('🚀 Оптимизированная версия загружена');
+            console.log('🎨 Доступно пресетов:', presets.length);
+            console.log('⚙️ Настройки можно сохранить в localStorage');
+        });
+        
+        // Обработка ошибок
+        window.addEventListener('error', function(e) {
+            console.error('❌ Ошибка:', e.message, 'в', e.filename, 'строка', e.lineno);
+        });
+    </script>
+</body>
+</html> 

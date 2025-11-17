@@ -55,6 +55,7 @@ class GlassUIHipych {
             overflow: hidden;
             animation: glassFloat 4s ease-in-out infinite;
         `;
+        this.floatingButton.dataset.tooltip = 'Хипыч • техподдержка 24/7';
 
         // Добавляем анимированный фон
         const buttonBg = document.createElement('div');

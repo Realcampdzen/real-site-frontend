@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест концепции: AI-студия с Tailwind CSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'float-gradient': 'floatGradient 18s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        floatGradient: {
+                            '0%': { transform: 'scale(1) translate(0,0)' },
+                            '50%': { transform: 'scale(1.05) translate(-2%, -3%)' },
+                            '100%': { transform: 'scale(1) translate(0,0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Кастомные градиенты для фона */
+        .gradient-cursor {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 1px, transparent 1px),
+                radial-gradient(farthest-corner at 20% 20%, #7d2aff, #452778 30%),
+                radial-gradient(farthest-corner at 80% 25%, #ff6c3e 5%, #ffa534 35%),
+                radial-gradient(farthest-corner at 80% 75%, #18b53f 5%, #016d1b 45%),
+                radial-gradient(farthest-corner at 20% 80%, #00aaff 0%, #005d89 50%);
+            background-size: 4px 4px, 6px 6px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            background-blend-mode: overlay, overlay, normal, normal, normal, normal;
+        }
+
+        .gradient-space {
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08) 1px, transparent 1px),
+                radial-gradient(farthest-corner at 10% 30%, #1e40af, #3730a3 40%),
+                radial-gradient(farthest-corner at 90% 20%, #0ea5e9, #0284c7 35%),
+                radial-gradient(farthest-corner at 70% 80%, #6366f1, #4f46e5 45%),
+                radial-gradient(farthest-corner at 30% 90%, #8b5cf6, #7c3aed 50%);
+        }
+
+        .gradient-sunset {
+            background-image: 
+                radial-gradient(circle at 40% 20%, rgba(255,255,255,0.12) 1px, transparent 1px),
+                radial-gradient(farthest-corner at 20% 10%, #f59e0b, #d97706 30%),
+                radial-gradient(farthest-corner at 80% 30%, #ef4444, #dc2626 40%),
+                radial-gradient(farthest-corner at 60% 90%, #ec4899, #be185d 35%),
+                radial-gradient(farthest-corner at 10% 80%, #8b5cf6, #7c3aed 45%);
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-sans">
+    <!-- Информация о демо -->
+    <div class="fixed top-5 left-5 bg-black/80 p-4 rounded-xl border border-white/10 backdrop-blur-lg text-sm z-50 max-w-xs">
+        <h3 class="text-lg font-bold mb-2">🎨 Tailwind версия</h3>
+        <p><strong>Подход:</strong> Utility-first CSS</p>
+        <p><strong>Градиенты:</strong> Кастомные CSS классы</p>
+        <p><strong>Анимация:</strong> Tailwind config</p>
+    </div>
+
+    <!-- Контролы -->
+    <div class="fixed bottom-5 left-5 bg-black/80 p-4 rounded-xl border border-white/10 backdrop-blur-lg z-50">
+        <h4 class="text-lg font-semibold mb-3">🔧 Контролы:</h4>
+        <div class="space-y-2">
+            <button onclick="toggleAnimation()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors w-full">
+                Анимация ВКЛ/ВЫКЛ
+            </button>
+            <button onclick="toggleBlur()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm transition-colors w-full">
+                Blur ВКЛ/ВЫКЛ
+            </button>
+            <button onclick="changeGradient()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors w-full">
+                Сменить градиент
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero секция -->
+    <div class="relative min-h-screen flex items-center justify-center py-[10vh] bg-black overflow-hidden">
+        <!-- Градиент фон -->
+        <div id="heroBg" class="pointer-events-none absolute inset-0 m-auto w-[92vw] h-[60vh] max-w-7xl rounded-3xl gradient-cursor blur-md animate-float-gradient"></div>
+        
+        <!-- Контент -->
+        <div class="relative z-10 text-center max-w-4xl mx-auto px-8">
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold leading-tight mb-6">
+                Персональная 
+                <span class="bg-gradient-to-r from-purple-400 via-purple-300 to-orange-400 bg-clip-text text-transparent">
+                    AI студия
+                </span> 
+                для вашего бизнеса
+            </h1>
+            
+            <p class="text-lg md:text-xl lg:text-2xl mb-10 opacity-90 max-w-2xl mx-auto">
+                Создаём умных ботов, автоматизируем процессы и внедряем передовые AI-решения для максимальной эффективности вашей компании
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#" onclick="alert('🚀 Начинаем проект!')" 
+                   class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-500/25 hover:-translate-y-1 transition-all duration-300 text-lg min-w-[200px] justify-center">
+                    Начать проект 🚀
+                </a>
+                
+                <a href="#" onclick="alert('🧭 Запускаем UX-проводник!')" 
+                   class="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-xl bg-white/5 backdrop-blur-lg hover:border-white/60 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 text-lg min-w-[200px] justify-center">
+                    UX-Проводник
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Дополнительные секции для демонстрации скролла -->
+    <div class="bg-black py-20">
+        <div class="max-w-4xl mx-auto px-8 text-center">
+            <h2 class="text-4xl font-bold mb-8">Преимущества нашего подхода</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-lg">
+                    <div class="text-4xl mb-4">🤖</div>
+                    <h3 class="text-xl font-semibold mb-3">AI-автоматизация</h3>
+                    <p class="text-gray-300">Умные боты и системы для оптимизации бизнес-процессов</p>
+                </div>
+                
+                <div class="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-lg">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-semibold mb-3">Быстрое внедрение</h3>
+                    <p class="text-gray-300">От идеи до рабочего продукта за минимальные сроки</p>
+                </div>
+                
+                <div class="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-lg">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h3 class="text-xl font-semibold mb-3">Измеримый результат</h3>
+                    <p class="text-gray-300">Конкретные метрики роста эффективности вашего бизнеса</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Переменные состояния
+        let animationEnabled = true;
+        let blurEnabled = true;
+        let currentGradient = 0;
+        
+        const heroBg = document.getElementById('heroBg');
+        const gradientClasses = ['gradient-cursor', 'gradient-space', 'gradient-sunset'];
+        
+        // Функции управления
+        function toggleAnimation() {
+            animationEnabled = !animationEnabled;
+            if (animationEnabled) {
+                heroBg.classList.add('animate-float-gradient');
+            } else {
+                heroBg.classList.remove('animate-float-gradient');
+            }
+            console.log('Анимация:', animationEnabled ? 'включена' : 'выключена');
+        }
+        
+        function toggleBlur() {
+            blurEnabled = !blurEnabled;
+            if (blurEnabled) {
+                heroBg.classList.add('blur-md');
+            } else {
+                heroBg.classList.remove('blur-md');
+            }
+            console.log('Blur:', blurEnabled ? 'включен' : 'выключен');
+        }
+        
+        function changeGradient() {
+            // Удаляем текущий градиент
+            heroBg.classList.remove(...gradientClasses);
+            
+            // Переключаем на следующий
+            currentGradient = (currentGradient + 1) % gradientClasses.length;
+            heroBg.classList.add(gradientClasses[currentGradient]);
+            
+            console.log('Градиент переключен на:', gradientClasses[currentGradient]);
+        }
+        
+        // Информация о загрузке
+        window.addEventListener('load', function() {
+            console.log('🎨 Tailwind версия загружена');
+            console.log('📏 Размер hero__bg:', heroBg.offsetWidth + 'x' + heroBg.offsetHeight);
+            console.log('🎯 Текущие классы:', heroBg.className);
+        });
+        
+        // Отслеживание ошибок
+        window.addEventListener('error', function(e) {
+            console.error('Ошибка:', e.message);
+        });
+        
+        // Информация о производительности
+        let frames = 0;
+        let lastTime = Date.now();
+        
+        function measureFPS() {
+            frames++;
+            const now = Date.now();
+            
+            if (now - lastTime >= 1000) {
+                const fps = Math.round((frames * 1000) / (now - lastTime));
+                document.title = `FPS: ${fps} | Tailwind AI-студия`;
+                frames = 0;
+                lastTime = now;
+            }
+            
+            requestAnimationFrame(measureFPS);
+        }
+        
+        measureFPS();
+    </script>
+</body>
+</html> 

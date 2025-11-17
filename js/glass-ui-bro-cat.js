@@ -55,6 +55,7 @@ class GlassUIBroCat {
             overflow: hidden;
             animation: catFloat 3s ease-in-out infinite;
         `;
+        this.floatingButton.dataset.tooltip = 'Кот Бро • мемный AI-гид';
 
         // Добавляем анимированный фон с кошачьими мотивами
         const buttonBg = document.createElement('div');
