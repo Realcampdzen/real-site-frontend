@@ -426,11 +426,21 @@ body {
 }
 
 .gradient-text {
-  background: var(--gradient-text);
+  background: linear-gradient(90deg, #33f5c8 0%, #7e63ff 30%, #ff0080 60%, #ff9b4a 100%);
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  white-space: nowrap;
+  animation: rainbowFlow 6s ease-in-out infinite;
+}
+
+@keyframes rainbowFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .hero-description {
