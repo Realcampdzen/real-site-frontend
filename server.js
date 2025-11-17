@@ -31,15 +31,48 @@ const logger = winston.createLogger({
 });
 
 // Helmet для безопасности заголовков
+// В режиме разработки используем более мягкий CSP
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 app.use(helmet({
-  contentSecurityPolicy: {
+  contentSecurityPolicy: isDevelopment ? false : {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://stackpath.bootstrapcdn.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://code.jquery.com", "https://cdn.jsdelivr.net", "https://stackpath.bootstrapcdn.com", "https://unpkg.com"],
+      // Разрешаем все необходимые источники для стилей
+      styleSrc: [
+        "'self'", 
+        "'unsafe-inline'", 
+        "https://cdn.jsdelivr.net", 
+        "https://stackpath.bootstrapcdn.com", 
+        "https://fonts.googleapis.com", 
+        "https://cdnjs.cloudflare.com",
+        "https://fonts.gstatic.com",
+        "https:"
+      ],
+      // Разрешаем все необходимые источники для скриптов
+      scriptSrc: [
+        "'self'", 
+        "'unsafe-inline'", 
+        "https://code.jquery.com", 
+        "https://cdn.jsdelivr.net", 
+        "https://stackpath.bootstrapcdn.com", 
+        "https://unpkg.com"
+      ],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "https://api.openai.com"],
-      fontSrc: ["'self'", "https://cdn.jsdelivr.net", "https://stackpath.bootstrapcdn.com"],
+      connectSrc: ["'self'", "https://api.openai.com", "https:"],
+      // Разрешаем все необходимые источники для шрифтов
+      fontSrc: [
+        "'self'", 
+        "https://cdn.jsdelivr.net", 
+        "https://stackpath.bootstrapcdn.com", 
+        "https://fonts.gstatic.com", 
+        "https://cdnjs.cloudflare.com",
+        "https:",
+        "data:"
+      ],
+      // Разрешаем создание динамических style элементов
+      styleSrcAttr: ["'unsafe-inline'"],
+      styleSrcElem: ["'self'", "'unsafe-inline'", "https:"],
     },
   },
   crossOriginEmbedderPolicy: false

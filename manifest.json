@@ -13,70 +13,19 @@
   "categories": ["business", "productivity", "technology"],
   "icons": [
     {
-      "src": "images/icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "images/icon-96.png",
+      "src": "images/hipych-avatar.jpg",
       "sizes": "96x96",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "images/icon-128.png",
-      "sizes": "128x128",
-      "type": "image/png",
+      "src": "images/bro-avatar.jpg",
+      "sizes": "96x96",
+      "type": "image/jpeg",
       "purpose": "any"
-    },
-    {
-      "src": "images/icon-144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "images/icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "images/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "images/icon-384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "images/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "images/screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Мобильная версия AI Studio"
-    },
-    {
-      "src": "images/screenshot-desktop.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Десктопная версия AI Studio"
-    }
-  ],
+  "screenshots": [],
   "shortcuts": [
     {
       "name": "Чат с Хипычем",
@@ -111,9 +60,9 @@
       "url": "/#services",
       "icons": [
         {
-          "src": "images/icon-services.png",
+          "src": "images/hipych-avatar.jpg",
           "sizes": "96x96",
-          "type": "image/png"
+          "type": "image/jpeg"
         }
       ]
     },
@@ -124,9 +73,9 @@
       "url": "/#contact",
       "icons": [
         {
-          "src": "images/icon-contact.png",
+          "src": "images/bro-avatar.jpg",
           "sizes": "96x96",
-          "type": "image/png"
+          "type": "image/jpeg"
         }
       ]
     }

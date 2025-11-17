@@ -595,31 +595,58 @@ body::before {
   line-height: 1.2;
 }
 
-/* Services Grid */
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 32px;
+/* ============================================
+   3D SERVICES CAROUSEL - REVOLVER DRUM EFFECT
+   ============================================ */
+
+.services-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  height: 600px;
   margin-top: 64px;
+  perspective: 2000px;
+  overflow: visible;
 }
 
-.service-card {
+.services-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-carousel-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 400px;
+  max-width: 90vw;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  padding: 40px 30px;
+  border-radius: 24px;
+  padding: 40px 32px;
   text-align: center;
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  transform-origin: center center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 12px 48px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  
+  /* GPU Acceleration для плавной анимации */
+  transform: translateZ(0);
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  
+  /* Базовые transitions */
+  transition: none;
 }
 
-.service-card::before {
+/* Gradient overlay on hover */
+.service-carousel-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -629,23 +656,254 @@ body::before {
   background: var(--gradient-primary);
   opacity: 0;
   transition: opacity 0.4s ease;
+  z-index: 0;
+  border-radius: 24px;
+}
+
+.service-carousel-card:hover::before {
+  opacity: 0.08;
+}
+
+/* All content above gradient */
+.service-carousel-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Класс для анимации карточек */
+.service-carousel-card.carousel-animating {
+  transition: 
+    transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.8s ease-in-out,
+    filter 0.6s ease-in-out,
+    box-shadow 0.8s ease-in-out !important;
+}
+
+/* Свечение центральной карточки */
+.service-carousel-card.center-card {
+  box-shadow: 
+    0 12px 48px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 40px rgba(255, 155, 74, 0.4) !important;
+}
+
+/* Card content styles */
+.service-carousel-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.service-carousel-card .service-description {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.service-features {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.service-features li {
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.service-features li i {
+  color: var(--accent-contrast);
+  font-size: 12px;
+}
+
+.service-price {
+  margin: 24px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.price-value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.service-btn {
+  width: 100%;
+  padding: 14px 28px;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.service-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 155, 74, 0.4);
+}
+
+.service-btn i {
+  font-size: 18px;
+}
+
+/* Navigation buttons */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 100;
+  color: var(--text-primary);
+  font-size: 20px;
+}
+
+.carousel-nav:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 155, 74, 0.5);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 8px 24px rgba(255, 155, 74, 0.3);
+}
+
+.carousel-prev {
+  left: -80px;
+}
+
+.carousel-next {
+  right: -80px;
+}
+
+/* Indicators */
+.carousel-indicators {
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 100;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.indicator:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.2);
+}
+
+.indicator.active {
+  background: var(--gradient-primary);
+  border-color: var(--accent-primary);
+  width: 32px;
+  border-radius: 6px;
+}
+
+/* Section description */
+.section-description {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 18px;
+  margin-top: -40px;
+  margin-bottom: 20px;
+}
+
+/* Service icon for carousel cards */
+.service-carousel-card .service-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 32px;
+  color: white;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.service-carousel-card .service-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.4s ease;
   z-index: -1;
 }
 
-.service-card:hover::before {
-  opacity: 0.05;
+.service-carousel-card:hover .service-icon::before {
+  transform: scale(1);
 }
 
-.service-card:hover {
-  transform: translateY(-10px);
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(102, 126, 234, 0.4);
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+.service-carousel-card:hover .service-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 15px 40px rgba(255, 155, 74, 0.5);
 }
 
-.service-icon {
+/* Old grid styles (kept for backwards compatibility if needed) */
+.service-card .service-icon {
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -661,28 +919,6 @@ body::before {
   overflow: hidden;
 }
 
-.service-icon::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transform: scale(0);
-  transition: transform 0.4s ease;
-}
-
-.service-card:hover .service-icon::before {
-  transform: scale(1);
-}
-
-.service-card:hover .service-icon {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-}
-
 .service-card h3 {
   font-family: var(--font-primary);
   font-size: 24px;
@@ -690,7 +926,7 @@ body::before {
   margin-bottom: 16px;
 }
 
-.service-description {
+.service-card .service-description {
   color: var(--text-secondary);
   margin-bottom: 30px;
   line-height: 1.6;
@@ -1196,7 +1432,7 @@ body::before {
 .back-to-top {
   position: fixed;
   bottom: 30px;
-  right: 30px;
+  left: 30px; /* Переместили влево, чтобы не перекрывать ботов */
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -1204,11 +1440,11 @@ body::before {
   border: none;
   color: white;
   font-size: 20px;
+  z-index: 999; /* Ниже ботов */
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
-  z-index: 1000;
 }
 
 .back-to-top.visible {
@@ -1515,6 +1751,67 @@ body::before {
     padding: 30px 20px;
   }
 
+  /* Mobile carousel adjustments */
+  .services-carousel-wrapper {
+    height: 700px;
+    margin-top: 40px;
+    perspective: 1200px;
+  }
+
+  .service-carousel-card {
+    width: 340px;
+    padding: 32px 24px;
+  }
+
+  .service-carousel-card h3 {
+    font-size: 20px;
+  }
+
+  .service-carousel-card .service-description {
+    font-size: 14px;
+  }
+
+  .service-features li {
+    font-size: 13px;
+  }
+
+  .price-value {
+    font-size: 24px;
+  }
+
+  .carousel-nav {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+  }
+
+  .carousel-prev {
+    left: 10px;
+  }
+
+  .carousel-next {
+    right: 10px;
+  }
+
+  .carousel-indicators {
+    bottom: -50px;
+    gap: 8px;
+  }
+
+  .indicator {
+    width: 10px;
+    height: 10px;
+  }
+
+  .indicator.active {
+    width: 28px;
+  }
+
+  .section-description {
+    font-size: 16px;
+    margin-top: -20px;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -1607,6 +1904,60 @@ body::before {
   
   .service-card {
     padding: 32px 24px;
+  }
+  
+  /* Small mobile carousel adjustments */
+  .services-carousel-wrapper {
+    height: 750px;
+    margin-top: 30px;
+  }
+
+  .service-carousel-card {
+    width: 300px;
+    padding: 28px 20px;
+  }
+
+  .service-carousel-card h3 {
+    font-size: 18px;
+  }
+
+  .service-carousel-card .service-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .service-features li {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  .service-price {
+    padding: 16px;
+  }
+
+  .price-value {
+    font-size: 22px;
+  }
+
+  .service-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .carousel-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+
+  .carousel-prev {
+    left: 5px;
+  }
+
+  .carousel-next {
+    right: 5px;
   }
   
   .stats-grid {
@@ -1974,11 +2325,13 @@ body::before {
 
 /* ===== ХИПЫЧ ВИДЖЕТ ===== */
 
-/* Кнопка вызова Хипыча */
+/* ===== GLASS UI КНОПКИ - Убраны, стили создаются динамически через JS ===== */
+
+/* Кнопка вызова Хипыча - СТАРАЯ (для совместимости) */
 .hipych-trigger {
   position: fixed;
   bottom: 20px;
-  right: 20px; /* Хипыч справа */
+  right: 20px;
   width: 70px;
   height: 70px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1999,11 +2352,11 @@ body::before {
   border: 3px solid rgba(102, 126, 234, 0.8);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 1002; /* Хипыч выше */
-  display: flex !important; /* Принудительное отображение */
-  opacity: 1 !important; /* Принудительная видимость */
-  visibility: visible !important; /* Принудительная видимость */
-  transform: scale(1) !important; /* Принудительный размер */
+  z-index: 1002;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(1) !important;
 }
 
 .hipych-trigger:hover {
@@ -2023,6 +2376,309 @@ body::before {
   50% { box-shadow: 0 6px 25px rgba(102, 126, 234, 0.8); }
   100% { box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5); }
 }
+
+/* =============================================
+   GLASS UI КНОПКИ - ПЛАВАЮЩИЕ АНИМАЦИИ И СВЕЧЕНИЕ
+   ============================================= */
+
+/* Плавающая анимация для Хипыча */
+@keyframes glassFloat {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  25% { 
+    transform: translateY(-8px) rotate(2deg);
+    filter: hue-rotate(5deg);
+  }
+  50% { 
+    transform: translateY(-5px) rotate(-1deg);
+    filter: hue-rotate(10deg);
+  }
+  75% { 
+    transform: translateY(-10px) rotate(1deg);
+    filter: hue-rotate(5deg);
+  }
+}
+
+/* Плавающая анимация для Кота Бро */
+@keyframes catFloat {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  33% { 
+    transform: translateY(-6px) rotate(-2deg);
+    filter: hue-rotate(8deg);
+  }
+  66% { 
+    transform: translateY(-3px) rotate(1deg);
+    filter: hue-rotate(15deg);
+  }
+}
+
+/* Блики для Хипыча */
+@keyframes buttonShine {
+  0%, 100% { 
+    transform: translateX(-100%) rotate(45deg);
+    opacity: 0;
+  }
+  50% { 
+    transform: translateX(100%) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+/* Блики для Кота Бро */
+@keyframes catShine {
+  0%, 100% { 
+    transform: translateX(-100%) rotate(45deg) scale(0.8);
+    opacity: 0;
+  }
+  50% { 
+    transform: translateX(100%) rotate(45deg) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Вращающаяся граница для Хипыча */
+@keyframes borderRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Вращающаяся граница для Кота Бро */
+@keyframes catBorderRotate {
+  from { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+/* Пульсация бейджа для Хипыча */
+@keyframes badgePulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  50% { 
+    transform: scale(1.2);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+}
+
+/* Пульсация бейджа для Кота Бро */
+@keyframes catBadgePulse {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+  }
+  50% { 
+    transform: scale(1.3) rotate(180deg);
+    box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+  }
+}
+
+/* Пульсирующее свечение для Хипыча */
+@keyframes glowPulseHipych {
+  0%, 100% {
+    box-shadow: 
+      0 15px 35px rgba(59, 130, 246, 0.4),
+      0 0 20px rgba(59, 130, 246, 0.3),
+      0 0 40px rgba(59, 130, 246, 0.2),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 15px 35px rgba(59, 130, 246, 0.7),
+      0 0 30px rgba(59, 130, 246, 0.5),
+      0 0 60px rgba(59, 130, 246, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Пульсирующее свечение для Кота Бро */
+@keyframes glowPulseCat {
+  0%, 100% {
+    box-shadow: 
+      0 15px 35px rgba(249, 115, 22, 0.4),
+      0 0 20px rgba(249, 115, 22, 0.3),
+      0 0 40px rgba(249, 115, 22, 0.2),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 15px 35px rgba(249, 115, 22, 0.7),
+      0 0 30px rgba(249, 115, 22, 0.5),
+      0 0 60px rgba(249, 115, 22, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* =============================================
+   GLASS UI КНОПКИ - АНИМАЦИИ И ЭФФЕКТЫ
+   ============================================= */
+
+/* Принудительное применение анимаций для Хипыча */
+.glass-ui-hipych-button {
+  animation: glassFloat 4s ease-in-out infinite !important;
+  will-change: transform, filter !important;
+  backface-visibility: hidden !important;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  z-index: 1002 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Блики для Хипыча - внутренний div */
+.glass-ui-hipych-button > div:first-of-type {
+  animation: buttonShine 3s ease-in-out infinite !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* Пульсирующий бейдж для Хипыча */
+.glass-ui-hipych-button .glass-notification-badge {
+  animation: badgePulse 2s infinite !important;
+}
+
+/* Вращающаяся граница для Хипыча */
+.glass-ui-hipych-button::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  background: linear-gradient(45deg, #3b82f6, transparent, #3b82f6) !important;
+  border-radius: 50% !important;
+  z-index: -1 !important;
+  animation: borderRotate 4s linear infinite !important;
+  pointer-events: none !important;
+}
+
+/* Принудительное применение анимаций для Кота Бро */
+.glass-ui-bro-cat-button {
+  animation: catFloat 3s ease-in-out infinite !important;
+  will-change: transform, filter !important;
+  backface-visibility: hidden !important;
+  position: fixed !important;
+  bottom: 100px !important;
+  right: 20px !important;
+  z-index: 1003 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Блики для Кота Бро - внутренний div */
+.glass-ui-bro-cat-button > div:first-of-type {
+  animation: catShine 2.5s ease-in-out infinite !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* Пульсирующий бейдж для Кота Бро */
+.glass-ui-bro-cat-button .glass-cat-notification-badge {
+  animation: catBadgePulse 1.8s infinite !important;
+}
+
+/* Вращающаяся граница для Кота Бро */
+.glass-ui-bro-cat-button::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  background: linear-gradient(45deg, #f97316, transparent, #f97316) !important;
+  border-radius: 50% !important;
+  z-index: -1 !important;
+  animation: catBorderRotate 3s linear infinite !important;
+  pointer-events: none !important;
+}
+
+/* =============================================
+   GLASS UI КНОПКИ - ДОПОЛНИТЕЛЬНОЕ СВЕЧЕНИЕ
+   ============================================= */
+
+/* Свечение вокруг Хипыча (дополнительный слой) - ТОЛЬКО для десктопа */
+@media screen and (min-width: 769px) {
+  .glass-ui-hipych-button::after {
+    content: '' !important;
+    position: absolute !important;
+    top: -6px !important;
+    left: -6px !important;
+    right: -6px !important;
+    bottom: -6px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.5) 0%, rgba(59, 130, 246, 0.2) 40%, transparent 70%) !important;
+    z-index: -2 !important;
+    animation: glowPulseHipych 2s ease-in-out infinite !important;
+    pointer-events: none !important;
+    filter: blur(8px) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Свечение вокруг Кота Бро (дополнительный слой) - ТОЛЬКО для десктопа */
+  .glass-ui-bro-cat-button::after {
+    content: '' !important;
+    position: absolute !important;
+    top: -6px !important;
+    left: -6px !important;
+    right: -6px !important;
+    bottom: -6px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.5) 0%, rgba(249, 115, 22, 0.2) 40%, transparent 70%) !important;
+    z-index: -2 !important;
+    animation: glowPulseCat 2s ease-in-out infinite !important;
+    pointer-events: none !important;
+    filter: blur(8px) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Hover эффекты - ТОЛЬКО для десктопа, не конфликтуют с анимацией */
+@media screen and (min-width: 769px) {
+  .glass-ui-hipych-button.glass-ui-hipych-hover {
+    box-shadow: 
+      0 25px 50px rgba(59, 130, 246, 0.8),
+      0 0 50px rgba(59, 130, 246, 0.6),
+      0 0 80px rgba(59, 130, 246, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.5),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.2) !important;
+    filter: brightness(1.2) saturate(1.1) !important;
+  }
+
+  .glass-ui-hipych-button.glass-ui-hipych-hover::after {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.7) 0%, rgba(59, 130, 246, 0.3) 40%, transparent 70%) !important;
+    filter: blur(12px) !important;
+  }
+
+  .glass-ui-bro-cat-button.glass-ui-bro-cat-hover {
+    box-shadow: 
+      0 25px 50px rgba(249, 115, 22, 0.8),
+      0 0 50px rgba(249, 115, 22, 0.6),
+      0 0 80px rgba(249, 115, 22, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.5),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.2) !important;
+    filter: brightness(1.2) saturate(1.1) hue-rotate(10deg) !important;
+  }
+
+  .glass-ui-bro-cat-button.glass-ui-bro-cat-hover::after {
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.7) 0%, rgba(249, 115, 22, 0.3) 40%, transparent 70%) !important;
+    filter: blur(12px) !important;
+  }
+}
+
+/* Glass UI анимации создаются динамически через addGlassUIStyles() в JS файлах */
+/* Оставляем только старые анимации для совместимости */
 
 /* Виджет Хипыча */
 .hipych-widget {
@@ -2366,11 +3022,13 @@ body::before {
    КОТ БРО - РЫЖИЙ AI-ПОМОЩНИК
    ============================================= */
 
-/* Кнопка вызова Кота Бро */
+/* ===== GLASS UI КНОПКА КОТА БРО - Убрана, стили создаются динамически через JS ===== */
+
+/* Кнопка вызова Кота Бро - СТАРАЯ (для совместимости) */
 .bro-cat-trigger {
   position: fixed;
-  bottom: 100px; /* Кот ВЫШЕ Хипыча по вертикали */
-  right: 20px; /* Тот же правый отступ что у Хипыча */
+  bottom: 100px;
+  right: 20px;
   width: 70px;
   height: 70px;
   background: linear-gradient(135deg, #ff8c42 0%, #ff6b1a 100%);
@@ -2381,7 +3039,7 @@ body::before {
   cursor: pointer;
   box-shadow: 0 6px 25px rgba(255, 140, 66, 0.5);
   transition: all 0.3s ease;
-  display: flex !important; /* Принудительное отображение */
+  display: flex !important;
   align-items: center;
   justify-content: center;
   animation: pulse-bro-cat 2s infinite;
@@ -2391,10 +3049,10 @@ body::before {
   border: 3px solid rgba(255, 140, 66, 0.8);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 1003 !important; /* Кот выше Хипыча */
-  opacity: 1 !important; /* Принудительная видимость */
-  visibility: visible !important; /* Принудительная видимость */
-  transform: scale(1) !important; /* Принудительный размер */
+  z-index: 1003 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(1) !important;
 }
 
 .bro-cat-trigger:hover {
@@ -2968,7 +3626,7 @@ body::before {
 }
 
 .bro-cat-trigger {
-  z-index: 1001; /* Кот ниже Хипыча но виден */
+  z-index: 1003 !important; /* Кот выше всего */
 }
 
 .hipych-widget {

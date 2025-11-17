@@ -23,6 +23,9 @@ class GlassUIBroCat {
     }
 
     init() {
+        // СНАЧАЛА добавляем стили анимаций, чтобы они были определены
+        this.addGlassUIStyles();
+        // ПОТОМ создаем кнопку, которая использует эти анимации
         this.createFloatingButton();
         this.createChatWidget();
     }
@@ -77,8 +80,8 @@ class GlassUIBroCat {
             avatarImg.src = this.avatar;
             avatarImg.alt = this.name;
             avatarImg.style.cssText = `
-                width: 50px;
-                height: 50px;
+                width: 64px;
+                height: 64px;
                 border-radius: 50%;
                 object-fit: cover;
                 position: relative;
@@ -122,25 +125,13 @@ class GlassUIBroCat {
         notificationBadge.textContent = '🐾';
         this.floatingButton.appendChild(notificationBadge);
 
-        // Добавляем hover эффекты с кошачьими анимациями
+        // Добавляем hover эффекты (через CSS класс, чтобы не конфликтовать с анимацией)
         this.floatingButton.addEventListener('mouseenter', () => {
-            this.floatingButton.style.transform = 'scale(1.15) rotate(-5deg)';
-            this.floatingButton.style.boxShadow = `
-                0 25px 50px rgba(249, 115, 22, 0.6),
-                inset 0 2px 0 rgba(255, 255, 255, 0.4),
-                inset 0 -2px 0 rgba(0, 0, 0, 0.2)
-            `;
-            this.floatingButton.style.filter = 'hue-rotate(10deg)';
+            this.floatingButton.classList.add('glass-ui-bro-cat-hover');
         });
 
         this.floatingButton.addEventListener('mouseleave', () => {
-            this.floatingButton.style.transform = 'scale(1) rotate(0deg)';
-            this.floatingButton.style.boxShadow = `
-                0 15px 35px rgba(249, 115, 22, 0.4),
-                inset 0 2px 0 rgba(255, 255, 255, 0.3),
-                inset 0 -2px 0 rgba(0, 0, 0, 0.1)
-            `;
-            this.floatingButton.style.filter = 'hue-rotate(0deg)';
+            this.floatingButton.classList.remove('glass-ui-bro-cat-hover');
         });
 
         this.floatingButton.addEventListener('click', () => {
@@ -148,9 +139,6 @@ class GlassUIBroCat {
             // Добавляем кошачий эффект клика
             this.addCatClickEffect();
         });
-
-        // Добавляем стили анимаций
-        this.addGlassUIStyles();
 
         document.body.appendChild(this.floatingButton);
     }

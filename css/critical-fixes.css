@@ -49,8 +49,8 @@ body .glass-ui-bro-cat-button img {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  width: 50px !important;
-  height: 50px !important;
+  width: 64px !important;
+  height: 64px !important;
   border-radius: 50% !important;
   object-fit: cover !important;
   position: relative !important;
@@ -61,28 +61,51 @@ body .glass-ui-bro-cat-button img {
   background-repeat: no-repeat !important;
 }
 
-/* Убираем все псевдоэлементы из Glass UI кнопок */
-body .glass-ui-hipych-button::before,
-body .glass-ui-bro-cat-button::before,
-body .glass-ui-hipych-button::after,
-body .glass-ui-bro-cat-button::after {
-  display: none !important;
-  content: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
+/* Убираем псевдоэлементы из Glass UI кнопок ТОЛЬКО на мобильных устройствах */
+/* НО оставляем ::before для вращающейся границы на десктопе! */
+@media screen and (max-width: 768px) {
+  body .glass-ui-hipych-button::before,
+  body .glass-ui-bro-cat-button::before,
+  body .glass-ui-hipych-button::after,
+  body .glass-ui-bro-cat-button::after {
+    display: none !important;
+    content: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
 }
 
-/* Убираем текстовое содержимое из Glass UI кнопок */
+/* На десктопе разрешаем ::before для вращающейся границы */
+@media screen and (min-width: 769px) {
+  body .glass-ui-hipych-button::before,
+  body .glass-ui-bro-cat-button::before {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Убираем текстовое содержимое из Glass UI кнопок, но НЕ скрываем сами кнопки */
 body .glass-ui-hipych-button {
   font-size: 0 !important;
   text-indent: -9999px !important;
   color: transparent !important;
+  /* Принудительно показываем кнопку */
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: fixed !important;
 }
 
 body .glass-ui-bro-cat-button {
   font-size: 0 !important;
   text-indent: -9999px !important;
   color: transparent !important;
+  /* Принудительно показываем кнопку */
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: fixed !important;
 }
 
 /* ===== ПРИНУДИТЕЛЬНЫЕ ПУТИ К ИЗОБРАЖЕНИЯМ ===== */

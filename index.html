@@ -42,10 +42,11 @@
   <meta name="theme-color" content="#6366f1">
   
   <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-  <link rel="mask-icon" href="images/safari-pinned-tab.svg" color="#6366f1">
+  <!-- Временно отключено до создания файлов иконок -->
+  <!-- <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png"> -->
+  <!-- <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png"> -->
+  <!-- <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png"> -->
+  <!-- <link rel="mask-icon" href="images/safari-pinned-tab.svg" color="#6366f1"> -->
 </head>
 
 <body>
@@ -117,7 +118,7 @@
       </div>
       
       <h1 class="hero-title">
-        Творческая<br><span class="gradient-text">AI&nbsp;студия для вашего</span> бизнеса
+        Творческая<br><span class="gradient-text">AI&nbsp;студия</span><br>для вашего бизнеса
       </h1>
       
       <p class="hero-description">
@@ -155,68 +156,208 @@
   <section id="services" class="services">
     <div class="container">
       <h2 class="section-title">Услуги <span class="gradient-text">AI&nbsp;Studio</span></h2>
+      <p class="section-description">Выберите услугу и узнайте подробности</p>
       
-      <div class="services-grid">
-        <!-- AI & Automation -->
-        <div class="service-card" data-tilt>
-          <div class="service-icon">
-            <i class="fas fa-brain"></i>
+      <!-- 3D Carousel -->
+      <div class="services-carousel-wrapper">
+        <div class="services-carousel" id="servicesCarousel">
+          
+          <!-- Card 1: Умные боты -->
+          <div class="service-carousel-card">
+            <div class="service-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3>🤖 Создание умных ботов</h3>
+            <p class="service-description">Telegram-боты и умные ассистенты для автоматизации вашего бизнеса 24/7</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Интеграция с OpenAI API</li>
+              <li><i class="fas fa-check"></i> Обработка запросов клиентов</li>
+              <li><i class="fas fa-check"></i> Автоматизация процессов</li>
+              <li><i class="fas fa-check"></i> Поддержка и обновления</li>
+            </ul>
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">от 30 000₽</span>
+            </div>
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="fab fa-telegram"></i> Заказать
+            </button>
           </div>
-          <h3>🤖 AI&nbsp;Автоматизация</h3>
-          <p class="service-description">Умные боты и нейроагенты для автоматизации бизнес-процессов</p>
-          <ul>
-            <li>Telegram-боты на OpenAI API <span class="price">от 12 000₽</span></li>
-            <li>Нейроагенты и чат-боты <span class="price">от 18 000₽</span></li>
-            <li>Автоматизация бизнес-процессов <span class="price">от 7 000₽</span></li>
-            <li>Комплексная интеграция <span class="price">от 35 000₽</span></li>
-          </ul>
+
+          <!-- Card 2: GPT-ассистенты -->
+          <div class="service-carousel-card">
+            <div class="service-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h3>🧠 Создание GPT-ассистентов</h3>
+            <p class="service-description">Персональные AI-помощники для здоровья, маркетинга, бизнеса и других задач</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Медицинские ассистенты</li>
+              <li><i class="fas fa-check"></i> Маркетинговые боты</li>
+              <li><i class="fas fa-check"></i> Бизнес-консультанты</li>
+              <li><i class="fas fa-check"></i> Индивидуальная настройка</li>
+            </ul>
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">от 15 000₽</span>
+            </div>
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="fab fa-telegram"></i> Заказать
+            </button>
+          </div>
+
+          <!-- Card 3: SMM и контент -->
+          <div class="service-carousel-card">
+            <div class="service-icon">
+              <i class="fas fa-wand-magic-sparkles"></i>
+            </div>
+            <h3>✨ SMM и контент для проектов</h3>
+            <p class="service-description">Создание вирусного контента, ведение соцсетей и полное продюсирование с AI</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Генерация контента с AI</li>
+              <li><i class="fas fa-check"></i> Ведение соцсетей</li>
+              <li><i class="fas fa-check"></i> Контент-стратегии</li>
+              <li><i class="fas fa-check"></i> Полное продюсирование</li>
+            </ul>
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">от 40 000₽</span>
+            </div>
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="fab fa-telegram"></i> Заказать
+            </button>
+          </div>
+
+          <!-- Card 4: AI-видео -->
+          <div class="service-carousel-card">
+            <div class="service-icon">
+              <i class="fas fa-video"></i>
+            </div>
+            <h3>🎬 AI-видео для рекламы</h3>
+            <p class="service-description">Создание рекламных роликов с помощью нейросетей - быстро и эффектно</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Генерация видео с AI</li>
+              <li><i class="fas fa-check"></i> Рекламные ролики</li>
+              <li><i class="fas fa-check"></i> Анимация и эффекты</li>
+              <li><i class="fas fa-check"></i> Готово за 48 часов</li>
+            </ul>
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">Уточняется</span>
+            </div>
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="fab fa-telegram"></i> Обсудить проект
+            </button>
+          </div>
+
+          <!-- Card 5: Музыка -->
+          <div class="service-carousel-card">
+            <div class="service-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <h3>🎵 Создание музыки с AI</h3>
+            <p class="service-description">Уникальные музыкальные треки для видео, подкастов и рекламы с помощью нейросетей</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Любой жанр и стиль</li>
+              <li><i class="fas fa-check"></i> Фоновая музыка</li>
+              <li><i class="fas fa-check"></i> Джинглы и саундтреки</li>
+              <li><i class="fas fa-check"></i> Коммерческая лицензия</li>
+            </ul>
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">Уточняется</span>
+            </div>
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="fab fa-telegram"></i> Обсудить проект
+            </button>
+          </div>
+
+          <!-- Card 6: Озвучка -->
+          <div class="service-carousel-card">
+            <div class="service-icon">
+              <i class="fas fa-microphone"></i>
+            </div>
+            <h3>🎙️ Создание аудио и озвучки</h3>
+            <p class="service-description">Профессиональная озвучка текстов с помощью AI - естественные голоса на любом языке</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Естественные AI-голоса</li>
+              <li><i class="fas fa-check"></i> Озвучка видео и подкастов</li>
+              <li><i class="fas fa-check"></i> Любой язык и акцент</li>
+              <li><i class="fas fa-check"></i> Быстрая обработка</li>
+            </ul>
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">Обсуждается</span>
+            </div>
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="fab fa-telegram"></i> Узнать подробнее
+            </button>
+          </div>
+
+          <!-- Card 7: Приложения -->
+          <div class="service-carousel-card">
+            <div class="service-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>📱 Создание приложений с AI</h3>
+            <p class="service-description">Разработка мобильных и веб-приложений с интеграцией искусственного интеллекта</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> AI-интегрированные приложения</li>
+              <li><i class="fas fa-check"></i> Мобильные и веб-версии</li>
+              <li><i class="fas fa-check"></i> Современный UI/UX</li>
+              <li><i class="fas fa-check"></i> Техподдержка включена</li>
+            </ul>
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">Уточняется</span>
+            </div>
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="fab fa-telegram"></i> Обсудить проект
+            </button>
+          </div>
+
+          <!-- Card 8: Сайты -->
+          <div class="service-carousel-card">
+            <div class="service-icon">
+              <i class="fas fa-laptop-code"></i>
+            </div>
+            <h3>💻 Создание сайтов с AI поддержкой</h3>
+            <p class="service-description">Современные сайты с встроенными AI-ассистентами, чат-ботами и умными функциями</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Современный дизайн</li>
+              <li><i class="fas fa-check"></i> AI-чат-боты на сайте</li>
+              <li><i class="fas fa-check"></i> Адаптивная верстка</li>
+              <li><i class="fas fa-check"></i> SEO-оптимизация</li>
+            </ul>
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">Уточняется</span>
+            </div>
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="fab fa-telegram"></i> Обсудить проект
+            </button>
+          </div>
+
         </div>
 
-        <!-- Web Development -->
-        <div class="service-card" data-tilt>
-          <div class="service-icon">
-            <i class="fas fa-laptop-code"></i>
-          </div>
-          <h3>💻 Smart-разработка</h3>
-          <p class="service-description">Современные сайты с интеграцией AI&nbsp;технологий</p>
-          <ul>
-            <li>Современные сайты <span class="price">от 8 000₽</span></li>
-            <li>Landing pages <span class="price">от 5 000₽</span></li>
-            <li>AI&nbsp;интегрированные приложения <span class="price">от 15 000₽</span></li>
-            <li>Техническая поддержка <span class="price">от 3 000₽/мес</span></li>
-          </ul>
-        </div>
+        <!-- Navigation -->
+        <button class="carousel-nav carousel-prev" id="carouselPrev">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="carousel-nav carousel-next" id="carouselNext">
+          <i class="fas fa-chevron-right"></i>
+        </button>
 
-        <!-- Content & SMM -->
-        <div class="service-card" data-tilt>
-          <div class="service-icon">
-            <i class="fas fa-wand-magic-sparkles"></i>
-          </div>
-          <h3>✨ AI&nbsp;Креатив</h3>
-          <p class="service-description">Создание контента с помощью нейросетей и ведение соцсетей</p>
-          <ul>
-            <li>Статьи для Яндекс.Дзен <span class="price">3 500₽</span></li>
-            <li>AI&nbsp;генерация контента <span class="price">от 1 700₽</span></li>
-            <li>Ведение социальных сетей <span class="price">40 000₽/мес</span></li>
-            <li>Разработка контент-стратегий <span class="price">от 10 000₽</span></li>
-            <li>Полное продюсирование <span class="price">от 80 000₽</span></li>
-        </ul>
-        </div>
-
-        <!-- Door to AI -->
-        <div class="service-card" data-tilt>
-          <div class="service-icon">
-            <i class="fas fa-door-open"></i>
-          </div>
-          <h3>🚪 Дверь в ИИ</h3>
-          <p class="service-description">Персональное введение в мир искусственного интеллекта для новичков</p>
-          <ul>
-            <li>Настройка ChatGPT дистанционно <span class="price">3 500₽</span></li>
-            <li>Настройка стека нейросетей <span class="price">10 000₽</span></li>
-            <li>Обучение Midjourney, DALL-E <span class="price">включено</span></li>
-            <li>Онлайн-консультация по ИИ <span class="price">включено</span></li>
-            <li>Персональное сопровождение <span class="price">включено</span></li>
-          </ul>
+        <!-- Indicators -->
+        <div class="carousel-indicators" id="carouselIndicators">
+          <button class="indicator active" data-index="0"></button>
+          <button class="indicator" data-index="1"></button>
+          <button class="indicator" data-index="2"></button>
+          <button class="indicator" data-index="3"></button>
+          <button class="indicator" data-index="4"></button>
+          <button class="indicator" data-index="5"></button>
+          <button class="indicator" data-index="6"></button>
+          <button class="indicator" data-index="7"></button>
         </div>
       </div>
     </div>
@@ -535,10 +676,9 @@
   <!-- Custom Scripts -->
   <script src="js/script.js"></script> 
   <script src="js/chat.js"></script> 
-  <script src="js/assistants.js"></script>
-  <script src="js/ai-assistant.js"></script>
+  <script src="js/services-carousel.js"></script>
   
-  <!-- Glass UI Components -->
+  <!-- Glass UI System -->
   <script src="chat-components/GlassUIWidget.js"></script>
   <script src="js/glass-ui-hipych.js"></script>
   <script src="js/glass-ui-bro-cat.js"></script>
@@ -550,17 +690,58 @@
   <script>
     // Проверяем загрузку Glass UI компонентов
     setTimeout(() => {
-      console.log('🔍 Проверка Glass UI компонентов:');
+      console.log('🔮 Проверка Glass UI системы:');
       console.log('GlassUIWidget:', typeof window.GlassUIWidget);
+      console.log('GlassUIHipych:', typeof window.GlassUIHipych);
+      console.log('GlassUIBroCat:', typeof window.GlassUIBroCat);
       console.log('glassUIHipych:', typeof window.glassUIHipych);
       console.log('glassUIBroCat:', typeof window.glassUIBroCat);
       
       if (window.glassUIHipych && window.glassUIBroCat) {
         console.log('✅ Glass UI система загружена успешно!');
+        console.log('🎮 Хипыч готов:', window.glassUIHipych);
+        console.log('🐱 Кот Бро готов:', window.glassUIBroCat);
+        
+        // Проверяем что кнопки созданы (по классу, не по id)
+        const hipychBtn = document.querySelector('.glass-ui-hipych-button');
+        const broCatBtn = document.querySelector('.glass-ui-bro-cat-button');
+        
+        if (hipychBtn) {
+          console.log('✅ Кнопка Хипыча найдена');
+          const styles = window.getComputedStyle(hipychBtn);
+          console.log('  Animation Хипыча:', styles.animation);
+          console.log('  Position:', styles.position, styles.bottom, styles.right);
+        } else {
+          console.error('❌ Кнопка Хипыча НЕ найдена!');
+        }
+        
+        if (broCatBtn) {
+          console.log('✅ Кнопка Кота Бро найдена');
+          const styles = window.getComputedStyle(broCatBtn);
+          console.log('  Animation Кота:', styles.animation);
+          console.log('  Position:', styles.position, styles.bottom, styles.right);
+        } else {
+          console.error('❌ Кнопка Кота Бро НЕ найдена!');
+        }
       } else {
         console.log('⚠️ Некоторые Glass UI компоненты не загружены');
       }
-    }, 1000);
+      
+      // Проверяем карусель
+      if (window.servicesCarousel) {
+        console.log('✅ Карусель инициализирована');
+        console.log('  Всего карточек:', window.servicesCarousel.totalCards);
+        console.log('  Текущий индекс:', window.servicesCarousel.currentIndex);
+        
+        // Проверяем transitions на карточках
+        const firstCard = document.querySelector('.service-carousel-card');
+        if (firstCard) {
+          const styles = window.getComputedStyle(firstCard);
+          console.log('  Transition карточки:', styles.transition);
+          console.log('  Transform карточки:', styles.transform);
+        }
+      }
+    }, 500);
   </script>
 
 </body>

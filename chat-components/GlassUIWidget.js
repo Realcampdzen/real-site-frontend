@@ -320,7 +320,7 @@ class GlassUIWidget {
             });
             
             quickBtn.addEventListener('click', () => {
-                const input = this.container.querySelector('#glass-message-input');
+                const input = this.container.querySelector(`#glass-message-input-${this.botName.replace(/\s+/g, '-').toLowerCase()}`);
                 if (input) {
                     input.value = buttonData.question;
                     // Скрываем быстрые кнопки после первого использования
@@ -352,7 +352,8 @@ class GlassUIWidget {
         messageInput.type = 'text';
         messageInput.placeholder = `Напишите сообщение ${this.botName}...`;
         messageInput.className = 'glass-message-input';
-        messageInput.id = 'glass-message-input';
+        // Уникальный ID для каждого виджета
+        messageInput.id = `glass-message-input-${this.botName.replace(/\s+/g, '-').toLowerCase()}`;
         messageInput.style.cssText = `
             flex: 1;
             padding: 12px 16px;
@@ -543,8 +544,20 @@ class GlassUIWidget {
     }
 
     setupEventListeners() {
-        const messageInput = this.container.querySelector('#glass-message-input');
+        // Используем уникальный ID для каждого виджета
+        const inputId = `glass-message-input-${this.botName.replace(/\s+/g, '-').toLowerCase()}`;
+        const messageInput = this.container.querySelector(`#${inputId}`);
         const sendButton = this.container.querySelector('.glass-send-button');
+
+        if (!messageInput || !sendButton) {
+            console.error(`❌ GlassUIWidget: Не найдены элементы для ${this.botName}`, {
+                messageInput: !!messageInput,
+                sendButton: !!sendButton,
+                inputId: inputId,
+                container: this.container
+            });
+            return;
+        }
 
         const sendMessage = () => {
             const message = messageInput.value.trim();
@@ -743,7 +756,8 @@ class GlassUIWidget {
         
         // Фокус на поле ввода с задержкой
         setTimeout(() => {
-            const input = this.container.querySelector('#glass-message-input');
+            const inputId = `glass-message-input-${this.botName.replace(/\s+/g, '-').toLowerCase()}`;
+            const input = this.container.querySelector(`#${inputId}`);
             if (input) input.focus();
         }, 400);
     }
