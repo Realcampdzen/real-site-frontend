@@ -107,11 +107,10 @@ body::before {
   margin-bottom: 32px;
 }
 
-.studio-logo i {
-  font-size: 32px;
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.studio-logo .logo-image {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -238,12 +237,10 @@ body::before {
   gap: 12px;
 }
 
-.nav-logo i {
-  font-size: 28px;
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.nav-logo .logo-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
 }
 
 .logo-text {
