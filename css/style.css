@@ -440,8 +440,14 @@ body::before {
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, #33f5c8 0%, #7e63ff 35%, #ff0080 65%, #ff9b4a 100%);
-  background-size: 100% 100%;
+  background: linear-gradient(90deg, 
+    #33f5c8 0%, 
+    #6dd6ff 15%,
+    #7e63ff 35%, 
+    #d946ef 55%,
+    #ff0080 70%, 
+    #ff6b4a 85%,
+    #ffb74a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
