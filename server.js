@@ -145,6 +145,11 @@ app.use('/api/chat', chatLimiter);
 app.use('/api', apiLimiter);
 
 // Настройка статических файлов
+// Обработка favicon.ico - возвращаем 204 No Content, чтобы убрать 404 ошибку
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
+});
+
 app.use(express.static('.'));
 
 // Схемы валидации

@@ -968,6 +968,21 @@ img[data-src] {
   transition: opacity 0.3s ease;
 }
 
+/* ===== ОСТАВЛЯЕМ АНИМАЦИЮ КАРУСЕЛИ ВСЕГДА ВКЛЮЧЕННОЙ ===== */
+/* Power/Data save и prefers-reduced-motion глобально режут transition-duration до 0.01ms.
+   Переопределяем для 3D-карусели, чтобы карточки не прыгали без движения. */
+.services-carousel .service-carousel-card {
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s ease-in-out, filter 0.6s ease-in-out, box-shadow 0.8s ease-in-out !important;
+  transition-duration: 0.8s, 0.8s, 0.6s, 0.8s !important;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.services-carousel .service-carousel-card.carousel-animating {
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s ease-in-out, filter 0.6s ease-in-out, box-shadow 0.8s ease-in-out, visibility 0s linear 0.8s !important;
+  transition-duration: 0.8s, 0.8s, 0.6s, 0.8s, 0.8s !important;
+}
+
 img.loaded {
   opacity: 1;
 }
@@ -1248,6 +1263,13 @@ img[data-src]::before {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  
+  /* ИСКЛЮЧЕНИЕ: карусель должна анимироваться всегда */
+  .services-carousel .service-carousel-card,
+  .services-carousel .service-carousel-card.carousel-animating {
+    transition-duration: 0.8s, 0.8s, 0.6s, 0.8s !important;
+    animation-duration: 0.8s !important;
   }
   
   .bg-animation,

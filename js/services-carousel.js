@@ -15,6 +15,9 @@ class ServicesCarousel {
     this.totalCards = this.cards.length;
     this.isAnimating = false;
     this.wasDrag = false; // Флаг для отслеживания drag операции
+    this.animationTimeout = null; // Таймер для анимации
+    this.animationStartTime = null; // Время начала анимации
+    this.animationDuration = 850; // Длительность анимации в мс (синхронно с CSS)
     
     // 3D carousel settings
     this.radius = 600; // Радиус окружности
@@ -30,8 +33,10 @@ class ServicesCarousel {
     this.updateCarousel(false);
     
     // Навигация
-    this.prevBtn?.addEventListener('click', () => this.prev());
-    this.nextBtn?.addEventListener('click', () => this.next());
+    // Правая кнопка (→) - крутится вправо (вызываем prev для визуального поворота вправо)
+    // Левая кнопка (←) - крутится влево (вызываем next для визуального поворота влево)
+    this.prevBtn?.addEventListener('click', () => this.next());
+    this.nextBtn?.addEventListener('click', () => this.prev());
     
     // Индикаторы
     this.indicators.forEach((indicator, index) => {
@@ -63,19 +68,27 @@ class ServicesCarousel {
   updateCarousel(animate = true) {
     if (this.isAnimating && animate) return;
     
-    console.log('🎠 Карусель вращается! Индекс:', this.currentIndex);
+    console.log('🎠 Карусель вращается! Индекс:', this.currentIndex, 'animate:', animate);
     
     if (animate) {
       this.isAnimating = true;
-      setTimeout(() => {
+      clearTimeout(this.animationTimeout);
+      this.animationTimeout = setTimeout(() => {
         this.isAnimating = false;
-      }, 850); // Чуть больше чем анимация
+      }, this.animationDuration);
     }
     
+    // ПРОСТАЯ РАБОЧАЯ ВЕРСИЯ: для каждой карточки отдельно
     this.cards.forEach((card, index) => {
-      const offset = index - this.currentIndex;
-      const angle = this.theta * offset;
+      let offset = index - this.currentIndex;
+      const halfCards = this.totalCards / 2;
+      if (offset > halfCards) {
+        offset = offset - this.totalCards;
+      } else if (offset <= -halfCards) {
+        offset = offset + this.totalCards;
+      }
       
+      const angle = this.theta * offset;
       const rotateY = angle * (180 / Math.PI);
       const translateZ = -Math.abs(offset) * 150;
       const translateX = Math.sin(angle) * this.radius;
@@ -83,40 +96,67 @@ class ServicesCarousel {
       const opacity = this.getOpacity(offset);
       const zIndex = this.getZIndex(offset);
       
-      // ПРАВИЛЬНЫЙ СПОСОБ: Сначала удаляем transition, устанавливаем начальное состояние
-      // Потом добавляем transition обратно и меняем transform
-      
       if (animate) {
-        // Шаг 1: Включаем transition
+        // Добавляем класс с !important правилами, чтобы анимация не глушилась power/data-save режимами
         card.classList.add('carousel-animating');
-        card.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s ease-in-out, filter 0.6s ease-in-out, box-shadow 0.8s ease-in-out';
+        if (card._animCleanup) {
+          clearTimeout(card._animCleanup);
+        }
+        card._animCleanup = setTimeout(() => {
+          card.classList.remove('carousel-animating');
+          card._animCleanup = null;
+        }, this.animationDuration + 100);
+
+        // Устанавливаем transition через inline стиль (дополнительная гарантия)
+        card.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s ease-in-out, filter 0.6s ease-in-out';
+        card.style.willChange = 'transform, opacity, filter';
         
-        // Шаг 2: В следующем фрейме применяем transform
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            this.applyCardTransform(card, translateX, translateZ, rotateY, scale, opacity, zIndex, offset);
-          });
-        });
+        // Force reflow (критически важно!)
+        const _ = card.offsetHeight;
+        
+        // Применяем transform СРАЗУ
+        this.applyCardTransform(card, translateX, translateZ, rotateY, scale, opacity, zIndex, offset);
       } else {
         // Без анимации - моментально
+        card.classList.remove('carousel-animating');
+        if (card._animCleanup) {
+          clearTimeout(card._animCleanup);
+          card._animCleanup = null;
+        }
         card.style.transition = 'none';
+        card.style.willChange = 'auto';
         this.applyCardTransform(card, translateX, translateZ, rotateY, scale, opacity, zIndex, offset);
       }
     });
     
-    // Обновляем индикаторы
     this.updateIndicators();
   }
   
   applyCardTransform(card, translateX, translateZ, rotateY, scale, opacity, zIndex, offset) {
+    const absOffset = Math.abs(offset);
     const transformValue = `translate(-50%, -50%) translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
+    
+    // Применяем все стили
     card.style.transform = transformValue;
     card.style.opacity = opacity;
     card.style.zIndex = zIndex;
-    // Разрешаем клики на всех карточках для переключения
-    card.style.pointerEvents = 'auto';
     
-    const blur = Math.abs(offset) > 0 ? Math.min(Math.abs(offset) * 1.5, 4) : 0;
+    // Логирование для отладки (только для центральной и ближайших карточек)
+    if (absOffset <= 1) {
+      console.log(`🎴 Card offset=${offset}: transform=${transformValue.substring(0, 50)}...`);
+    }
+    
+    // Для карточек дальше 3-й позиции - полностью скрываем и отключаем взаимодействие
+    if (absOffset > 3) {
+      card.style.visibility = 'hidden';
+      card.style.pointerEvents = 'none';
+    } else {
+      card.style.visibility = 'visible';
+      // Разрешаем клики на видимых карточках для переключения
+      card.style.pointerEvents = 'auto';
+    }
+    
+    const blur = absOffset > 0 ? Math.min(absOffset * 1.5, 4) : 0;
     card.style.filter = blur > 0 ? `blur(${blur}px)` : 'none';
     
     // Добавляем/убираем классы для стилизации
@@ -129,10 +169,12 @@ class ServicesCarousel {
       card.classList.add('right-card');
     }
     
-    // Логирование для отладки
+    // Логирование для отладки (только для первых 3 карточек)
     const cardIndex = this.getCardIndex(card);
-    const cardClass = offset === 0 ? 'center' : (offset < 0 ? 'left' : 'right');
-    console.log(`  ✨ Card ${cardIndex}: offset=${offset}, class=${cardClass}, transform применен`);
+    if (cardIndex < 3 || Math.abs(offset) <= 1) {
+      const cardClass = offset === 0 ? 'center' : (offset < 0 ? 'left' : 'right');
+      console.log(`  ✨ Card ${cardIndex}: offset=${offset}, class=${cardClass}, translateX=${translateX.toFixed(1)}px`);
+    }
   }
   
   getCardIndex(card) {
@@ -156,13 +198,16 @@ class ServicesCarousel {
     if (absOffset === 0) return 1;
     if (absOffset === 1) return 0.7;
     if (absOffset === 2) return 0.4;
-    return 0.2;
+    if (absOffset === 3) return 0.1;
+    // Для карточек дальше 3-й позиции - полностью скрываем
+    return 0;
   }
   
   getZIndex(offset) {
     // Центральная карточка - наверху
     const absOffset = Math.abs(offset);
-    return 50 - absOffset;
+    // Убеждаемся, что задние карточки имеют низкий z-index
+    return Math.max(10, 50 - absOffset * 10);
   }
   
   next() {
@@ -209,38 +254,29 @@ class ServicesCarousel {
   }
   
   setupCardClicks() {
-    // Добавляем обработчики клика на карточки
+    // Храним состояние drag для каждой карточки
+    const cardStates = new Map();
+    
+    // Добавляем обработчики клика и drag на карточки
     this.cards.forEach((card, index) => {
-      let mouseDownTime = 0;
-      let mouseDownX = 0;
-      let mouseDownY = 0;
-      
-      card.addEventListener('mousedown', (e) => {
-        // Сохраняем время и координаты для определения, был ли это drag
-        mouseDownTime = Date.now();
-        mouseDownX = e.clientX;
-        mouseDownY = e.clientY;
+      // Инициализируем состояние для карточки
+      cardStates.set(card, {
+        mouseDownX: 0,
+        mouseDownY: 0,
+        isDragging: false,
+        dragStartX: 0,
+        lastSwitchTime: 0 // Время последнего переключения для дебаунса
       });
       
-      card.addEventListener('click', (e) => {
+      const state = cardStates.get(card);
+      
+      card.addEventListener('mousedown', (e) => {
         // Игнорируем правую кнопку мыши
         if (e.button === 2 || e.which === 3) {
           return;
         }
         
-        // Проверяем, был ли это drag (движение > 8px)
-        const moveX = Math.abs(e.clientX - mouseDownX);
-        const moveY = Math.abs(e.clientY - mouseDownY);
-        
-        // Если было значительное движение - это drag, не клик
-        if (moveX > 8 || moveY > 8) {
-          console.log(`🚫 Игнорируем клик: движение=${moveX},${moveY}px`);
-          return;
-        }
-        
-        console.log(`✅ Это клик: движение=${moveX},${moveY}px`);
-        
-        // Не переключаем, если клик был на кнопке "Заказать" или других интерактивных элементах
+        // Не начинаем drag, если клик на кнопке или интерактивном элементе
         if (e.target.closest('.service-btn') || 
             e.target.closest('a') || 
             e.target.closest('button') ||
@@ -248,19 +284,115 @@ class ServicesCarousel {
           return;
         }
         
-        // НЕ переключаем центральную карточку
-        if (index === this.currentIndex) {
-          console.log(`🚫 Центральная карточка ${index}, не переключаем`);
+        // Сохраняем координаты для определения, был ли это drag
+        state.mouseDownX = e.clientX;
+        state.mouseDownY = e.clientY;
+        state.dragStartX = e.clientX;
+        state.isDragging = false;
+        
+        // Меняем курсор на "grabbing"
+        card.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+      
+      // Обработка движения мыши при зажатой кнопке на карточке
+      const handleMouseMove = (e) => {
+        if (state.mouseDownX === 0) return; // Если не было mousedown на этой карточке
+        
+        const moveX = Math.abs(e.clientX - state.mouseDownX);
+        const moveY = Math.abs(e.clientY - state.mouseDownY);
+        
+        // Если движение достаточно большое и горизонтальное - начинаем drag
+        if (!state.isDragging && moveX > 5 && moveX > moveY) {
+          state.isDragging = true;
+          card.style.cursor = 'grabbing';
+        }
+        
+        // Если drag активен - поворачиваем карусель
+        if (state.isDragging) {
+          const diffX = e.clientX - state.dragStartX;
+          const threshold = 50; // Увеличен порог для переключения карточки (было 30)
+          
+          if (Math.abs(diffX) > threshold) {
+            // Проверяем, не идет ли уже анимация
+            if (!this.isAnimating) {
+              // Сохраняем время последнего переключения для дебаунса
+              const now = Date.now();
+              // Увеличиваем дебаунс до 400ms для более плавной анимации
+              if (!state.lastSwitchTime || (now - state.lastSwitchTime) > 400) {
+                state.lastSwitchTime = now;
+                
+                if (diffX > 0) {
+                  // Движение вправо - предыдущая карточка
+                  this.prev();
+                  state.dragStartX = e.clientX; // Сбрасываем точку отсчета
+                } else {
+                  // Движение влево - следующая карточка
+                  this.next();
+                  state.dragStartX = e.clientX; // Сбрасываем точку отсчета
+                }
+              }
+            }
+          }
+        }
+      };
+      
+      // Обработка отпускания кнопки мыши
+      const handleMouseUp = (e) => {
+        if (state.mouseDownX === 0) return; // Если не было mousedown на этой карточке
+        
+        const moveX = Math.abs(e.clientX - state.mouseDownX);
+        const moveY = Math.abs(e.clientY - state.mouseDownY);
+        
+        // Если был drag - не обрабатываем как клик
+        if (state.isDragging) {
+          state.isDragging = false;
+          card.style.cursor = 'pointer';
+          state.mouseDownX = 0;
+          state.mouseDownY = 0;
           return;
         }
         
-        // Переключаемся на карточку, если она не центральная
-        if (index !== this.currentIndex && !this.isAnimating) {
-          console.log(`🖱️ Клик на карточку ${index}, переключаемся с ${this.currentIndex}`);
-          e.stopPropagation(); // Останавливаем всплытие события
-          this.goTo(index);
+        // Если движение небольшое - это клик
+        if (moveX < 8 && moveY < 8) {
+          // Не переключаем, если клик был на кнопке "Заказать" или других интерактивных элементах
+          if (e.target.closest('.service-btn') || 
+              e.target.closest('a') || 
+              e.target.closest('button') ||
+              e.target.closest('.service-price')) {
+            card.style.cursor = 'pointer';
+            state.mouseDownX = 0;
+            state.mouseDownY = 0;
+            return;
+          }
+          
+          // НЕ переключаем центральную карточку
+          if (index === this.currentIndex) {
+            card.style.cursor = 'pointer';
+            state.mouseDownX = 0;
+            state.mouseDownY = 0;
+            return;
+          }
+          
+          // Переключаемся на карточку, если она не центральная
+          if (index !== this.currentIndex && !this.isAnimating) {
+            console.log(`🖱️ Клик на карточку ${index}, переключаемся с ${this.currentIndex}`);
+            this.goTo(index);
+          }
         }
-      }, true); // Используем capture phase для более раннего перехвата
+        
+        card.style.cursor = 'pointer';
+        state.mouseDownX = 0;
+        state.mouseDownY = 0;
+      };
+      
+      // Добавляем обработчики на document для отслеживания движения мыши вне карточки
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      
+      // Сохраняем обработчики для последующего удаления
+      card._mouseMoveHandler = handleMouseMove;
+      card._mouseUpHandler = handleMouseUp;
       
       // Отключаем контекстное меню на карточках
       card.addEventListener('contextmenu', (e) => {
