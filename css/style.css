@@ -426,12 +426,11 @@ body {
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, #33f5c8 0%, #7e63ff 30%, #ff0080 60%, #ff9b4a 100%);
-  background-size: 200% 200%;
+  background: linear-gradient(90deg, #33f5c8 0%, #7e63ff 35%, #ff0080 65%, #ff9b4a 100%);
+  background-size: 100% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: rainbowFlow 6s ease-in-out infinite;
 }
 
 @keyframes rainbowFlow {
