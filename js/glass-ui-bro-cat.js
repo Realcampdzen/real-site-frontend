@@ -287,8 +287,26 @@ class GlassUIBroCat {
         this.hideChat();
     }
 
+    // Универсальная функция для закрытия всех других чатов
+    closeOtherChats() {
+        // Закрываем Хипыча, если он открыт
+        if (window.glassUIHipych && window.glassUIHipych.isVisible) {
+            console.log('%c🔄 Закрываем Хипыча перед открытием Кота Бро', 'color: #fbbf24;');
+            window.glassUIHipych.hideChat();
+        }
+        
+        // Закрываем старый чат (chat-overlay), если он открыт
+        const oldChatOverlay = document.getElementById('chat-overlay');
+        if (oldChatOverlay && !oldChatOverlay.classList.contains('hidden')) {
+            oldChatOverlay.classList.add('hidden');
+        }
+    }
+
     showChat() {
         console.log('%c🐱 Кот Бро: showChat() вызван', 'color: #f97316; font-weight: bold;');
+        
+        // Закрываем все другие открытые чаты
+        this.closeOtherChats();
         
         this.isVisible = true;
         this.glassWidget.show();
