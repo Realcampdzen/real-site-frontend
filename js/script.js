@@ -180,6 +180,53 @@ function hidePreloader() {
 
 // Main DOMContentLoaded Event
 document.addEventListener('DOMContentLoaded', () => {
+  // Проверяем, что мы на главной странице, а не на новогодней
+  const isNewYearPage = document.body && document.body.classList.contains('new-year-page');
+  
+  if (!isNewYearPage) {
+    // Убеждаемся, что кнопка новогодних предложений всегда видна и правильно стилизована
+    const newYearWrapper = document.querySelector('.new-year-banner-wrapper');
+    if (newYearWrapper) {
+      newYearWrapper.style.display = 'flex';
+      newYearWrapper.style.visibility = 'visible';
+      newYearWrapper.style.opacity = '1';
+    }
+    
+    // Восстанавливаем правильные размеры кнопки новогодних предложений
+    const newYearButton = document.querySelector('.hero-actions .new-year-button, .hero .new-year-button');
+    if (newYearButton) {
+      newYearButton.style.width = '478px';
+      newYearButton.style.height = '96px';
+      newYearButton.style.maxWidth = '478px';
+      newYearButton.style.maxHeight = '96px';
+      newYearButton.style.flexShrink = '0';
+    }
+    
+    // Восстанавливаем правильные размеры изображения
+    const newYearImage = document.querySelector('.hero-actions .new-year-image, .hero .new-year-image');
+    if (newYearImage) {
+      newYearImage.style.width = '100%';
+      newYearImage.style.height = '100%';
+      newYearImage.style.maxWidth = '478px';
+      newYearImage.style.maxHeight = '96px';
+      newYearImage.style.objectFit = 'contain';
+    }
+    
+    // Дополнительная защита: удаляем любые стили, которые могли быть применены с новогодней страницы
+    if (newYearButton) {
+      // Удаляем классы, которые могут быть с новогодней страницы
+      newYearButton.classList.remove('new-year-hero-image');
+      newYearButton.style.removeProperty('min-width');
+      newYearButton.style.removeProperty('min-height');
+    }
+    
+    if (newYearImage) {
+      newYearImage.classList.remove('new-year-hero-image');
+      newYearImage.style.removeProperty('min-width');
+      newYearImage.style.removeProperty('min-height');
+    }
+  }
+  
   // Hide preloader after content loads
   hidePreloader();
   
@@ -241,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, observerOptions);
 
   // Observe animated elements
-  const animatedElements = document.querySelectorAll('.service-card, .process-step, .stat-card, .contact-card, .hero-stats, .stats-grid');
+  const animatedElements = document.querySelectorAll('.service-card, .process-step, .stat-card, .contact-card, .stats-grid');
   animatedElements.forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';

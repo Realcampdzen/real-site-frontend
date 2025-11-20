@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title id="page-title">Детали услуги | Реальный Vайб AI Studio</title>
+  <meta name="description" content="Подробная информация об услуге AI Studio">
+  <meta name="keywords" content="AI, нейросети, боты, автоматизация, OpenAI, ChatGPT, Telegram боты">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+  <!-- Bootstrap 4 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css?v=20251117-1850">
+  
+  <!-- Critical fixes -->
+  <link rel="stylesheet" href="css/critical-fixes.css">
+  
+  <!-- Mobile optimizations -->
+  <link rel="stylesheet" href="css/mobile-improvements.css">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Реальный Vайб AI Studio">
+  <meta name="application-name" content="Реальный Vайб AI Studio">
+  <meta name="msapplication-TileColor" content="#6366f1">
+  <meta name="theme-color" content="#6366f1">
+</head>
+
+<body>
+  <!-- Preloader -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-content">
+      <div class="studio-logo">
+        <img src="public/новый лого 2.png" alt="Реальный Vайб AI Studio" class="logo-image">
+        <div class="logo-text">
+          <span class="studio-name">Реальный Vайб</span>
+          <span class="studio-label">AI&nbsp;Studio</span>
+        </div>
+      </div>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+          <img src="public/новый лого 2.png" alt="Реальный Vайб AI Studio" class="logo-image">
+          <div class="logo-text">
+            <span class="studio-name">Реальный Vайб</span>
+            <span class="studio-label">AI&nbsp;Studio</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="nav-links">
+        <a href="index.html#services" class="nav-link">Услуги</a>
+        <a href="index.html#assistants" class="nav-link">Ассистенты</a>
+        <a href="index.html#process" class="nav-link">Процесс</a>
+        <a href="index.html#testimonials" class="nav-link">Отзывы</a>
+        <a href="index.html#contact" class="nav-link">Контакт</a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button class="mobile-menu-btn" id="mobile-menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobile-nav">
+      <a href="index.html#services" class="mobile-nav-link">Услуги</a>
+      <a href="index.html#assistants" class="mobile-nav-link">Ассистенты</a>
+      <a href="index.html#process" class="mobile-nav-link">Процесс</a>
+      <a href="index.html#testimonials" class="mobile-nav-link">Отзывы</a>
+      <a href="index.html#contact" class="mobile-nav-link">Контакт</a>
+    </div>
+  </nav>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+
+  <!-- Service Detail Section -->
+  <section class="service-detail-section">
+    <div class="container">
+      <!-- Back Button -->
+      <a href="index.html#services" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        <span>Вернуться к услугам</span>
+      </a>
+
+      <!-- Service Detail Card -->
+      <div id="service-detail-card" class="service-detail-card">
+        <!-- Content will be loaded dynamically -->
+        <div class="service-detail-loading">
+          <p>Загрузка информации об услуге...</p>
+        </div>
+      </div>
+
+      <!-- Error Message (hidden by default) -->
+      <div id="service-error" class="service-error" style="display: none;">
+        <h3>Услуга не найдена</h3>
+        <p>К сожалению, информация об этой услуге недоступна.</p>
+        <a href="index.html#services" class="btn-primary">Вернуться к услугам</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="back-to-top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Scripts -->
+  <!-- Bootstrap 4 JS Dependencies -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+  
+  <!-- Service Data -->
+  <script src="js/service-data.js"></script>
+  
+  <!-- Custom Scripts -->
+  <script src="js/script.js"></script>
+  
+  <!-- Service Detail Script -->
+  <script>
+    // Load service detail on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Get service ID from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const serviceId = urlParams.get('id');
+      
+      if (!serviceId) {
+        showError();
+        return;
+      }
+      
+      // Get service data
+      const service = getServiceById(serviceId);
+      
+      if (!service) {
+        showError();
+        return;
+      }
+      
+      // Render service detail
+      renderServiceDetail(service);
+      
+      // Update page title
+      document.getElementById('page-title').textContent = service.title + ' | Реальный Vайб AI Studio';
+    });
+    
+    function renderServiceDetail(service) {
+      const card = document.getElementById('service-detail-card');
+      const loading = card.querySelector('.service-detail-loading');
+      
+      // Remove loading message
+      if (loading) {
+        loading.remove();
+      }
+      
+      // Create service detail HTML
+      card.className = 'service-detail-card service-card-with-bg';
+      card.style.backgroundImage = `url('${service.backgroundImage}')`;
+      
+      card.innerHTML = `
+        <div class="service-detail-content">
+          <div class="service-icon service-icon-image">
+            <img src="${service.avatarImage}" alt="${service.title}" class="service-icon-img">
+          </div>
+          
+          <h1 class="service-detail-title">${service.title}</h1>
+          
+          <p class="service-detail-description">${service.description}</p>
+          
+          <div class="service-detail-features">
+            <h3>Возможности:</h3>
+            <ul class="service-features">
+              ${service.features.map(feature => `
+                <li><i class="fas fa-check"></i> ${feature}</li>
+              `).join('')}
+            </ul>
+          </div>
+          
+          <div class="service-price">
+            <span class="price-label">Стоимость</span>
+            <span class="price-value">${service.price}</span>
+          </div>
+          
+          <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+            <i class="${service.buttonIcon}"></i> ${service.buttonText}
+          </button>
+        </div>
+      `;
+    }
+    
+    function showError() {
+      document.getElementById('service-detail-card').style.display = 'none';
+      document.getElementById('service-error').style.display = 'block';
+    }
+    
+    // Hide preloader
+    function hidePreloader() {
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        setTimeout(() => {
+          preloader.style.opacity = '0';
+          setTimeout(() => {
+            preloader.style.display = 'none';
+          }, 300);
+        }, 500);
+      }
+    }
+    
+    // Hide preloader when page loads
+    window.addEventListener('load', hidePreloader);
+    
+    // Initialize back to top button
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (backToTopBtn) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTopBtn.classList.add('show');
+        } else {
+          backToTopBtn.classList.remove('show');
+        }
+      });
+      
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+    
+    // Initialize mobile menu
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    
+    if (mobileMenuBtn && mobileNav) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileNav.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+      });
+      
+      // Close menu when clicking on a link
+      const mobileLinks = mobileNav.querySelectorAll('.mobile-nav-link');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileNav.classList.remove('active');
+          mobileMenuBtn.classList.remove('active');
+        });
+      });
+    }
+    
+    // Scroll progress
+    const scrollProgress = document.getElementById('scroll-progress');
+    if (scrollProgress) {
+      window.addEventListener('scroll', () => {
+        const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (window.scrollY / windowHeight) * 100;
+        scrollProgress.style.width = scrolled + '%';
+      });
+    }
+  </script>
+
+</body>
+</html>
+

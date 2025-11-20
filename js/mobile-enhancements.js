@@ -291,8 +291,7 @@ class MobileChatOptimizer {
   
   addFullscreenMode() {
     const chatTriggers = document.querySelectorAll(`
-      .hipych-trigger, .bro-cat-trigger, #open-ai-assistant,
-      #open-ai-assistant-2
+      .hipych-trigger, .bro-cat-trigger, #open-ai-assistant
     `);
     
     chatTriggers.forEach(trigger => {
@@ -597,6 +596,37 @@ class ServiceWorkerManager {
   }
 
   async init() {
+    // Отключаем Service Worker в режиме разработки (localhost)
+    const isDevelopment = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1' ||
+                         window.location.port === '3001';
+    
+    if (isDevelopment) {
+      console.log('🚫 Service Worker отключен в режиме разработки');
+      
+      // Удаляем существующие Service Workers
+      if ('serviceWorker' in navigator) {
+        try {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (const registration of registrations) {
+            await registration.unregister();
+            console.log('🗑️ Service Worker удален:', registration.scope);
+          }
+          
+          // Очищаем кеш
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map(name => caches.delete(name)));
+            console.log('🗑️ Кеш Service Worker очищен');
+          }
+        } catch (error) {
+          console.log('⚠️ Ошибка при удалении Service Worker:', error);
+        }
+      }
+      return;
+    }
+    
+    // В продакшене регистрируем Service Worker
     if ('serviceWorker' in navigator) {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js');

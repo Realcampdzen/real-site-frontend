@@ -130,11 +130,16 @@
     min-height: 48px !important;
   }
   
-  /* Статистика */
+  /* Статистика - Скрыто */
   .hero-stats {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 16px !important;
-    margin-top: 40px !important;
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
   
   /* Сетки */
@@ -181,8 +186,14 @@
   }
   
   .hero-stats {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
   
   .service-card,

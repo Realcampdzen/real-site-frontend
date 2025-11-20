@@ -150,7 +150,35 @@ app.get('/favicon.ico', (req, res) => {
   res.status(204).end();
 });
 
-app.use(express.static('.'));
+// Отключаем кеширование в режиме разработки
+if (isDevelopment) {
+  app.use((req, res, next) => {
+    // Отключаем кеширование для HTML, CSS и JS файлов
+    if (req.path.match(/\.(html|css|js)$/)) {
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+    }
+    next();
+  });
+}
+
+app.use(express.static('.', {
+  // В режиме разработки отключаем кеширование
+  etag: !isDevelopment,
+  lastModified: !isDevelopment,
+  setHeaders: (res, path) => {
+    if (isDevelopment && path.match(/\.(html|css|js)$/)) {
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+    }
+  }
+}));
 
 // Схемы валидации
 const messageSchema = Joi.object({

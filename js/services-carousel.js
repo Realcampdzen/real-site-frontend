@@ -366,11 +366,10 @@ class ServicesCarousel {
             return;
           }
           
-          // НЕ переключаем центральную карточку
+          // При клике на центральную карточку - переходим на страницу деталей
           if (index === this.currentIndex) {
-            card.style.cursor = 'pointer';
-            state.mouseDownX = 0;
-            state.mouseDownY = 0;
+            console.log(`🖱️ Клик на центральную карточку ${index}, переходим на страницу деталей`);
+            window.location.href = `service-detail.html?id=${index}`;
             return;
           }
           
@@ -399,6 +398,62 @@ class ServicesCarousel {
         e.preventDefault();
         return false;
       });
+      
+      // Обработка touch событий для мобильных устройств
+      let touchStartTime = 0;
+      let touchStartX = 0;
+      let touchStartY = 0;
+      
+      card.addEventListener('touchstart', (e) => {
+        // Игнорируем, если клик на кнопке или интерактивном элементе
+        if (e.target.closest('.service-btn') || 
+            e.target.closest('a') || 
+            e.target.closest('button') ||
+            e.target.closest('.service-price')) {
+          return;
+        }
+        
+        touchStartTime = Date.now();
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      
+      card.addEventListener('touchend', (e) => {
+        if (touchStartTime === 0) return;
+        
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const moveX = Math.abs(touchEndX - touchStartX);
+        const moveY = Math.abs(touchEndY - touchStartY);
+        const touchDuration = Date.now() - touchStartTime;
+        
+        // Если движение небольшое и время касания короткое - это tap (клик)
+        if (moveX < 10 && moveY < 10 && touchDuration < 300) {
+          // Не обрабатываем, если клик был на кнопке или интерактивном элементе
+          if (e.target.closest('.service-btn') || 
+              e.target.closest('a') || 
+              e.target.closest('button') ||
+              e.target.closest('.service-price')) {
+            touchStartTime = 0;
+            return;
+          }
+          
+          // При клике на центральную карточку - переходим на страницу деталей
+          if (index === this.currentIndex) {
+            console.log(`📱 Tap на центральную карточку ${index}, переходим на страницу деталей`);
+            window.location.href = `service-detail.html?id=${index}`;
+            return;
+          }
+          
+          // Переключаемся на карточку, если она не центральная
+          if (index !== this.currentIndex && !this.isAnimating) {
+            console.log(`📱 Tap на карточку ${index}, переключаемся с ${this.currentIndex}`);
+            this.goTo(index);
+          }
+        }
+        
+        touchStartTime = 0;
+      }, { passive: true });
     });
   }
   
