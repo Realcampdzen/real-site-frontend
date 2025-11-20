@@ -450,16 +450,16 @@ body::before {
 .hero .new-year-button {
   display: block;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: filter 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   z-index: 1;
-  animation: newYearPulse 3s ease-in-out infinite;
+  animation: newYearPulse 3s ease-in-out infinite !important;
   margin: 10px auto 0;
   width: 478px !important;
   height: 96px !important;
   max-width: 478px !important;
   max-height: 96px !important;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
@@ -467,14 +467,14 @@ body::before {
 
 
 .new-year-button:hover {
-  transform: scale(1.05);
   filter: drop-shadow(0 10px 30px rgba(255, 155, 74, 0.5));
-  animation: none;
   box-shadow: 0 12px 40px rgba(255, 155, 74, 0.6);
+  /* Анимация продолжается, transform уже в анимации */
 }
 
 .new-year-button:active {
-  transform: scale(1.02);
+  /* transform уже применяется через анимацию, не перезаписываем */
+  filter: drop-shadow(0 15px 35px rgba(255, 155, 74, 0.7)) !important;
 }
 
 /* Стили для видео в кнопке новогодних предложений на главной странице */
@@ -489,15 +489,16 @@ body::before {
   object-fit: cover !important;
   object-position: center;
   border-radius: 12px;
-  transition: all 0.3s ease;
+  transition: filter 0.3s ease;
   position: absolute;
   top: 0;
   left: 0;
   z-index: 1;
+  animation: newYearPulse 3s ease-in-out infinite !important;
 }
 
 .new-year-button:hover .new-year-video {
-  transform: scale(1.05);
+  /* transform уже применяется через анимацию кнопки */
 }
 
 @keyframes newYearPulse {
@@ -506,8 +507,8 @@ body::before {
     filter: brightness(1);
   }
   50% {
-    transform: scale(1.05);
-    filter: brightness(1.2);
+    transform: scale(1.02);
+    filter: brightness(1.1);
   }
 }
 

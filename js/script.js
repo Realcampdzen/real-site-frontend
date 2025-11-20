@@ -356,6 +356,8 @@ document.addEventListener('DOMContentLoaded', () => {
       newYearButton.style.maxWidth = '478px';
       newYearButton.style.maxHeight = '96px';
       newYearButton.style.flexShrink = '0';
+      // Убеждаемся, что анимация не перезаписана
+      newYearButton.style.animation = 'newYearPulse 3s ease-in-out infinite';
     }
     
     // Восстанавливаем правильные размеры видео и принудительно загружаем
