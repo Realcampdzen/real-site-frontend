@@ -4847,6 +4847,28 @@ body::before {
   z-index: 2;
 }
 
+/* Matte and translucent card style (for Creating Smart Bots) */
+.service-detail-card-matte {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+.service-detail-card-matte::after {
+  display: none !important;
+}
+
+/* Service detail section - transparent background when body has background */
+.service-detail-section {
+  background: transparent !important;
+  position: relative;
+  min-height: 100vh;
+}
+
 .service-detail-card .service-icon {
   width: 120px;
   height: 120px;

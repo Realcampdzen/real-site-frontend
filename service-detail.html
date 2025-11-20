@@ -143,6 +143,13 @@
   
   <!-- Custom Scripts -->
   <script src="js/script.js"></script>
+  <script src="js/chat.js"></script>
+  
+  <!-- Glass UI System -->
+  <script src="chat-components/GlassUIWidget.js"></script>
+  <script src="js/glass-ui-hipych.js?v=20251127-emoji4"></script>
+  <script src="js/glass-ui-bro-cat.js?v=20251127-emoji4"></script>
+  <script src="js/glass-ui-valyusha.js?v=20251127-emoji4"></script>
   
   <!-- Service Detail Script -->
   <script>
@@ -175,15 +182,36 @@
     function renderServiceDetail(service) {
       const card = document.getElementById('service-detail-card');
       const loading = card.querySelector('.service-detail-loading');
+      const section = document.querySelector('.service-detail-section');
       
       // Remove loading message
       if (loading) {
         loading.remove();
       }
       
-      // Create service detail HTML
-      card.className = 'service-detail-card service-card-with-bg';
-      card.style.backgroundImage = `url('${service.backgroundImage}')`;
+      // Apply matte card style and main page background for ALL services
+      // Remove background image from card, make it matte and translucent
+      card.className = 'service-detail-card service-detail-card-matte';
+      card.style.backgroundImage = 'none';
+      
+      // Add the same background as the main page - apply to body (like on index.html)
+      const body = document.body;
+      body.style.backgroundImage = `
+        radial-gradient(circle at 12% 20%, rgba(255, 155, 74, 0.25), transparent 55%),
+        radial-gradient(circle at 80% 30%, rgba(126, 99, 255, 0.2), transparent 60%),
+        url('images/neon-room.png')
+      `;
+      body.style.backgroundSize = 'cover';
+      body.style.backgroundPosition = 'center';
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundAttachment = 'fixed';
+      body.style.backgroundColor = '#050505';
+      
+      // Remove section background if it was set
+      if (section) {
+        section.style.backgroundImage = 'none';
+        section.style.backgroundColor = 'transparent';
+      }
       
       // Check if service has detailed content
       const hasDetailedContent = service.detailTitle || service.lead || service.useCases || service.whatWeDo || service.formats || service.whatYouGet;
