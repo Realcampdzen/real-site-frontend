@@ -109,18 +109,22 @@ class GlassUIHipych {
             right: -5px;
             width: 20px;
             height: 20px;
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 13px;
+            line-height: 20px;
             font-weight: bold;
             color: white;
+            font-family: "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji", sans-serif;
             border: 2px solid rgba(255, 255, 255, 0.8);
             animation: badgePulse 2s infinite;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.65);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
         `;
-        notificationBadge.textContent = '!';
+        notificationBadge.textContent = '👍';
         this.floatingButton.appendChild(notificationBadge);
 
         // Добавляем hover эффекты (через CSS класс, чтобы не конфликтовать с анимацией)
@@ -237,6 +241,12 @@ class GlassUIHipych {
         if (window.glassUIBroCat && window.glassUIBroCat.isVisible) {
             console.log('%c🔄 Закрываем Кота Бро перед открытием Хипыча', 'color: #3b82f6;');
             window.glassUIBroCat.hideChat();
+        }
+
+        // Закрываем НейроVалюшу, если она открыта
+        if (window.glassUIValyusha && window.glassUIValyusha.isVisible) {
+            console.log('%c🔄 Закрываем НейроVалюшу перед открытием Хипыча', 'color: #3b82f6;');
+            window.glassUIValyusha.hideChat();
         }
         
         // Закрываем старый чат (chat-overlay), если он открыт

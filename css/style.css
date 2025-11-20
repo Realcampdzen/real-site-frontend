@@ -2921,6 +2921,22 @@ body::before {
   }
 }
 
+/* Плавающая анимация для НейроVалюши */
+@keyframes valyushaFloat {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  33% { 
+    transform: translateY(-6px) rotate(-2deg);
+    filter: hue-rotate(8deg);
+  }
+  66% { 
+    transform: translateY(-3px) rotate(1deg);
+    filter: hue-rotate(15deg);
+  }
+}
+
 /* Блики для Хипыча */
 @keyframes buttonShine {
   0%, 100% { 
@@ -2945,6 +2961,18 @@ body::before {
   }
 }
 
+/* Блики для НейроVалюши */
+@keyframes valyushaShine {
+  0%, 100% { 
+    transform: translateX(-100%) rotate(45deg) scale(0.8);
+    opacity: 0;
+  }
+  50% { 
+    transform: translateX(100%) rotate(45deg) scale(1.2);
+    opacity: 1;
+  }
+}
+
 /* Вращающаяся граница для Хипыча */
 @keyframes borderRotate {
   from { transform: rotate(0deg); }
@@ -2953,6 +2981,13 @@ body::before {
 
 /* Вращающаяся граница для Кота Бро */
 @keyframes catBorderRotate {
+  from { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+/* Вращающаяся граница для НейроVалюши */
+@keyframes valyushaBorderRotate {
   from { transform: rotate(0deg) scale(1); }
   50% { transform: rotate(180deg) scale(1.05); }
   to { transform: rotate(360deg) scale(1); }
@@ -2979,6 +3014,18 @@ body::before {
   50% { 
     transform: scale(1.3) rotate(180deg);
     box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+  }
+}
+
+/* Пульсация бейджа для НейроVалюши */
+@keyframes valyushaBadgePulse {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7);
+  }
+  50% { 
+    transform: scale(1.3) rotate(180deg);
+    box-shadow: 0 0 0 8px rgba(236, 72, 153, 0);
   }
 }
 
@@ -3014,6 +3061,24 @@ body::before {
       0 15px 35px rgba(249, 115, 22, 0.7),
       0 0 30px rgba(249, 115, 22, 0.5),
       0 0 60px rgba(249, 115, 22, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Пульсирующее свечение для НейроVалюши */
+@keyframes glowPulseValyusha {
+  0%, 100% {
+    box-shadow: 
+      0 15px 35px rgba(168, 85, 247, 0.4),
+      0 0 20px rgba(236, 72, 153, 0.3),
+      0 0 40px rgba(168, 85, 247, 0.2),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 15px 35px rgba(168, 85, 247, 0.7),
+      0 0 30px rgba(236, 72, 153, 0.5),
+      0 0 60px rgba(168, 85, 247, 0.3),
       inset 0 2px 0 rgba(255, 255, 255, 0.4);
   }
 }
@@ -3077,6 +3142,21 @@ body::before {
   opacity: 1 !important;
 }
 
+/* Принудительное применение анимаций для НейроVалюши */
+.glass-ui-valyusha-button {
+  animation: valyushaFloat 3.2s ease-in-out infinite !important;
+  will-change: transform, filter !important;
+  backface-visibility: hidden !important;
+  position: fixed !important;
+  bottom: 180px !important;
+  right: 20px !important;
+  z-index: 1004 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important; /* не обрезаем свечение и вращающуюся рамку */
+}
+
 /* Блики для Кота Бро - внутренний div */
 .glass-ui-bro-cat-button > div:first-of-type {
   animation: catShine 2.5s ease-in-out infinite !important;
@@ -3084,9 +3164,21 @@ body::before {
   z-index: 0 !important;
 }
 
+/* Блики для НейроVалюши - внутренний div */
+.glass-ui-valyusha-button > div:first-of-type {
+  animation: valyushaShine 2.8s ease-in-out infinite !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
 /* Пульсирующий бейдж для Кота Бро */
 .glass-ui-bro-cat-button .glass-cat-notification-badge {
   animation: catBadgePulse 1.8s infinite !important;
+}
+
+/* Пульсирующий бейдж для НейроVалюши */
+.glass-ui-valyusha-button .glass-valyusha-notification-badge {
+  animation: valyushaBadgePulse 1.8s infinite !important;
 }
 
 /* Вращающаяся граница для Кота Бро */
@@ -3101,6 +3193,21 @@ body::before {
   border-radius: 50% !important;
   z-index: -1 !important;
   animation: catBorderRotate 3s linear infinite !important;
+  pointer-events: none !important;
+}
+
+/* Вращающаяся граница для НейроVалюши */
+.glass-ui-valyusha-button::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  background: linear-gradient(45deg, #a855f7, transparent, #ec4899) !important;
+  border-radius: 50% !important;
+  z-index: -1 !important;
+  animation: valyushaBorderRotate 3s linear infinite !important;
   pointer-events: none !important;
 }
 
@@ -3140,6 +3247,25 @@ body::before {
     background: radial-gradient(circle, rgba(249, 115, 22, 0.5) 0%, rgba(249, 115, 22, 0.2) 40%, transparent 70%) !important;
     z-index: -2 !important;
     animation: glowPulseCat 2s ease-in-out infinite !important;
+    pointer-events: none !important;
+    filter: blur(8px) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Свечение вокруг НейроVалюши (дополнительный слой) - ТОЛЬКО для десктопа */
+  .glass-ui-valyusha-button::after {
+    content: '' !important;
+    position: absolute !important;
+    top: -6px !important;
+    left: -6px !important;
+    right: -6px !important;
+    bottom: -6px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, rgba(236, 72, 153, 0.2) 40%, transparent 70%) !important;
+    z-index: -2 !important;
+    animation: glowPulseValyusha 2s ease-in-out infinite !important;
     pointer-events: none !important;
     filter: blur(8px) !important;
     display: block !important;
