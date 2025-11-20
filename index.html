@@ -29,6 +29,9 @@
   <!-- Mobile optimizations -->
   <link rel="stylesheet" href="css/mobile-improvements.css">
   
+  <!-- Snow Effect -->
+  <link rel="stylesheet" href="css/snow-effect.css">
+  
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
   
@@ -67,6 +70,9 @@
   </div>
 
   <!-- Background visualization отключена по требованию -->
+
+  <!-- Snow Effect Container -->
+  <div id="snow-container"></div>
 
   <!-- Navigation -->
   <nav class="navbar">
@@ -630,6 +636,21 @@
 
   <!-- Mobile enhancements -->
   <script src="js/mobile-enhancements.js"></script>
+  
+  <!-- Snow Effect -->
+  <script src="js/snow-effect.js"></script>
+  
+  <!-- Snow Effect Test -->
+  <script>
+    // Простая проверка загрузки скрипта
+    setTimeout(function() {
+      if (typeof window.snowEffect === 'undefined') {
+        console.error('❌ SnowEffect: скрипт не загружен! Проверьте путь к файлу js/snow-effect.js');
+      } else {
+        console.log('✅ SnowEffect: скрипт загружен, экземпляр:', window.snowEffect);
+      }
+    }, 2000);
+  </script>
 
   <!-- Glass UI Status Check -->
   <script>
