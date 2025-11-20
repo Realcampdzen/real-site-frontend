@@ -56,12 +56,15 @@ class SnowEffect {
     this.toggleButton.setAttribute('aria-label', 'Переключить снег');
     
     // Используем изображение вместо иконки FontAwesome
-    const img = document.createElement('img');
-    img.src = 'public/кнопка снежинки.png';
-    img.alt = 'Переключить снег';
-    img.className = 'snow-toggle-icon';
-    img.style.mixBlendMode = 'screen';
-    this.toggleButton.appendChild(img);
+    this.toggleImage = document.createElement('img');
+    this.toggleImage.alt = 'Переключить снег';
+    this.toggleImage.className = 'snow-toggle-icon';
+    this.toggleImage.style.mixBlendMode = 'screen';
+    
+    // Устанавливаем изображение в зависимости от состояния
+    this.updateButtonImage();
+    
+    this.toggleButton.appendChild(this.toggleImage);
 
     if (this.isActive) {
       this.toggleButton.classList.add('active');
@@ -76,6 +79,21 @@ class SnowEffect {
     } else {
       // Если навбара нет, добавляем в body
       document.body.appendChild(this.toggleButton);
+    }
+  }
+  
+  /**
+   * Обновляет изображение на кнопке в зависимости от состояния снега
+   */
+  updateButtonImage() {
+    if (!this.toggleImage) return;
+    
+    // Когда снег включен - показываем "кнопка снежинки.png" (снег идет)
+    // Когда снег выключен - показываем "кнопка снежинки 2.png" (снег не идет)
+    if (this.isActive) {
+      this.toggleImage.src = 'public/кнопка снежинки.png';
+    } else {
+      this.toggleImage.src = 'public/кнопка снежинки 2.png';
     }
   }
 
@@ -150,6 +168,9 @@ class SnowEffect {
   toggle() {
     this.isActive = !this.isActive;
     localStorage.setItem(this.storageKey, this.isActive ? 'true' : 'false');
+
+    // Обновляем изображение на кнопке
+    this.updateButtonImage();
 
     if (this.isActive) {
       this.toggleButton.classList.add('active');
