@@ -215,6 +215,18 @@ body::before {
   transition: all 0.3s ease;
 }
 
+/* Полупрозрачная навигация на главной странице */
+.home-page .navbar {
+  background: rgba(10, 10, 10, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Полупрозрачная навигация только на новогодней странице */
+.new-year-page .navbar {
+  background: rgba(10, 10, 10, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
 .nav-container {
   width: 100%;
   max-width: none;
@@ -436,6 +448,85 @@ body::before {
   text-shadow: 0 15px 45px rgba(0, 0, 0, 0.65);
 }
 
+/* Стили для кнопки новогодних предложений на главной странице */
+.hero-actions .new-year-button,
+.hero .new-year-button {
+  display: block;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  animation: newYearPulse 3s ease-in-out infinite;
+  margin: 10px auto 0;
+  width: 478px !important;
+  height: 96px !important;
+  max-width: 478px !important;
+  max-height: 96px !important;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.new-year-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../public/нг%20пейзаж.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  border-radius: 12px;
+}
+
+.new-year-button:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 10px 30px rgba(255, 155, 74, 0.5));
+  animation: none;
+  box-shadow: 0 12px 40px rgba(255, 155, 74, 0.6);
+}
+
+.new-year-button:active {
+  transform: scale(1.02);
+}
+
+/* Стили для изображения в кнопке новогодних предложений на главной странице */
+.hero-actions .new-year-image,
+.hero .new-year-image,
+.new-year-button .new-year-image {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 478px !important;
+  max-height: 96px !important;
+  display: block;
+  object-fit: contain !important;
+  object-position: center 48%;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  transform: scale(1.15) translateY(2px);
+  position: relative;
+  z-index: 2;
+}
+
+.new-year-button:hover .new-year-image {
+  transform: scale(1.2) translateY(2px);
+}
+
+@keyframes newYearPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
 .gradient-text {
   background: linear-gradient(90deg, 
     #33f5c8 0%, 
@@ -472,18 +563,73 @@ body::before {
 
 .hero-actions {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 48px;
 }
 
-/* Hero Stats */
-.hero-stats {
+.new-year-banner-wrapper {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
+  gap: 20px;
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+}
+
+.new-year-text-left,
+.new-year-text-right {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+  line-height: 1.2;
+  background: linear-gradient(90deg, 
+    #33f5c8 0%, 
+    #6dd6ff 15%,
+    #7e63ff 35%, 
+    #d946ef 55%,
+    #ff0080 70%, 
+    #ff6b4a 85%,
+    #ffb74a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.new-year-text-left {
+  margin-left: -60px;
+  margin-right: 0;
+  position: relative;
+  left: -0px;
+}
+
+.new-year-text-right {
+  font-size: 16px;
+}
+
+.hero-actions .new-year-button,
+.hero .new-year-button {
+  flex-shrink: 0;
+}
+
+/* Hero Stats - Скрыто */
+.hero-stats {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
 .stat-item {
@@ -507,6 +653,56 @@ body::before {
   margin-top: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+/* Скрываем индикаторы под карточками статистики */
+.hero-stats::after,
+.hero-stats::before,
+.stat-item::after,
+.stat-item::before,
+.stat-label::after,
+.stat-label::before,
+.stat-number::after,
+.stat-number::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Скрываем все возможные индикаторы в секции hero, кроме карусели услуг */
+.hero .indicator:not(.services-carousel-wrapper .indicator),
+.hero [class*="indicator"]:not(.services-carousel-wrapper [class*="indicator"]),
+.hero [class*="dot"]:not(.services-carousel-wrapper [class*="dot"]),
+.hero [class*="pagination"]:not(.services-carousel-wrapper [class*="pagination"]),
+.hero-stats .indicator,
+.hero-stats [class*="indicator"],
+.hero-stats [class*="dot"],
+.hero-stats [class*="pagination"],
+.hero-stats + .indicator,
+.hero-stats + [class*="indicator"],
+.hero-stats + [class*="dot"],
+.hero-stats + [class*="pagination"],
+.hero-container .indicator:not(.services-carousel-wrapper .indicator),
+.hero-container [class*="indicator"]:not(.services-carousel-wrapper [class*="indicator"]),
+.hero-container [class*="dot"]:not(.services-carousel-wrapper [class*="dot"]),
+.hero-container [class*="pagination"]:not(.services-carousel-wrapper [class*="pagination"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Скрываем индикаторы, которые могут быть созданы через псевдоэлементы */
+.hero-stats .stat-item::after,
+.hero-stats .stat-item::before,
+.hero-stats .stat-label::after,
+.hero-stats .stat-label::before,
+.hero-stats .stat-number::after,
+.hero-stats .stat-number::before {
+  display: none !important;
+  content: none !important;
 }
 
 /* Buttons */
@@ -922,11 +1118,16 @@ body::before {
 .carousel-indicators {
   position: absolute;
   bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 12px;
   z-index: 100;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .indicator {
@@ -1919,6 +2120,65 @@ body::before {
     line-height: 1.2;
   }
 
+  .hero-actions {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .new-year-banner-wrapper {
+    flex-direction: row;
+    gap: 15px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .new-year-text-left,
+  .new-year-text-right {
+    font-size: 15px;
+    text-align: center;
+    flex: 0 0 auto;
+  }
+
+  /* Стили для главной страницы - более специфичные */
+  .hero-actions .new-year-button,
+  .hero .new-year-button {
+    order: 2;
+    width: 478px !important;
+    max-width: 478px !important;
+    height: 96px !important;
+    max-height: 96px !important;
+  }
+
+  .new-year-text-left {
+    order: 1;
+  }
+
+  .new-year-text-right {
+    order: 3;
+    width: 100%;
+  }
+
+  /* Дополнительная защита для главной страницы в мобильной версии */
+  .hero-actions .new-year-button,
+  .hero .new-year-button {
+    width: 478px !important;
+    max-width: 478px !important;
+    height: 96px !important;
+    max-height: 96px !important;
+    aspect-ratio: 478 / 96;
+  }
+
+  .hero-actions .new-year-image,
+  .hero .new-year-image,
+  .new-year-button .new-year-image {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 478px !important;
+    max-height: 96px !important;
+    object-fit: contain !important;
+  }
+
   .hero-description {
     font-size: 16px;
   }
@@ -2006,7 +2266,11 @@ body::before {
 
   .carousel-indicators {
     bottom: -50px;
+    left: 0;
+    right: 0;
     gap: 8px;
+    justify-content: center;
+    width: 100%;
   }
 
   .indicator {
@@ -2104,6 +2368,35 @@ body::before {
   .hero-title {
     font-size: 2.5rem;
   }
+
+  .new-year-banner-wrapper {
+    gap: 10px;
+  }
+
+  .new-year-text-left,
+  .new-year-text-right {
+    font-size: 14px;
+  }
+
+  /* Защита для главной страницы в мобильной версии (480px) */
+  .hero-actions .new-year-button,
+  .hero .new-year-button {
+    width: 478px !important;
+    max-width: 478px !important;
+    height: 96px !important;
+    max-height: 96px !important;
+    aspect-ratio: 478 / 96;
+  }
+
+  .hero-actions .new-year-image,
+  .hero .new-year-image,
+  .new-year-button .new-year-image {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 478px !important;
+    max-height: 96px !important;
+    object-fit: contain !important;
+  }
   
   .hero-description {
     font-size: 18px;
@@ -2188,9 +2481,15 @@ body::before {
   }
   
   .hero-stats {
-    flex-direction: column;
-    gap: 20px;
-}
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
 }
 
 /* Service Icons Enhanced */
@@ -4357,3 +4656,824 @@ body::before {
 }
 
 /* ===== CRITICAL MOBILE FIXES ===== */
+
+/* ===== SERVICE DETAIL PAGE ===== */
+.service-detail-section {
+  min-height: 100vh;
+  padding: 120px 0 80px;
+  background: var(--bg-primary);
+  position: relative;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 16px;
+  margin-bottom: 40px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(-5px);
+  color: var(--accent-contrast);
+}
+
+.back-button i {
+  font-size: 14px;
+}
+
+.service-detail-card {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 32px;
+  padding: 60px 50px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: rgba(5, 5, 5, 0.3) !important;
+}
+
+.service-detail-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(5, 5, 5, 0.85) 0%,
+    rgba(5, 5, 5, 0.75) 50%,
+    rgba(5, 5, 5, 0.85) 100%
+  );
+  border-radius: 32px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.service-detail-content {
+  position: relative;
+  z-index: 2;
+}
+
+.service-detail-card .service-icon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 30px;
+  border-radius: 50%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.service-detail-card .service-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.service-detail-title {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.service-detail-description {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.service-detail-features {
+  margin: 40px 0;
+  text-align: left;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.service-detail-features h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.service-detail-card .service-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.service-detail-card .service-features li {
+  padding: 12px 0;
+  font-size: 16px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.service-detail-card .service-features li:last-child {
+  border-bottom: none;
+}
+
+.service-detail-card .service-features li i {
+  color: var(--accent-contrast);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.service-detail-card .service-price {
+  margin: 40px auto;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 400px;
+}
+
+.service-detail-card .price-label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.service-detail-card .price-value {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent-contrast);
+  font-family: var(--font-display);
+}
+
+.service-detail-card .service-btn {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 18px 32px;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(255, 155, 74, 0.3);
+}
+
+.service-detail-card .service-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(255, 155, 74, 0.5);
+}
+
+.service-detail-card .service-btn i {
+  font-size: 20px;
+}
+
+.service-detail-loading {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 18px;
+}
+
+.service-error {
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.service-error h3 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.service-error p {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+}
+
+.service-error .btn-primary {
+  display: inline-block;
+  padding: 14px 32px;
+  background: var(--gradient-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.service-error .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 155, 74, 0.4);
+}
+
+/* Mobile styles for service detail page */
+@media (max-width: 768px) {
+  .service-detail-section {
+    padding: 100px 0 60px;
+  }
+
+  .back-button {
+    font-size: 14px;
+    padding: 10px 20px;
+    margin-bottom: 30px;
+  }
+
+  .service-detail-card {
+    padding: 40px 30px;
+    border-radius: 24px;
+  }
+
+  .service-detail-card .service-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 24px;
+  }
+
+  .service-detail-title {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .service-detail-description {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .service-detail-features {
+    margin: 30px 0;
+  }
+
+  .service-detail-features h3 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .service-detail-card .service-features li {
+    font-size: 15px;
+    padding: 10px 0;
+  }
+
+  .service-detail-card .service-price {
+    margin: 30px auto;
+    padding: 20px;
+  }
+
+  .service-detail-card .price-value {
+    font-size: 28px;
+  }
+
+  .service-detail-card .service-btn {
+    padding: 16px 28px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-detail-card {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+
+  .service-detail-card .service-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+  }
+
+  .service-detail-title {
+    font-size: 24px;
+  }
+
+  .service-detail-description {
+    font-size: 15px;
+  }
+
+  .service-detail-features h3 {
+    font-size: 18px;
+  }
+
+  .service-detail-card .service-features li {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  .service-detail-card .service-price {
+    padding: 16px;
+  }
+
+  .service-detail-card .price-value {
+    font-size: 24px;
+  }
+
+  .service-detail-card .service-btn {
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+}
+
+/* ===== NEW YEAR PAGE ===== */
+.new-year-hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 24px 80px;
+  position: relative;
+  background: transparent !important;
+}
+
+/* Затемнение для читаемости текста в hero */
+.new-year-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 5, 5, 0.2);
+  z-index: 0;
+}
+
+.new-year-hero-content {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.new-year-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid rgba(255, 155, 74, 0.5);
+  border-radius: 999px;
+  padding: 12px 26px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 12px 30px rgba(220, 38, 38, 0.3);
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.new-year-badge i {
+  color: #ffd700;
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.new-year-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+  text-shadow: 0 15px 45px rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.new-year-emoji {
+  font-size: 1.2em;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.new-year-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* Стили только для новогодней страницы - изолированы */
+.new-year-page .new-year-image-wrapper,
+.new-year-hero .new-year-image-wrapper {
+  margin-top: 40px;
+}
+
+.new-year-page .new-year-hero-image,
+.new-year-hero .new-year-hero-image {
+  width: 200px;
+  height: auto;
+  border-radius: 30px;
+  box-shadow: 0 20px 60px rgba(220, 38, 38, 0.4);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Фон для всей страницы новогодних предложений */
+body.new-year-page,
+.new-year-page {
+  background-color: transparent !important;
+  background-image: url('../public/нг%20пейзаж.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+}
+
+/* Убираем стандартный фон body для новогодней страницы */
+body.new-year-page {
+  background-image: url('../public/нг%20пейзаж.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+.new-year-offers {
+  padding: 140px 0 80px;
+  background: transparent !important;
+  position: relative;
+}
+
+/* Затемнение для читаемости текста */
+.new-year-offers::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 5, 5, 0.3);
+  z-index: 0;
+}
+
+.new-year-offers .container {
+  position: relative;
+  z-index: 1;
+}
+
+.new-year-offers .section-title {
+  color: var(--text-primary) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  margin-top: 0 !important;
+  margin-bottom: 50px !important;
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  margin-top: 70px;
+}
+
+.offer-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 40px 30px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+/* Стили для карточки с фоновым изображением */
+.offer-card.offer-card-with-bg {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.offer-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 155, 74, 0.4);
+  box-shadow: 0 20px 60px rgba(255, 155, 74, 0.3);
+}
+
+.offer-card.featured-offer {
+  border: 2px solid rgba(255, 155, 74, 0.6);
+  background: rgba(255, 155, 74, 0.1);
+}
+
+.offer-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #dc2626 0%, #ff7849 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5);
+  z-index: 2;
+}
+
+.offer-badge.featured-badge {
+  background: linear-gradient(135deg, #ffd700 0%, #ff7849 100%);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.offer-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: white;
+  box-shadow: 0 8px 24px rgba(255, 155, 74, 0.4);
+  position: relative;
+  z-index: 2;
+}
+
+/* Стили для иконки с изображением */
+.offer-icon.offer-icon-image {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.offer-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+
+.offer-card:hover .offer-icon-image {
+  border-color: rgba(255, 155, 74, 0.4);
+  box-shadow: 0 15px 40px rgba(255, 155, 74, 0.5);
+  transform: scale(1.1) rotate(5deg);
+  transition: all 0.4s ease;
+}
+
+.offer-card:hover .offer-icon-img {
+  transform: scale(1.05);
+  transition: transform 0.4s ease;
+}
+
+.offer-card h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.offer-price {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.old-price {
+  font-size: 18px;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.new-price {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent-contrast);
+  font-family: var(--font-display);
+}
+
+.offer-description {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.offer-features {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.offer-features li {
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.offer-features li i {
+  color: var(--accent-contrast);
+  font-size: 12px;
+}
+
+.offer-btn {
+  width: 100%;
+  padding: 14px 28px;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.offer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 155, 74, 0.4);
+}
+
+.new-year-cta {
+  margin-top: 60px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 2px solid rgba(255, 155, 74, 0.3);
+  border-radius: 24px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  z-index: 1;
+}
+
+.new-year-cta h3 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.new-year-cta p {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+/* Mobile styles for new year page */
+@media (max-width: 768px) {
+  .new-year-hero {
+    padding: 100px 24px 60px;
+    min-height: auto;
+  }
+
+  .new-year-title {
+    font-size: 2.5rem;
+    gap: 15px;
+  }
+
+  .new-year-page .new-year-hero-image,
+  .new-year-hero .new-year-hero-image {
+    width: 150px;
+  }
+
+  .offers-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .offer-card {
+    padding: 30px 24px;
+  }
+
+  .new-year-cta {
+    padding: 30px 24px;
+  }
+
+  .new-year-cta h3 {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .new-year-title {
+    font-size: 2rem;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .new-year-page .new-year-hero-image,
+  .new-year-hero .new-year-hero-image {
+    width: 120px;
+  }
+
+  .offer-card {
+    padding: 24px 20px;
+  }
+
+  .offer-badge {
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    font-size: 16px;
+  }
+
+  .new-year-cta {
+    padding: 24px 20px;
+  }
+
+  .new-year-cta h3 {
+    font-size: 20px;
+  }
+}
+
+/* Виджеты ботов теперь разрешены на странице новогодних предложений */

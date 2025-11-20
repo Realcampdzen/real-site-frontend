@@ -49,7 +49,7 @@
   <!-- <link rel="mask-icon" href="images/safari-pinned-tab.svg" color="#6366f1"> -->
 </head>
 
-<body>
+<body class="home-page">
   <!-- Preloader -->
   <div id="preloader" class="preloader">
     <div class="preloader-content">
@@ -112,41 +112,24 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-container">
-      <div class="hero-badge">
-        <i class="fas fa-sparkles"></i>
-        <span>AI&nbsp;Studio 2025</span>
-      </div>
-      
       <h1 class="hero-title">
         Творческая<br><span class="gradient-text">AI&nbsp;студия</span><br>для вашего бизнеса
       </h1>
       
       <p class="hero-description">
-        Создаём умных ботов, ИИ-ассистентов, SMM и контент для ваших проектов. Делаем AI-видео, музыку и озвучку, которые работают на вас 24/7 и приносят результат. Автоматизируем процессы, внедряем нейросети.
+        Профессионально создаём музыку, аудио и озвучку для ваших проектов.<br>Делаем AI-видео, контент и SMM для ваших соцсетей.<br>Разрабатываем AI персона-ботов и GPTs-ассистентов, которые работают на вас 24/7 и приносят результат.<br>Автоматизируем процессы, внедряем нейросети.
       </p>
       
       <div class="hero-actions">
         <button class="btn-primary" onclick="scrollToSection('services')">
           Начать проект
         </button>
-        <button class="btn-secondary" id="open-ai-assistant-2">
-          UX-Проводник
-        </button>
-      </div>
-
-      <!-- Hero Stats -->
-      <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-number" data-target="50">0</div>
-          <div class="stat-label">Проектов</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" data-target="24">0</div>
-          <div class="stat-label">Часа в сутки</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" data-target="99">0</div>
-          <div class="stat-label">% Удовлетворенности</div>
+        <div class="new-year-banner-wrapper">
+          <span class="new-year-text-left">Новогодняя акция!</span>
+          <a href="new-year.html" class="new-year-button" title="Новогодние предложения">
+            <img src="public/новогодняя.png" alt="Новогодние предложения" class="new-year-image">
+          </a>
+          <span class="new-year-text-right">до 29.12.2025</span>
         </div>
       </div>
     </div>
@@ -273,7 +256,7 @@
           </div>
 
           <!-- Card 6: Озвучка -->
-          <div class="service-carousel-card service-card-with-bg" style="background-image: url('public/создание звуков и озвучки.png');">
+          <div class="service-carousel-card service-card-with-bg" style="background-image: url('public/создание звуков 2.png');">
             <div class="service-icon service-icon-image">
               <img src="public/аватар создание звуков и озвучки.png" alt="Создание аудио и озвучки" class="service-icon-img">
             </div>
@@ -317,7 +300,7 @@
           </div>
 
           <!-- Card 8: Сайты -->
-          <div class="service-carousel-card service-card-with-bg" style="background-image: url('public/создание сайтов с ии.png');">
+          <div class="service-carousel-card service-card-with-bg" style="background-image: url('public/создание сайтов 2.png');">
             <div class="service-icon service-icon-image">
               <img src="public/аватар для создание сайтов с ии.png" alt="Создание сайтов с AI" class="service-icon-img">
             </div>
@@ -564,9 +547,9 @@
           <i class="fab fa-telegram-plane"></i>
           Начать диалог
         </a>
-        <button class="btn-secondary" id="open-ai-assistant-2">
-          <i class="fas fa-compass"></i>
-          UX-Проводник
+        <button class="btn-secondary" onclick="scrollToSection('testimonials')">
+          <i class="fas fa-star"></i>
+          Посмотреть отзывы
         </button>
       </div>
     </div>
