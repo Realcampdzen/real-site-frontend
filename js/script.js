@@ -165,7 +165,101 @@ function initTiltEffect() {
   });
 }
 
-// Preloader
+// Preloader с реальным отслеживанием загрузки
+function initPreloader() {
+  const preloader = document.getElementById('preloader');
+  const progressBar = document.querySelector('.loading-progress');
+  
+  if (!preloader || !progressBar) return;
+  
+  // Начальный прогресс
+  let currentProgress = 0;
+  const targetProgress = 100;
+  
+  // Функция обновления прогресс-бара
+  function updateProgress(progress) {
+    currentProgress = Math.min(progress, 100);
+    progressBar.style.width = currentProgress + '%';
+  }
+  
+  // Отслеживание загрузки изображений
+  const images = document.querySelectorAll('img');
+  let loadedImages = 0;
+  const totalImages = images.length || 1;
+  
+  images.forEach(img => {
+    if (img.complete && img.naturalHeight !== 0) {
+      loadedImages++;
+    } else {
+      img.addEventListener('load', () => {
+        loadedImages++;
+        const imageProgress = (loadedImages / totalImages) * 70; // 70% за изображения
+        updateProgress(imageProgress);
+      });
+      img.addEventListener('error', () => {
+        loadedImages++;
+        const imageProgress = (loadedImages / totalImages) * 70;
+        updateProgress(imageProgress);
+      });
+    }
+  });
+  
+  // Если изображения уже загружены
+  if (loadedImages === totalImages) {
+    updateProgress(70);
+  } else {
+    updateProgress((loadedImages / totalImages) * 70);
+  }
+  
+  // Отслеживание загрузки шрифтов
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      updateProgress(Math.max(currentProgress, 85));
+    });
+  }
+  
+  // Минимальное время показа прелоадера (для плавности)
+  const minDisplayTime = 1500; // 1.5 секунды
+  const startTime = Date.now();
+  
+  // Проверка готовности страницы
+  function checkComplete() {
+    const elapsed = Date.now() - startTime;
+    const remaining = Math.max(0, minDisplayTime - elapsed);
+    
+    setTimeout(() => {
+      // Установить 100% перед скрытием
+      updateProgress(100);
+      
+      setTimeout(() => {
+        preloader.classList.add('hidden');
+        setTimeout(() => {
+          preloader.remove();
+        }, 500);
+      }, 300);
+    }, remaining);
+  }
+  
+  // Запустить проверку после загрузки всех ресурсов
+  if (document.readyState === 'complete') {
+    updateProgress(90);
+    checkComplete();
+  } else {
+    window.addEventListener('load', () => {
+      updateProgress(90);
+      checkComplete();
+    });
+  }
+  
+  // Дополнительная проверка через небольшую задержку для медленных соединений
+  setTimeout(() => {
+    if (currentProgress < 90) {
+      updateProgress(90);
+    }
+  }, 1000);
+}
+
+// Старая функция для обратной совместимости
 function hidePreloader() {
   const preloader = document.getElementById('preloader');
   if (preloader) {
@@ -227,8 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // Hide preloader after content loads
-  hidePreloader();
+  // Инициализировать прелоадер с реальным отслеживанием загрузки
+  initPreloader();
   
   // Initialize mobile menu
   initMobileMenu();
