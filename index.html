@@ -435,78 +435,63 @@
   <section id="assistants" class="assistants-section">
     <div class="container">
       <h2 class="section-title">Наши <span class="gradient-text">AI&nbsp;ассистенты</span></h2>
-      <p class="section-description">Попробуйте наших готовых AI&nbsp;помощников в действии</p>
+      <p class="section-description">Наши AI-боты живут в соцсетях и на сайтах проектов, общаются с подписчиками и клиентами, пишут комментарии под постами, отвечают на комментарии и сообщения людей и создают атмосферу будущего, которое уже наступило!</p>
       
       <div class="assistants-grid">
-        <!-- Health Assistant -->
-        <div class="assistant-card" data-bot="health-assistant">
+        <!-- Хипыч AI -->
+        <div class="assistant-card" data-bot="hipych-ai">
           <div class="assistant-icon">
-            <i class="fas fa-heartbeat"></i>
+            <img src="images/hipych-avatar.jpg" alt="Хипыч AI" class="assistant-avatar">
           </div>
-          <h3>🩺 Доктор Анна</h3>
-          <p class="assistant-description">Персональный медицинский AI-ассистент. Анализирует справки, расшифровывает анализы и дает персональные рекомендации по здоровью</p>
+          <h3>🎮 Хипыч AI</h3>
+          <p class="assistant-description">Геймерский AI-ассистент и стримерский админ. Опытный геймер, знает все игровые тренды, разбирается в технологиях и железе. Говорит на языке геймеров и помогает с настройкой стримов, OBS и техническими вопросами.</p>
           <div class="assistant-features">
-            <span class="feature-tag">📋 Анализ справок</span>
-            <span class="feature-tag">🔍 Расшифровка анализов</span>
-            <span class="feature-tag">💊 Рекомендации</span>
+            <span class="feature-tag">🎮 Игровая индустрия</span>
+            <span class="feature-tag">📹 Стриминг и OBS</span>
+            <span class="feature-tag">💻 Игровое железо</span>
+            <span class="feature-tag">⚡ Киберспорт</span>
           </div>
-          <button class="try-assistant-btn" data-bot-id="health-assistant">
+          <button class="try-assistant-btn" onclick="if(window.glassUIHipych) window.glassUIHipych.showChat();">
             <i class="fas fa-comments"></i>
-            Пообщаться с Анной
+            Пообщаться с Хипычем
           </button>
         </div>
 
-        <!-- Business Assistant -->
-        <div class="assistant-card" data-bot="business-advisor">
-          <div class="assistant-icon">
-            <i class="fas fa-chart-line"></i>
+        <!-- Кот Бро (в центре) -->
+        <div class="assistant-card featured-bot" data-bot="bro-cat">
+          <div class="assistant-icon featured">
+            <img src="images/bro-avatar.jpg" alt="Кот Бро" class="assistant-avatar">
           </div>
-          <h3>📈 Максим Стратег</h3>
-          <p class="assistant-description">Бизнес-консультант с 15-летним опытом + AI-суперспособности. Анализирует бизнес, создает стратегии роста и внедряет автоматизацию</p>
+          <h3>🐱 Кот Бро</h3>
+          <p class="assistant-description">Рыжий пушистый кот-ассистент и мемный AI-гид. Цифровая версия настоящего рыжего кота. Мемный, милый, с котячьим юмором. Создает эмоции и показывает, как AI-боты могут быть живыми и интересными.</p>
           <div class="assistant-features">
-            <span class="feature-tag">🎯 Анализ бизнеса</span>
-            <span class="feature-tag">📊 Стратегии роста</span>
-            <span class="feature-tag">🤖 AI-автоматизация</span>
+            <span class="feature-tag">🐾 Мемный гид</span>
+            <span class="feature-tag">😸 Котячий юмор</span>
+            <span class="feature-tag">🎯 Эмоциональное общение</span>
+            <span class="feature-tag">⭐ Демо-бот</span>
           </div>
-          <button class="try-assistant-btn" data-bot-id="business-advisor">
+          <button class="try-assistant-btn featured" onclick="if(window.glassUIBroCat) window.glassUIBroCat.showChat();">
             <i class="fas fa-comments"></i>
-            Пообщаться с Максимом
+            Пообщаться с Котом Бро
           </button>
         </div>
 
-        <!-- Support Assistant -->
-        <div class="assistant-card" data-bot="support-agent">
+        <!-- НейроVалюша -->
+        <div class="assistant-card" data-bot="valyusha">
           <div class="assistant-icon">
-            <i class="fas fa-headset"></i>
+            <img src="public/НейроВалюша_аватар.jpg" alt="НейроVалюша" class="assistant-avatar">
           </div>
-          <h3>🎧 Техно-Саша</h3>
-          <p class="assistant-description">Неформальный техгуру, который решает задачи, считающиеся невозможными. Боты, интеграции, приложения - говорит простым языком</p>
+          <h3>💜 НейроVалюша</h3>
+          <p class="assistant-description">Дружелюбная вожатая Реального Лагеря. Помогает детям прокачивать 4К навыки и изучать нейросети. Поддерживает ребят, помогает с нейропроектами и продвигает ценности лагеря: уважение, творчество и заботу.</p>
           <div class="assistant-features">
-            <span class="feature-tag">🤖 Создание ботов</span>
-            <span class="feature-tag">🔗 Интеграции</span>
-            <span class="feature-tag">📱 Приложения</span>
+            <span class="feature-tag">🏕️ Вожатство</span>
+            <span class="feature-tag">🧠 Нейропроекты</span>
+            <span class="feature-tag">📚 Обучение детей</span>
+            <span class="feature-tag">💌 Контент лагеря</span>
           </div>
-          <button class="try-assistant-btn" data-bot-id="support-agent">
+          <button class="try-assistant-btn" onclick="if(window.glassUIValyusha) window.glassUIValyusha.showChat();">
             <i class="fas fa-comments"></i>
-            Пообщаться с Сашей
-          </button>
-        </div>
-
-        <!-- Content Creator -->
-        <div class="assistant-card" data-bot="content-creator">
-          <div class="assistant-icon">
-            <i class="fas fa-pen-fancy"></i>
-          </div>
-          <h3>✍️ Креатив-Лиза</h3>
-          <p class="assistant-description">Муза контента, которая превращает скучные бренды в магниты для клиентов. Создает тексты, стратегии и вирусный контент</p>
-          <div class="assistant-features">
-            <span class="feature-tag">📝 Продающие тексты</span>
-            <span class="feature-tag">🎭 Персонажи брендов</span>
-            <span class="feature-tag">📱 Вирусный контент</span>
-          </div>
-          <button class="try-assistant-btn" data-bot-id="content-creator">
-            <i class="fas fa-comments"></i>
-            Пообщаться с Лизой
+            Пообщаться с Валюшей
           </button>
         </div>
       </div>
