@@ -150,6 +150,19 @@ app.get('/favicon.ico', (req, res) => {
   res.status(204).end();
 });
 
+// Middleware для правильной обработки кириллических путей
+app.use((req, res, next) => {
+  // Декодируем URL для правильной обработки кириллицы
+  if (req.url) {
+    try {
+      req.url = decodeURIComponent(req.url);
+    } catch (e) {
+      // Если декодирование не удалось, используем оригинальный URL
+    }
+  }
+  next();
+});
+
 // Отключаем кеширование в режиме разработки
 if (isDevelopment) {
   app.use((req, res, next) => {
@@ -176,6 +189,10 @@ app.use(express.static('.', {
         'Pragma': 'no-cache',
         'Expires': '0'
       });
+    }
+    // Правильный Content-Type для видео файлов
+    if (path.match(/\.mp4$/i)) {
+      res.set('Content-Type', 'video/mp4');
     }
   }
 }));

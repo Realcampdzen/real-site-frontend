@@ -170,93 +170,155 @@ function initPreloader() {
   const preloader = document.getElementById('preloader');
   const progressBar = document.querySelector('.loading-progress');
   
-  if (!preloader || !progressBar) return;
+  if (!preloader) {
+    return;
+  }
   
-  // Начальный прогресс
+  let isComplete = false;
   let currentProgress = 0;
-  const targetProgress = 100;
-  
-  // Функция обновления прогресс-бара
-  function updateProgress(progress) {
-    currentProgress = Math.min(progress, 100);
-    progressBar.style.width = currentProgress + '%';
-  }
-  
-  // Отслеживание загрузки изображений
-  const images = document.querySelectorAll('img');
-  let loadedImages = 0;
-  const totalImages = images.length || 1;
-  
-  images.forEach(img => {
-    if (img.complete && img.naturalHeight !== 0) {
-      loadedImages++;
-    } else {
-      img.addEventListener('load', () => {
-        loadedImages++;
-        const imageProgress = (loadedImages / totalImages) * 70; // 70% за изображения
-        updateProgress(imageProgress);
-      });
-      img.addEventListener('error', () => {
-        loadedImages++;
-        const imageProgress = (loadedImages / totalImages) * 70;
-        updateProgress(imageProgress);
-      });
-    }
-  });
-  
-  // Если изображения уже загружены
-  if (loadedImages === totalImages) {
-    updateProgress(70);
-  } else {
-    updateProgress((loadedImages / totalImages) * 70);
-  }
-  
-  // Отслеживание загрузки шрифтов
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => {
-      updateProgress(Math.max(currentProgress, 85));
-    });
-  }
-  
-  // Минимальное время показа прелоадера (для плавности)
-  const minDisplayTime = 1500; // 1.5 секунды
   const startTime = Date.now();
+  const minDisplayTime = 800; // Минимум 0.8 секунды
   
-  // Проверка готовности страницы
-  function checkComplete() {
+  // Функция обновления прогресс-бара (только увеличивает, не уменьшает)
+  function updateProgress(progress) {
+    if (progressBar) {
+      // Прогресс только увеличивается, не уменьшается
+      currentProgress = Math.max(currentProgress, Math.min(progress, 100));
+      progressBar.style.width = currentProgress + '%';
+    }
+  }
+  
+  // Функция скрытия прелоадера
+  function hidePreloaderNow() {
+    if (isComplete || !preloader) return;
+    isComplete = true;
+    
     const elapsed = Date.now() - startTime;
     const remaining = Math.max(0, minDisplayTime - elapsed);
     
+    updateProgress(100);
+    
     setTimeout(() => {
-      // Установить 100% перед скрытием
-      updateProgress(100);
-      
-      setTimeout(() => {
+      if (preloader) {
         preloader.classList.add('hidden');
         setTimeout(() => {
-          preloader.remove();
+          if (preloader && preloader.parentNode) {
+            preloader.remove();
+          }
         }, 500);
-      }, 300);
+      }
     }, remaining);
   }
   
-  // Запустить проверку после загрузки всех ресурсов
-  if (document.readyState === 'complete') {
-    updateProgress(90);
-    checkComplete();
-  } else {
-    window.addEventListener('load', () => {
-      updateProgress(90);
-      checkComplete();
+  // Принудительный таймаут - максимум 3 секунды
+  const forceHideTimeout = setTimeout(() => {
+    hidePreloaderNow();
+  }, 3000);
+  
+  // Начальный прогресс
+  updateProgress(10);
+  
+  // Отслеживание загрузки изображений (исключаем видео)
+  try {
+    const images = document.querySelectorAll('img');
+    let loadedImages = 0;
+    let totalImages = 0;
+    
+    // Подсчитываем только изображения, которые не внутри video
+    images.forEach(img => {
+      if (!img.closest('video')) {
+        totalImages++;
+      }
     });
+    
+    if (totalImages > 0) {
+      images.forEach(img => {
+        // Пропускаем изображения внутри video
+        if (img.closest('video')) {
+          return;
+        }
+        
+        if (img.complete && img.naturalHeight !== 0) {
+          loadedImages++;
+        } else {
+          const onLoad = () => {
+            loadedImages++;
+            // Прогресс от 10% до 60% за изображения
+            const imageProgress = 10 + (loadedImages / totalImages) * 50;
+            updateProgress(imageProgress);
+          };
+          img.addEventListener('load', onLoad, { once: true });
+          img.addEventListener('error', onLoad, { once: true });
+        }
+      });
+      
+      // Устанавливаем начальный прогресс для уже загруженных изображений
+      if (loadedImages > 0) {
+        const imageProgress = 10 + (loadedImages / totalImages) * 50;
+        updateProgress(imageProgress);
+      }
+    } else {
+      // Если нет изображений, сразу переходим к следующему этапу
+      updateProgress(30);
+    }
+  } catch (e) {
+    // Игнорируем ошибки, но устанавливаем минимальный прогресс
+    updateProgress(30);
   }
   
-  // Дополнительная проверка через небольшую задержку для медленных соединений
-  setTimeout(() => {
-    if (currentProgress < 90) {
-      updateProgress(90);
+  // Отслеживание загрузки шрифтов (после изображений, 60-75%)
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      updateProgress(75);
+    }).catch(() => {
+      updateProgress(75);
+    });
+  } else {
+    // Если шрифты не поддерживаются, устанавливаем прогресс с небольшой задержкой
+    setTimeout(() => {
+      if (!isComplete) {
+        updateProgress(75);
+      }
+    }, 200);
+  }
+  
+  // Проверка готовности страницы
+  function checkComplete() {
+    clearTimeout(forceHideTimeout);
+    updateProgress(90);
+    hidePreloaderNow();
+  }
+  
+  // Множественные проверки для надежности
+  if (document.readyState === 'complete') {
+    // Если страница уже загружена, даем время показать прогресс
+    updateProgress(85);
+    setTimeout(() => {
+      checkComplete();
+    }, 100);
+  } else {
+    // Слушаем событие load
+    const onLoad = () => {
+      updateProgress(85);
+      checkComplete();
+    };
+    window.addEventListener('load', onLoad, { once: true });
+    
+    // Также слушаем DOMContentLoaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        updateProgress(65);
+      }, { once: true });
     }
-  }, 1000);
+  }
+  
+  // Дополнительная проверка через 1.5 секунды
+  setTimeout(() => {
+    if (!isComplete) {
+      updateProgress(90);
+      checkComplete();
+    }
+  }, 1500);
 }
 
 // Старая функция для обратной совместимости
@@ -296,14 +358,37 @@ document.addEventListener('DOMContentLoaded', () => {
       newYearButton.style.flexShrink = '0';
     }
     
-    // Восстанавливаем правильные размеры изображения
-    const newYearImage = document.querySelector('.hero-actions .new-year-image, .hero .new-year-image');
-    if (newYearImage) {
-      newYearImage.style.width = '100%';
-      newYearImage.style.height = '100%';
-      newYearImage.style.maxWidth = '478px';
-      newYearImage.style.maxHeight = '96px';
-      newYearImage.style.objectFit = 'contain';
+    // Восстанавливаем правильные размеры видео и принудительно загружаем
+    const newYearVideo = document.querySelector('.hero-actions .new-year-video, .hero .new-year-video');
+    if (newYearVideo) {
+      newYearVideo.style.width = '100%';
+      newYearVideo.style.height = '100%';
+      newYearVideo.style.maxWidth = '478px';
+      newYearVideo.style.maxHeight = '96px';
+      newYearVideo.style.objectFit = 'cover';
+      
+      // Принудительная загрузка и воспроизведение видео
+      newYearVideo.load();
+      
+      // Обработка ошибок загрузки
+      newYearVideo.addEventListener('error', (e) => {
+        console.error('Ошибка загрузки видео:', e);
+        // Пробуем альтернативный путь с URL-кодированием
+        const videoSource = newYearVideo.querySelector('source');
+        if (videoSource) {
+          const originalSrc = videoSource.getAttribute('src');
+          const encodedSrc = encodeURI(originalSrc);
+          videoSource.setAttribute('src', encodedSrc);
+          newYearVideo.load();
+        }
+      });
+      
+      // Принудительное воспроизведение после загрузки
+      newYearVideo.addEventListener('loadeddata', () => {
+        newYearVideo.play().catch(err => {
+          console.warn('Автозапуск видео заблокирован браузером:', err);
+        });
+      });
     }
     
     // Дополнительная защита: удаляем любые стили, которые могли быть применены с новогодней страницы
@@ -314,10 +399,11 @@ document.addEventListener('DOMContentLoaded', () => {
       newYearButton.style.removeProperty('min-height');
     }
     
-    if (newYearImage) {
-      newYearImage.classList.remove('new-year-hero-image');
-      newYearImage.style.removeProperty('min-width');
-      newYearImage.style.removeProperty('min-height');
+    // Удаляем старые стили с видео, если они есть
+    if (newYearVideo) {
+      newYearVideo.classList.remove('new-year-hero-image');
+      newYearVideo.style.removeProperty('min-width');
+      newYearVideo.style.removeProperty('min-height');
     }
   }
   
