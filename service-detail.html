@@ -185,35 +185,123 @@
       card.className = 'service-detail-card service-card-with-bg';
       card.style.backgroundImage = `url('${service.backgroundImage}')`;
       
-      card.innerHTML = `
-        <div class="service-detail-content">
-          <div class="service-icon service-icon-image">
-            <img src="${service.avatarImage}" alt="${service.title}" class="service-icon-img">
+      // Check if service has detailed content
+      const hasDetailedContent = service.detailTitle || service.lead || service.useCases || service.whatWeDo || service.formats || service.whatYouGet;
+      
+      if (hasDetailedContent) {
+        // Render detailed content
+        card.innerHTML = `
+          <div class="service-detail-content">
+            <div class="service-icon service-icon-image">
+              <img src="${service.avatarImage}" alt="${service.title}" class="service-icon-img">
+            </div>
+            
+            <h1 class="service-detail-title">${service.detailTitle || service.title}</h1>
+            
+            ${service.lead ? `<p class="service-detail-lead">${service.lead}</p>` : ''}
+            
+            ${service.aboutPerson ? `
+              <div class="service-detail-content-section">
+                <h2 class="service-detail-section-title">${service.aboutPersonTitle || 'Кто за это отвечает'}</h2>
+                <div class="service-detail-about-person">
+                  <h3 class="service-detail-person-name">${service.aboutPerson.name}</h3>
+                  <ul class="service-detail-list">
+                    ${service.aboutPerson.points.map(point => `
+                      <li>${point}</li>
+                    `).join('')}
+                  </ul>
+                </div>
+              </div>
+            ` : ''}
+            
+            ${service.useCases && service.useCases.length > 0 ? `
+              <div class="service-detail-content-section">
+                <h2 class="service-detail-section-title">${service.useCasesTitle || 'Для чего подойдут наши боты'}</h2>
+                ${service.useCases.map(useCase => `
+                  <div class="service-detail-item">
+                    <h3 class="service-detail-item-title">${useCase.title}</h3>
+                    <p class="service-detail-item-description">${useCase.description}</p>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+            
+            ${service.whatWeDo && service.whatWeDo.length > 0 ? `
+              <div class="service-detail-content-section">
+                <h2 class="service-detail-section-title">${service.whatWeDoTitle || 'Что мы делаем в рамках услуги'}</h2>
+                ${service.whatWeDo.map(item => `
+                  <div class="service-detail-item">
+                    <h3 class="service-detail-item-title">${item.title}</h3>
+                    <p class="service-detail-item-description">${item.description}</p>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+            
+            ${service.formats && service.formats.length > 0 ? `
+              <div class="service-detail-content-section">
+                <h2 class="service-detail-section-title">${service.formatsTitle || 'Какие форматы бот-решений мы делаем'}</h2>
+                <ul class="service-detail-list">
+                  ${service.formats.map(format => `
+                    <li>${format}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+            
+            ${service.whatYouGet && service.whatYouGet.length > 0 ? `
+              <div class="service-detail-content-section">
+                <h2 class="service-detail-section-title">Что вы получаете</h2>
+                <ul class="service-detail-list">
+                  ${service.whatYouGet.map(item => `
+                    <li>${item}</li>
+                  `).join('')}
+                </ul>
+              </div>
+            ` : ''}
+            
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">${service.price}</span>
+            </div>
+            
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="${service.buttonIcon}"></i> ${service.buttonText}
+            </button>
           </div>
-          
-          <h1 class="service-detail-title">${service.title}</h1>
-          
-          <p class="service-detail-description">${service.description}</p>
-          
-          <div class="service-detail-features">
-            <h3>Возможности:</h3>
-            <ul class="service-features">
-              ${service.features.map(feature => `
-                <li><i class="fas fa-check"></i> ${feature}</li>
-              `).join('')}
-            </ul>
+        `;
+      } else {
+        // Render simple content (backward compatibility)
+        card.innerHTML = `
+          <div class="service-detail-content">
+            <div class="service-icon service-icon-image">
+              <img src="${service.avatarImage}" alt="${service.title}" class="service-icon-img">
+            </div>
+            
+            <h1 class="service-detail-title">${service.title}</h1>
+            
+            <p class="service-detail-description">${service.description}</p>
+            
+            <div class="service-detail-features">
+              <h3>Возможности:</h3>
+              <ul class="service-features">
+                ${service.features.map(feature => `
+                  <li><i class="fas fa-check"></i> ${feature}</li>
+                `).join('')}
+              </ul>
+            </div>
+            
+            <div class="service-price">
+              <span class="price-label">Стоимость</span>
+              <span class="price-value">${service.price}</span>
+            </div>
+            
+            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+              <i class="${service.buttonIcon}"></i> ${service.buttonText}
+            </button>
           </div>
-          
-          <div class="service-price">
-            <span class="price-label">Стоимость</span>
-            <span class="price-value">${service.price}</span>
-          </div>
-          
-          <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
-            <i class="${service.buttonIcon}"></i> ${service.buttonText}
-          </button>
-        </div>
-      `;
+        `;
+      }
     }
     
     function showError() {

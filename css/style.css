@@ -5029,6 +5029,161 @@ body::before {
   box-shadow: 0 8px 24px rgba(255, 155, 74, 0.4);
 }
 
+/* Detailed service content styles */
+.service-detail-lead {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.service-detail-content-section {
+  margin: 50px 0;
+  text-align: left;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.service-detail-section-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.service-detail-item {
+  margin-bottom: 30px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.service-detail-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.service-detail-item-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.service-detail-item-description {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.service-detail-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.service-detail-list li {
+  padding: 16px 24px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  position: relative;
+  padding-left: 40px;
+  transition: all 0.3s ease;
+}
+
+.service-detail-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-contrast);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.service-detail-list li:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+}
+
+.service-detail-about-person {
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.service-detail-person-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.service-detail-about-person .service-detail-list {
+  margin-top: 0;
+}
+
+.service-detail-about-person .service-detail-list li {
+  padding: 12px 0;
+  padding-left: 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  position: relative;
+}
+
+.service-detail-about-person .service-detail-list li:last-child {
+  border-bottom: none;
+}
+
+.service-detail-about-person .service-detail-list li::before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  transform: none;
+  color: var(--accent-contrast);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.service-detail-about-person .service-detail-list li:hover {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: none;
+}
+
 /* Mobile styles for service detail page */
 @media (max-width: 768px) {
   .service-detail-section {
@@ -5089,6 +5244,65 @@ body::before {
     padding: 16px 28px;
     font-size: 16px;
   }
+
+  .service-detail-lead {
+    font-size: 16px;
+    margin-bottom: 30px;
+  }
+
+  .service-detail-content-section {
+    margin: 40px 0;
+  }
+
+  .service-detail-section-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .service-detail-item {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .service-detail-item-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .service-detail-item-description {
+    font-size: 15px;
+  }
+
+  .service-detail-list li {
+    padding: 14px 20px;
+    padding-left: 36px;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .service-detail-list li::before {
+    left: 12px;
+    font-size: 16px;
+  }
+
+  .service-detail-about-person {
+    padding: 20px;
+  }
+
+  .service-detail-person-name {
+    font-size: 20px;
+    margin-bottom: 14px;
+  }
+
+  .service-detail-about-person .service-detail-list li {
+    padding: 10px 0;
+    padding-left: 20px;
+    font-size: 15px;
+  }
+
+  .service-detail-about-person .service-detail-list li::before {
+    left: 6px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -5131,6 +5345,66 @@ body::before {
   .service-detail-card .service-btn {
     padding: 14px 24px;
     font-size: 15px;
+  }
+
+  .service-detail-lead {
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+
+  .service-detail-content-section {
+    margin: 30px 0;
+  }
+
+  .service-detail-section-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .service-detail-item {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .service-detail-item-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .service-detail-item-description {
+    font-size: 14px;
+  }
+
+  .service-detail-list li {
+    padding: 12px 16px;
+    padding-left: 32px;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .service-detail-list li::before {
+    left: 10px;
+    font-size: 14px;
+  }
+
+  .service-detail-about-person {
+    padding: 16px;
+  }
+
+  .service-detail-person-name {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .service-detail-about-person .service-detail-list li {
+    padding: 8px 0;
+    padding-left: 18px;
+    font-size: 14px;
+  }
+
+  .service-detail-about-person .service-detail-list li::before {
+    left: 4px;
+    font-size: 16px;
   }
 }
 
