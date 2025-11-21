@@ -63,6 +63,20 @@
   overflow: hidden;
 }
 
+/* Оранжевый матовый оверлей на кнопке */
+.navbar .snow-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 155, 74, 0.15);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .navbar .snow-toggle:hover {
   transform: translate(-50%, -50%) scale(1.15);
   border-color: rgba(255, 155, 74, 0.9);
@@ -74,20 +88,24 @@
 
 .navbar .snow-toggle img,
 .navbar .snow-toggle .snow-toggle-icon {
-  width: 110%;
-  height: 110%;
+  width: 90%;
+  height: 90%;
   object-fit: cover;
   display: block;
-  transition: opacity 0.2s ease, filter 0.2s ease;
+  transition: opacity 0.2s ease, filter 0.2s ease, width 0.3s ease, height 0.3s ease;
   mix-blend-mode: screen;
   filter: brightness(5) contrast(4) saturate(1.5);
   image-rendering: -webkit-optimize-contrast;
   opacity: 1;
+  position: relative;
+  z-index: 0;
 }
 
 .navbar .snow-toggle.active img,
 .navbar .snow-toggle.active .snow-toggle-icon {
   filter: brightness(1.2) saturate(1.3);
+  width: 110%;
+  height: 110%;
 }
 
 /* Если кнопка не в навбаре (fallback) */
@@ -114,15 +132,38 @@
   overflow: hidden;
 }
 
+/* Оранжевый матовый оверлей для fallback кнопки */
+.snow-toggle:not(.navbar .snow-toggle)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 155, 74, 0.15);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .snow-toggle:not(.navbar .snow-toggle) img,
 .snow-toggle:not(.navbar .snow-toggle) .snow-toggle-icon {
-  width: 110%;
-  height: 110%;
+  width: 90%;
+  height: 90%;
   object-fit: cover;
   display: block;
+  transition: width 0.3s ease, height 0.3s ease;
   mix-blend-mode: lighten;
   filter: brightness(5) contrast(4) saturate(1.5);
   opacity: 1;
+  position: relative;
+  z-index: 0;
+}
+
+.snow-toggle:not(.navbar .snow-toggle).active img,
+.snow-toggle:not(.navbar .snow-toggle).active .snow-toggle-icon {
+  width: 110%;
+  height: 110%;
 }
 
 .snow-toggle:not(.navbar .snow-toggle):hover {
