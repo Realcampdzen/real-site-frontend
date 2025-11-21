@@ -232,12 +232,36 @@ body::before {
   display: flex;
   align-items: center;
   gap: 24px;
+  justify-content: space-between;
+  position: relative;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(calc(-50% - 120px));
 }
 
 .nav-links {
   margin-left: auto;
   display: flex;
   gap: 32px;
+}
+
+@media (max-width: 768px) {
+  .nav-left {
+    display: none;
+  }
+  
+  .nav-links {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: flex;
+  }
 }
 
 .nav-logo {
