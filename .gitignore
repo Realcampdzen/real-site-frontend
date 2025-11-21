@@ -25,3 +25,8 @@ debug*.html
 test-*.html
 fix-*.html
 deep-debug.html
+
+# Медиа-файлы портфолио (слишком большие для GitHub)
+public/works/*.mp4
+public/works/*.mov
+public/works/*.avi
