@@ -104,8 +104,8 @@
 .navbar .snow-toggle.active img,
 .navbar .snow-toggle.active .snow-toggle-icon {
   filter: brightness(1.2) saturate(1.3);
-  width: 110%;
-  height: 110%;
+  width: 130%;
+  height: 130%;
 }
 
 /* Если кнопка не в навбаре (fallback) */
@@ -162,8 +162,8 @@
 
 .snow-toggle:not(.navbar .snow-toggle).active img,
 .snow-toggle:not(.navbar .snow-toggle).active .snow-toggle-icon {
-  width: 110%;
-  height: 110%;
+  width: 130%;
+  height: 130%;
 }
 
 .snow-toggle:not(.navbar .snow-toggle):hover {
