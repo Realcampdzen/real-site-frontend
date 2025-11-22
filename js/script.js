@@ -1,5 +1,105 @@
 // AI Studio - Enhanced Interactive Features
 
+const CONTACTS = {
+    phone: { href: 'tel:+79650255750', display: '+7 965 025 57 50' },
+    email: { href: 'mailto:hello@stepan-ai.studio', display: 'hello@stepan-ai.studio' },
+    telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
+    whatsapp: { href: 'https://wa.me/79650255750' },
+    vk: { href: 'https://vk.com' },
+    youtube: { href: 'https://youtube.com' },
+    tiktok: { href: 'https://www.tiktok.com' },
+    primary: { href: 'https://t.me/Stivanovv' }
+};
+
+function applyContactConfig() {
+    const linkMap = {
+        primary: CONTACTS.primary,
+        telegram: CONTACTS.telegram,
+        whatsapp: CONTACTS.whatsapp,
+        phone: CONTACTS.phone,
+        email: CONTACTS.email,
+        vk: CONTACTS.vk,
+        youtube: CONTACTS.youtube,
+        tiktok: CONTACTS.tiktok
+    };
+
+    document.querySelectorAll('[data-contact-link]').forEach((element) => {
+        const key = element.getAttribute('data-contact-link');
+        const config = linkMap[key];
+        if (!config || !config.href) return;
+
+        const tag = element.tagName.toLowerCase();
+        if (tag === 'a') {
+            element.setAttribute('href', config.href);
+        } else {
+            element.addEventListener('click', () => {
+                window.location.href = config.href;
+            });
+            element.setAttribute('data-contact-href', config.href);
+        }
+    });
+
+    const textMap = {
+        phone: CONTACTS.phone.display,
+        email: CONTACTS.email.display,
+        telegram: CONTACTS.telegram.handle || CONTACTS.telegram.display,
+        telegramHandle: CONTACTS.telegram.handle || CONTACTS.telegram.display
+    };
+
+    document.querySelectorAll('[data-contact-text]').forEach((element) => {
+        const key = element.getAttribute('data-contact-text');
+        const textValue = textMap[key];
+        if (textValue) {
+            element.textContent = textValue;
+        }
+    });
+}
+
+function initCookieBanner() {
+    const banner = document.getElementById('cookie-banner');
+    const acceptBtn = document.getElementById('cookie-accept');
+    const storageKey = 'rv-cookie-consent';
+    if (!banner || !acceptBtn) return;
+
+    const hideBanner = () => {
+        banner.classList.remove('visible');
+        banner.setAttribute('aria-hidden', 'true');
+    };
+
+    const showBanner = () => {
+        banner.classList.add('visible');
+        banner.setAttribute('aria-hidden', 'false');
+    };
+
+    const persistConsent = () => {
+        try {
+            localStorage.setItem(storageKey, 'true');
+        } catch (error) {
+            console.warn('Не удалось сохранить согласие с cookie:', error);
+        }
+    };
+
+    const shouldShow = () => {
+        try {
+            return localStorage.getItem(storageKey) !== 'true';
+        } catch (error) {
+            console.warn('Не удалось прочитать флаг cookie согласия:', error);
+            return true;
+        }
+    };
+
+    banner.setAttribute('aria-hidden', 'true');
+
+    if (shouldShow()) {
+        showBanner();
+    }
+
+    acceptBtn.addEventListener('click', () => {
+        persistConsent();
+        hideBanner();
+    });
+}
+
 // Modern website functionality
 function toggleSection(id) {
     const content = document.getElementById(id + '-content');
@@ -85,20 +185,47 @@ function initTestimonialsSlider() {
 function initMobileMenu() {
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
   const mobileNav = document.getElementById('mobile-nav');
+  const mobileNavClose = document.querySelector('.mobile-nav-close');
   
   if (!mobileMenuBtn || !mobileNav) return;
   
+  const openMenu = () => {
+    mobileMenuBtn.classList.add('active');
+    mobileNav.classList.add('active');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('no-scroll');
+  };
+
+  const closeMenu = () => {
+    mobileMenuBtn.classList.remove('active');
+    mobileNav.classList.remove('active');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('no-scroll');
+  };
+
   mobileMenuBtn.addEventListener('click', () => {
-    mobileMenuBtn.classList.toggle('active');
-    mobileNav.classList.toggle('active');
+    if (mobileNav.classList.contains('active')) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
   });
   
+  if (mobileNavClose) {
+    mobileNavClose.addEventListener('click', closeMenu);
+  }
+
   // Close mobile menu when clicking on links
   document.querySelectorAll('.mobile-nav-link').forEach(link => {
     link.addEventListener('click', () => {
-      mobileMenuBtn.classList.remove('active');
-      mobileNav.classList.remove('active');
+      closeMenu();
     });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && mobileNav.classList.contains('active')) {
+      closeMenu();
+    }
   });
 }
 
@@ -411,6 +538,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Инициализировать прелоадер с реальным отслеживанием загрузки
   initPreloader();
+
+  applyContactConfig();
   
   // Initialize mobile menu
   initMobileMenu();
@@ -470,7 +599,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }, observerOptions);
 
   // Observe animated elements
-  const animatedElements = document.querySelectorAll('.service-card, .process-step, .stat-card, .contact-card, .stats-grid');
+  const animatedElements = document.querySelectorAll(
+    '.service-card, .process-step, .stat-card, .contact-card, .stats-grid, ' +
+    '.highlight-service-card, .benefit-card, .projects-banner-inner, .projects-reel-card, ' +
+    '.portfolio-card, .assistant-card, .testimonial-card'
+  );
   animatedElements.forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
@@ -562,6 +695,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100);
   });
 
+  // Projects reel video play on click
+  document.querySelectorAll('.projects-reel-card').forEach(card => {
+    const video = card.querySelector('.projects-reel-video');
+    const playBtn = card.querySelector('.projects-reel-play');
+
+    if (!video || !playBtn) return;
+
+    function togglePlay() {
+      if (video.paused) {
+        video.muted = false;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }
+
+    playBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      togglePlay();
+    });
+
+    card.addEventListener('click', togglePlay);
+  });
+
   // Add smooth reveal animation for sections
   const sections = document.querySelectorAll('section');
   const sectionObserver = new IntersectionObserver((entries) => {
@@ -594,5 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   `;
   document.head.appendChild(sectionStyle);
+
+  initCookieBanner();
 });
   

@@ -20,8 +20,7 @@ const STATIC_ASSETS = [
   '/chat-components/GlassUIWidget.js',
   '/images/hipych-avatar.jpg',
   '/images/bro-avatar.jpg',
-  '/images/neon-room.png',
-  '/public/фон1.png'
+  '/images/neon-room.png'
 ];
 
 // Установка Service Worker

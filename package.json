@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Realcampdzen/real-site.git"
+    "url": "git+https://github.com/Realcampdzen/Real_Vibe_AI_Studio_New.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Realcampdzen/real-site/issues"
+    "url": "https://github.com/Realcampdzen/Real_Vibe_AI_Studio_New/issues"
   },
-  "homepage": "https://github.com/Realcampdzen/real-site#readme",
+  "homepage": "https://github.com/Realcampdzen/Real_Vibe_AI_Studio_New#readme",
   "description": "",
   "dependencies": {
     "@minchat/react-chat-ui": "^0.16.2",

@@ -10,7 +10,8 @@ const expressWinston = require('express-winston');
 
 dotenv.config();
 const app = express();
-const port = 3001;
+// Используем порт 3000 для разработки фронтенда
+const port = 3000;
 
 // Настройка логирования
 const logger = winston.createLogger({
@@ -85,8 +86,8 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
-      'http://localhost:3001',
-      'http://127.0.0.1:3001',
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
       'https://yourdomain.com',
       // Добавьте ваш продакшн домен здесь
     ];

@@ -85,11 +85,23 @@ class SnowEffect {
       this.toggleButton.classList.add('active');
     }
 
+    // Сразу синхронизируем aria-pressed с текущим состоянием
+    this.toggleButton.setAttribute('aria-pressed', this.isActive ? 'true' : 'false');
+
     this.toggleButton.addEventListener('click', () => this.toggle());
-    
-    // Добавляем кнопку в навбар, по центру
+
+    // Добавляем кнопку в правый блок навигации, чтобы она выглядела как обычная иконка
+    const navRight = document.querySelector('.nav-right');
     const navbar = document.querySelector('.navbar');
-    if (navbar) {
+
+    if (navRight) {
+      this.toggleButton.classList.add('nav-icon-btn', 'snow-toggle-btn');
+      // Ставим снежинку перед бургером, если он есть
+      const mobileMenuBtn = navRight.querySelector('.mobile-menu-btn');
+      navRight.insertBefore(this.toggleButton, mobileMenuBtn || null);
+    } else if (navbar) {
+      // Фолбэк: добавляем в сам navbar как иконку
+      this.toggleButton.classList.add('nav-icon-btn', 'snow-toggle-btn');
       navbar.appendChild(this.toggleButton);
     } else {
       // Если навбара нет, добавляем в body
@@ -260,11 +272,19 @@ class SnowEffect {
     // Обновляем изображение на кнопке
     this.updateButtonImage();
 
+    // Обновляем aria-состояния для доступности
+    if (this.toggleButton) {
+      this.toggleButton.classList.toggle('active', this.isActive);
+      this.toggleButton.setAttribute('aria-pressed', this.isActive ? 'true' : 'false');
+      this.toggleButton.setAttribute(
+        'aria-label',
+        this.isActive ? 'Выключить снег' : 'Включить снег'
+      );
+    }
+
     if (this.isActive) {
-      this.toggleButton.classList.add('active');
       this.start();
     } else {
-      this.toggleButton.classList.remove('active');
       this.stop();
     }
   }
