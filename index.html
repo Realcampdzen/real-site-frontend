@@ -218,13 +218,13 @@
         <!-- Ряд 1: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
           <!-- Card 1: AI-видео (БОЛЬШОЙ) -->
-          <article class="service-simple-card">
+          <article class="service-simple-card" data-service-id="3" onclick="handleServiceCardClick(event, 3)">
             <video class="service-simple-bg-video" autoplay loop muted playsinline>
               <source src="public/works/%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BC%D0%B5%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE_%D1%80%D0%B5%D0%BA%D0%BB%D0%B0%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B2%D0%B8%D0%B4%D0%B5%D0%BE.mp4" type="video/mp4">
             </video>
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
+              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
             </div>
           </article>
 
@@ -233,7 +233,7 @@
             <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_2kwtns2kwtns2kwt.jpg" alt="Кастомные GPTs">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram">AI ФОТО</div>
+              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">AI ФОТО</div>
             </div>
           </article>
         </div>
@@ -262,7 +262,7 @@
         <!-- Ряд 3: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
           <!-- Card 5: Музыка (БОЛЬШОЙ) -->
-          <article class="service-simple-card">
+          <article class="service-simple-card" data-service-id="0" onclick="handleServiceCardClick(event, 0)">
             <img class="service-simple-bg-image" src="public/works/%D0%B1%D0%B0%D0%B1%D0%B0%20%D0%BA%D1%83%D1%80%D0%B8%D1%86%D0%B0.jpg" alt="Музыка для бренда">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -271,7 +271,7 @@
           </article>
 
           <!-- Card 6: Озвучка (малый) -->
-          <article class="service-simple-card">
+          <article class="service-simple-card" data-service-id="1" onclick="handleServiceCardClick(event, 1)">
             <img class="service-simple-bg-image" src="public/works/%D0%B3%D1%83%D0%B1%D1%8B.jpg" alt="Озвучка и саунд‑дизайн">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -283,7 +283,7 @@
         <!-- Ряд 4: малый слева, БОЛЬШОЙ справа -->
         <div class="service-row service-row-small-left">
           <!-- Card 7: Приложения (малый, идёт первым) -->
-          <article class="service-simple-card">
+          <article class="service-simple-card" data-service-id="2" onclick="handleServiceCardClick(event, 2)">
             <img class="service-simple-bg-image" src="public/works/%D0%BF%D0%BE%D0%BC%D0%B0%D0%B4%D0%B0.jpg" alt="Приложения с AI">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -292,7 +292,7 @@
           </article>
 
           <!-- Card 8: Сайты (БОЛЬШОЙ, идёт вторым) -->
-          <article class="service-simple-card">
+          <article class="service-simple-card" data-service-id="4" onclick="handleServiceCardClick(event, 4)">
             <img class="service-simple-bg-image" src="public/works/%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F%20%D0%B1%D0%B0%D0%B1%D0%B0.jpg" alt="Сайты с умными функциями">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -304,7 +304,7 @@
         <!-- Ряд 5: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
           <!-- Card 9: ОЗВУЧКА И SOUND DESIGN (БОЛЬШОЙ) -->
-          <article class="service-simple-card">
+          <article class="service-simple-card" data-service-id="5" onclick="handleServiceCardClick(event, 5)">
             <img class="service-simple-bg-image" src="public/works/%D0%B3%D1%83%D0%B1%D1%8B.jpg" alt="Озвучка и sound design">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -313,7 +313,7 @@
           </article>
 
           <!-- Card 10: СОЗДАНИЕ САЙТОВ С AI ФУНКЦИЯМИ (малый) -->
-          <article class="service-simple-card">
+          <article class="service-simple-card" data-service-id="7" onclick="handleServiceCardClick(event, 7)">
             <img class="service-simple-bg-image" src="public/works/%D0%B3%D1%83%D0%B1%D1%8B.jpg" alt="Создание сайтов с AI функциями">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -833,6 +833,21 @@
         }
       }
     }, 500);
+  </script>
+
+  <script>
+    // Handle service card clicks - prevent navigation if clicking on interactive elements
+    function handleServiceCardClick(event, serviceId) {
+      // Don't navigate if clicking on interactive elements
+      if (event.target.closest('.service-simple-footer') ||
+          event.target.closest('a') ||
+          event.target.closest('button') ||
+          event.target.closest('[data-contact-link]')) {
+        return;
+      }
+      // Navigate to service detail page
+      window.location.href = `service-detail.html?id=${serviceId}`;
+    }
   </script>
 
 </body>

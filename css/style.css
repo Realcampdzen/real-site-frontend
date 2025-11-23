@@ -2269,6 +2269,7 @@ body::before {
   box-shadow: 0 22px 70px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.04);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   display: flex;
+  cursor: pointer;
 }
 
 .service-simple-card:hover {
@@ -6742,6 +6743,195 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: transparent !important;
   position: relative;
   min-height: 100vh;
+  padding: 104px 24px 60px;
+}
+
+/* Service Detail Hero Container */
+.service-detail-hero {
+  width: 100%;
+  max-width: 1400px;
+  margin: 40px auto 60px;
+  display: flex;
+  justify-content: center;
+}
+
+.service-detail-hero-bottom {
+  margin-top: 60px;
+}
+
+.service-detail-hero .hero-reel {
+  width: 94vw;
+  max-width: 1400px;
+}
+
+/* Service Detail CTA Section with Large Green Button */
+.service-detail-cta-section {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.service-detail-cta-btn {
+  /* Same size and form as btn-primary, but with green color */
+  /* Same width as hero-reel container above */
+  width: 94vw;
+  max-width: 1400px;
+  min-height: calc(var(--btn-height) * 2 * 1.33);
+  padding: calc(var(--btn-padding-y) * 2 * 1.33) var(--btn-padding-x);
+  border-radius: 40px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-transform: none;
+  /* Green button with black text */
+  background: #00ff00;
+  color: #000000;
+  box-shadow: 0 8px 24px rgba(0, 255, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.25s ease, background-color 0.2s ease;
+}
+
+.service-detail-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 255, 0, 0.5);
+  filter: brightness(1.1);
+}
+
+.service-detail-cta-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 24px rgba(0, 255, 0, 0.3);
+}
+
+.service-detail-cta-text {
+  width: 100%;
+  max-width: 1400px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  color: #ffffff;
+  font-family: var(--font-primary);
+}
+
+.cta-text-left {
+  text-align: left;
+}
+
+.cta-text-right {
+  text-align: left;
+}
+
+.cta-text-line {
+  margin: 0 0 8px 0;
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.cta-text-left .cta-text-line {
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Service Detail Services Grid - Three containers in a row */
+.service-detail-services-grid {
+  width: 94vw;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.service-detail-services-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  grid-template-rows: calc(var(--service-card-height-desktop) * 1.2);
+}
+
+.service-detail-services-row .service-simple-card {
+  width: 100%;
+  height: calc(var(--service-card-height-desktop) * 1.2);
+}
+
+@media (max-width: 1024px) {
+  .service-detail-services-row {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: calc(var(--service-card-height-tablet) * 1.2);
+  }
+  
+  .service-detail-services-row .service-simple-card {
+    height: calc(var(--service-card-height-tablet) * 1.2);
+  }
+}
+
+@media (max-width: 768px) {
+  .service-detail-services-row {
+    grid-template-columns: 1fr;
+    grid-template-rows: calc(var(--service-card-height-mobile) * 1.2);
+    gap: 14px;
+  }
+  
+  .service-detail-services-row .service-simple-card {
+    height: calc(var(--service-card-height-mobile) * 1.2);
+  }
+}
+
+@media (max-width: 1024px) {
+  .service-detail-cta-text {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .cta-text-left,
+  .cta-text-right {
+    text-align: center;
+  }
+  
+  .service-detail-cta-btn {
+    min-height: 70px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .service-detail-section {
+    padding: 100px 20px 40px;
+  }
+  
+  .service-detail-hero {
+    margin-bottom: 40px;
+  }
+  
+  .service-detail-cta-section {
+    margin-bottom: 40px;
+    gap: 24px;
+  }
+  
+  .service-detail-cta-btn {
+    min-height: 60px;
+    font-size: 1rem;
+  }
+  
+  .cta-text-line {
+    font-size: 0.9rem;
+  }
+  
+  .cta-text-left .cta-text-line {
+    font-size: 1rem;
+  }
 }
 
 .service-detail-card .service-icon {
