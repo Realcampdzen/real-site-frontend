@@ -26,12 +26,12 @@
   --nav-pill-text: #0b0b0b;
   --nav-icon-bg: rgba(255, 255, 255, 0.02);
   --nav-icon-border: rgba(255, 255, 255, 0.92);
-  --nav-cta-bg: linear-gradient(135deg, #ff00ff 0%, #8b00ff 100%);
-  --nav-cta-bg-hover: linear-gradient(135deg, #ff1aff 0%, #9d00ff 100%);
-  --nav-cta-bg-active: linear-gradient(135deg, #e600e6 0%, #7a00cc 100%);
-  --nav-cta-border: #cc00cc;
-  --nav-cta-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 28px rgba(255, 0, 255, 0.45);
-  --nav-cta-glow: 0 0 46px rgba(255, 0, 255, 0.5), 0 0 30px rgba(139, 0, 255, 0.4);
+  --nav-cta-bg: linear-gradient(135deg, #ff33ff 0%, #ff00ff 100%);
+  --nav-cta-bg-hover: linear-gradient(135deg, #ff66ff 0%, #ff33ff 100%);
+  --nav-cta-bg-active: linear-gradient(135deg, #ff00ff 0%, #e600e6 100%);
+  --nav-cta-border: #ff00ff;
+  --nav-cta-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 28px rgba(255, 51, 255, 0.6);
+  --nav-cta-glow: 0 0 46px rgba(255, 51, 255, 0.7);
 
   /* Fonts */
   --font-display: 'Unbounded', system-ui, -apple-system, sans-serif;
@@ -471,23 +471,36 @@ body::before {
   position: absolute;
   inset: -4px;
   border-radius: inherit;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.45), rgba(139, 0, 255, 0.25), rgba(255, 0, 255, 0));
+  background: radial-gradient(circle at 50% 50%, rgba(255, 51, 255, 0.55), rgba(255, 0, 255, 0));
   filter: blur(10px);
   z-index: -1;
   opacity: 1;
   pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.nav-cta:hover::after {
+  opacity: 0;
 }
 
 .nav-cta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.55), 0 0 38px rgba(255, 0, 255, 0.65), 0 0 90px rgba(139, 0, 255, 0.45);
-  background: var(--nav-cta-bg-hover);
-  border-color: var(--nav-cta-border);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.55);
+  background: #ffffff;
+  border-color: #e0e0e0;
+  color: #0b0b0b;
+  text-decoration: none !important;
+}
+
+.nav-cta:hover * {
+  text-decoration: none !important;
+  border-bottom: none !important;
+  text-decoration-line: none !important;
 }
 
 .nav-cta:active {
   transform: translateY(0);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.42), 0 0 20px rgba(255, 0, 255, 0.38), 0 0 15px rgba(139, 0, 255, 0.3);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.42), 0 0 20px rgba(255, 51, 255, 0.5);
   background: var(--nav-cta-bg-active);
 }
 
@@ -501,6 +514,16 @@ body::before {
 .nav-cta-phone {
   font-size: 17px;
   font-weight: 700;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+.nav-cta:hover .nav-cta-phone,
+.nav-cta .nav-cta-phone,
+.nav-cta a .nav-cta-phone {
+  text-decoration: none !important;
+  border-bottom: none !important;
+  text-decoration-line: none !important;
 }
 
 .nav-lang-toggle {
@@ -520,7 +543,7 @@ body::before {
   text-transform: uppercase;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4), 0 0 24px rgba(255, 0, 255, 0.5), 0 0 18px rgba(139, 0, 255, 0.4);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4), 0 0 24px rgba(255, 51, 255, 0.6);
 }
 
 .nav-lang-toggle:hover {

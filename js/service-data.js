@@ -249,7 +249,7 @@ const SERVICES_DATA = [
       "Музыка, озвучка и SFX из нашей студии"
     ],
     price: "Уточняется",
-    backgroundImage: "public/создание видео.png",
+    backgroundImage: "public/works/AI‑видео картинка.jpg",
     avatarImage: "public/аватар создание видео.png",
     buttonText: "Обсудить проект",
     buttonIcon: "fab fa-telegram",

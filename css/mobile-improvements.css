@@ -209,6 +209,12 @@
     gap: 8px;
   }
   
+  /* Показываем кнопку снежинки на мобильных */
+  .nav-right .snow-toggle,
+  .nav-right .snow-toggle-btn {
+    display: flex !important;
+  }
+  
   /* Убеждаемся, что гамбургер виден и увеличиваем его в два раза */
   .nav-right .mobile-menu-btn {
     display: flex !important;
@@ -322,6 +328,24 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Откладываем отрисовку секций вне экрана для ускорения первого рендера */
+@media (max-width: 900px) {
+  @supports (content-visibility: auto) {
+    .hero,
+    .services,
+    .benefits-section,
+    .value-highlight,
+    .projects-banner-section,
+    .cta-section,
+    .process-section,
+    .assistants-section,
+    .testimonials {
+      content-visibility: auto;
+      contain-intrinsic-size: 800px;
+    }
   }
 }
 

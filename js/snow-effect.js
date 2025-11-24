@@ -14,6 +14,15 @@ class SnowEffect {
     this.isActive = saved === null ? true : saved === 'true';
 
     this.animationFrame = null;
+    this.connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    this.prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.saveData = !!(this.connection && this.connection.saveData);
+    this.slowNetwork = this.connection && ['slow-2g', '2g', '3g'].includes(this.connection.effectiveType);
+    this.deferForPerformance = this.prefersReducedMotion || this.saveData || this.slowNetwork;
+
+    if (this.deferForPerformance) {
+      this.isActive = false; // Не запускаем анимацию автоматически на экономии трафика/замедленном устройстве
+    }
     
     // Cursor interaction properties
     this.mouse = { x: -9999, y: -9999 }; // Initial position outside screen
@@ -25,6 +34,7 @@ class SnowEffect {
     this.isMouseVisible = false;
     this.lastMouseUpdate = 0;
     this.mouseUpdateThrottle = 16; // ~60fps max updates
+    this.mouseTrackingAttached = false;
     
     this.init();
   }
@@ -36,11 +46,19 @@ class SnowEffect {
       this.container.id = 'snow-container';
       document.body.appendChild(this.container);
     }
+    if (!this.isActive) {
+      this.container.style.display = 'none';
+      this.container.style.visibility = 'hidden';
+      this.container.style.opacity = '0';
+    }
 
     this.createToggleButton();
-    this.createFlakes();
 
-    if (this.isActive) {
+    if (!this.deferForPerformance) {
+      this.createFlakes();
+    }
+
+    if (this.isActive && !this.deferForPerformance) {
       this.start();
     }
 
@@ -49,7 +67,9 @@ class SnowEffect {
       this.isMobile = window.innerWidth < 768;
       if (wasMobile !== this.isMobile) {
         this.flakeCount = this.isMobile ? 40 : 90;
-        this.createFlakes();
+        if (this.flakes.length) {
+          this.createFlakes();
+        }
       }
     });
 
@@ -61,8 +81,10 @@ class SnowEffect {
       }
     });
 
-    // Mouse tracking for cursor interaction
-    this.setupMouseTracking();
+    // Mouse tracking for cursor interaction подключается при первом запуске
+    if (!this.deferForPerformance && this.isActive) {
+      this.setupMouseTracking();
+    }
   }
 
   createToggleButton() {
@@ -75,6 +97,11 @@ class SnowEffect {
     this.toggleImage.alt = 'Переключить снег';
     this.toggleImage.className = 'snow-toggle-icon';
     this.toggleImage.style.mixBlendMode = 'screen';
+    // Базовые размеры и отображение, чтобы иконка была видна даже без CSS
+    this.toggleImage.style.width = '32px';
+    this.toggleImage.style.height = '32px';
+    this.toggleImage.style.display = 'block';
+    this.toggleImage.style.objectFit = 'contain';
     
     // Устанавливаем изображение в зависимости от состояния
     this.updateButtonImage();
@@ -87,6 +114,9 @@ class SnowEffect {
 
     // Сразу синхронизируем aria-pressed с текущим состоянием
     this.toggleButton.setAttribute('aria-pressed', this.isActive ? 'true' : 'false');
+    if (this.deferForPerformance) {
+      this.toggleButton.title = 'Снег выключен для экономии ресурсов. Нажмите, чтобы включить.';
+    }
 
     this.toggleButton.addEventListener('click', () => this.toggle());
 
@@ -114,6 +144,15 @@ class SnowEffect {
    */
   updateButtonImage() {
     if (!this.toggleImage) return;
+
+    // Предзагружаем оба состояния, чтобы избежать мигания/пустой кнопки
+    if (!this.preloadedIcons) {
+      ['public/кнопка снежинки.png', 'public/кнопка снежинки 2.png'].forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+      this.preloadedIcons = true;
+    }
     
     // Когда снег включен - показываем "кнопка снежинки.png" (снег идет)
     // Когда снег выключен - показываем "кнопка снежинки 2.png" (снег не идет)
@@ -122,6 +161,32 @@ class SnowEffect {
     } else {
       this.toggleImage.src = 'public/кнопка снежинки 2.png';
     }
+    
+    // Обработка ошибок загрузки изображения
+    this.toggleImage.onerror = () => {
+      console.warn('Не удалось загрузить изображение кнопки снежинки:', this.toggleImage.src);
+      // Fallback: используем текстовую снежинку, если изображение не загрузилось
+      if (!this.toggleImage.textContent) {
+        this.toggleImage.style.display = 'none';
+        const fallback = document.createElement('span');
+        fallback.textContent = '❄';
+        fallback.style.fontSize = '20px';
+        fallback.style.color = 'rgba(255, 255, 255, 0.9)';
+        if (!this.toggleButton.querySelector('.snow-fallback')) {
+          fallback.className = 'snow-fallback';
+          this.toggleButton.appendChild(fallback);
+        }
+      }
+    };
+    
+    // Убеждаемся, что изображение видимо при успешной загрузке
+    this.toggleImage.onload = () => {
+      this.toggleImage.style.display = 'block';
+      const fallback = this.toggleButton.querySelector('.snow-fallback');
+      if (fallback) {
+        fallback.remove();
+      }
+    };
   }
 
   createFlakes() {
@@ -250,6 +315,10 @@ class SnowEffect {
 
   start() {
     if (this.animationFrame) return;
+    if (!this.flakes.length) {
+      this.createFlakes();
+    }
+    this.setupMouseTracking();
     this.container.style.opacity = '1';
     this.container.style.visibility = 'visible';
     this.container.style.display = 'block';
@@ -263,6 +332,7 @@ class SnowEffect {
     }
     this.container.style.opacity = '0';
     this.container.style.visibility = 'hidden';
+    this.container.style.display = 'none';
   }
 
   toggle() {
@@ -307,6 +377,9 @@ class SnowEffect {
    * Setup mouse tracking event handlers
    */
   setupMouseTracking() {
+    if (this.mouseTrackingAttached) return;
+    this.mouseTrackingAttached = true;
+
     const handleMouseMove = (e) => {
       const now = performance.now();
       // Throttle mouse updates to ~60fps

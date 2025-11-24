@@ -578,16 +578,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Intersection Observer for animations
   const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+    threshold: 0.12,
+    rootMargin: '0px 0px -10% 0px'
   };
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        
+        entry.target.classList.add('reveal-show');
+
         // Animate counters when they come into view
         const counters = entry.target.querySelectorAll('[data-target]');
         counters.forEach(counter => {
@@ -600,19 +599,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Observe animated elements
   const animatedElements = document.querySelectorAll(
-    '.service-card, .process-step, .stat-card, .contact-card, .stats-grid, ' +
+    '.service-card, .service-simple-card, .process-step, .stat-card, .contact-card, .stats-grid, ' +
     '.highlight-service-card, .benefit-card, .projects-banner-inner, .projects-reel-card, ' +
-    '.portfolio-card, .assistant-card, .testimonial-card'
+    '.portfolio-card, .assistant-card, .testimonial-card, .value-card'
   );
-  animatedElements.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  animatedElements.forEach((el, index) => {
+    el.classList.add('reveal-base');
+    // Легкая задержка, чтобы элементы появлялись каскадом
+    el.style.setProperty('--reveal-delay', `${(index % 8) * 80}ms`);
     observer.observe(el);
   });
 
   // Add stagger effect to service cards
-  document.querySelectorAll('.service-card').forEach((card, index) => {
+  document.querySelectorAll('.service-card, .service-simple-card').forEach((card, index) => {
     card.style.transitionDelay = `${index * 0.1}s`;
   });
 
@@ -725,10 +724,12 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('section-visible');
+        sectionObserver.unobserve(entry.target);
       }
     });
   }, {
-    threshold: 0.1
+    threshold: 0.15,
+    rootMargin: '0px 0px -10% 0px'
   });
 
   sections.forEach(section => {
@@ -739,15 +740,61 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add section animation styles
   const sectionStyle = document.createElement('style');
   sectionStyle.textContent = `
+    .reveal-base {
+      opacity: 0;
+      transform: translateY(60px) scale(0.92);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity;
+    }
+
+    .reveal-show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      animation: reveal-pop 0.85s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+    }
+
+    @keyframes reveal-pop {
+      0% { opacity: 0; transform: translateY(60px) scale(0.92); }
+      55% { opacity: 1; transform: translateY(-6px) scale(1.05); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     .section-hidden {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(60px) scale(0.9);
+      filter: none;
       transition: opacity 0.8s ease, transform 0.8s ease;
     }
     
     .section-visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
+      animation: section-pop 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes section-pop {
+      0% { opacity: 0; transform: translateY(60px) scale(0.9); }
+      55% { opacity: 1; transform: translateY(-8px) scale(1.05); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .section-hidden {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+      .section-visible {
+        animation: none;
+        transform: none;
+      }
+      .reveal-base {
+        opacity: 1;
+        transform: none;
+      }
+      .reveal-show {
+        animation: none;
+      }
     }
   `;
   document.head.appendChild(sectionStyle);
