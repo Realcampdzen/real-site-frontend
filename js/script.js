@@ -296,6 +296,9 @@ function initTiltEffect() {
 function initPreloader() {
   const preloader = document.getElementById('preloader');
   const progressBar = document.querySelector('.loading-progress');
+  const statusText = document.querySelector('.preloader-hint');
+  const logoImg = document.querySelector('.preloader .logo-image');
+  const logoPlaceholder = document.querySelector('.preloader .logo-placeholder');
   
   if (!preloader) {
     return;
@@ -312,6 +315,30 @@ function initPreloader() {
       // Прогресс только увеличивается, не уменьшается
       currentProgress = Math.max(currentProgress, Math.min(progress, 100));
       progressBar.style.width = currentProgress + '%';
+    }
+    if (statusText) {
+      if (currentProgress < 30) {
+        statusText.textContent = 'Подгружаем медиа...';
+      } else if (currentProgress < 60) {
+        statusText.textContent = 'Настраиваем интерфейс...';
+      } else if (currentProgress < 90) {
+        statusText.textContent = 'Оптимизируем анимации...';
+      } else {
+        statusText.textContent = 'Почти готово!';
+      }
+    }
+  }
+
+  // Логотип: если не загрузился, показываем плейсхолдер вместо битой картинки
+  if (logoImg && logoPlaceholder) {
+    const showPlaceholder = () => {
+      logoImg.style.display = 'none';
+      logoPlaceholder.style.display = 'block';
+    };
+    if (logoImg.complete && logoImg.naturalHeight === 0) {
+      showPlaceholder();
+    } else {
+      logoImg.addEventListener('error', showPlaceholder, { once: true });
     }
   }
   
@@ -578,8 +605,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Intersection Observer for animations
   const observerOptions = {
-    threshold: 0.12,
-    rootMargin: '0px 0px -10% 0px'
+    threshold: 0.01,
+    rootMargin: '15% 0px -6% 0px'
   };
 
   const observer = new IntersectionObserver((entries) => {
@@ -728,8 +755,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -10% 0px'
+    threshold: 0.08,
+    rootMargin: '12% 0px -6% 0px'
   });
 
   sections.forEach(section => {
@@ -737,45 +764,96 @@ document.addEventListener('DOMContentLoaded', () => {
     sectionObserver.observe(section);
   });
 
+  // Подстраховка: сразу показываем блоки, уже попавшие в вьюпорт (важно для мобильных под героем)
+  const isElementMostlyVisible = (el, visiblePart = 0.1) => {
+    const rect = el.getBoundingClientRect();
+    const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+    const viewWidth = window.innerWidth || document.documentElement.clientWidth;
+    const visibleWidth = Math.min(rect.right, viewWidth) - Math.max(rect.left, 0);
+    const visibleHeight = Math.min(rect.bottom, viewHeight) - Math.max(rect.top, 0);
+    if (visibleWidth <= 0 || visibleHeight <= 0) return false;
+
+    const visibleArea = visibleWidth * visibleHeight;
+    const totalArea = (rect.width || 1) * (rect.height || 1);
+    return visibleArea / totalArea >= visiblePart;
+  };
+
+  const revealInViewport = () => {
+    animatedElements.forEach(el => {
+      if (!el.classList.contains('reveal-show') && isElementMostlyVisible(el, 0.08)) {
+        el.classList.add('reveal-show');
+        el.style.transitionDelay = '0s';
+        el.style.setProperty('--reveal-delay', '0ms');
+        try {
+          observer.unobserve(el);
+        } catch (e) {
+          // element might not have been observed yet
+        }
+      }
+    });
+
+    sections.forEach(section => {
+      if (!section.classList.contains('section-visible') && isElementMostlyVisible(section, 0.1)) {
+        section.classList.add('section-visible');
+        section.classList.remove('section-hidden');
+        try {
+          sectionObserver.unobserve(section);
+        } catch (e) {
+          // safe fallback
+        }
+      }
+    });
+  };
+
+  revealInViewport();
+  window.addEventListener('load', () => {
+    revealInViewport();
+    setTimeout(revealInViewport, 180);
+  });
+  window.addEventListener('resize', () => {
+    revealInViewport();
+  });
+
   // Add section animation styles
   const sectionStyle = document.createElement('style');
   sectionStyle.textContent = `
     .reveal-base {
       opacity: 0;
-      transform: translateY(60px) scale(0.92);
-      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
       will-change: transform, opacity;
     }
 
     .reveal-show {
       opacity: 1;
-      transform: translateY(0) scale(1);
-      animation: reveal-pop 0.85s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+      transform: translateY(0);
+      animation: reveal-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
     }
 
     @keyframes reveal-pop {
-      0% { opacity: 0; transform: translateY(60px) scale(0.92); }
-      55% { opacity: 1; transform: translateY(-6px) scale(1.05); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% { opacity: 0; transform: translateY(24px); }
+      55% { opacity: 1; transform: translateY(-4px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     .section-hidden {
       opacity: 0;
-      transform: translateY(60px) scale(0.9);
+      transform: translateY(28px);
       filter: none;
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 0.55s ease, transform 0.6s ease;
+      will-change: transform, opacity;
     }
     
     .section-visible {
       opacity: 1;
-      transform: translateY(0) scale(1);
-      animation: section-pop 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateY(0);
+      animation: section-pop 0.65s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     @keyframes section-pop {
-      0% { opacity: 0; transform: translateY(60px) scale(0.9); }
-      55% { opacity: 1; transform: translateY(-8px) scale(1.05); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% { opacity: 0; transform: translateY(28px); }
+      55% { opacity: 1; transform: translateY(-6px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     @media (prefers-reduced-motion: reduce) {
