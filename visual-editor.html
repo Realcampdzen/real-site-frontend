@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Визуальный редактор сайта</title>
+  <!-- FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/visual-editor.css">
+</head>
+<body>
+  <div class="visual-editor-container">
+    <!-- Панель управления -->
+    <div class="editor-panel" id="editorPanel">
+      <div class="panel-header">
+        <h2>🎨 Визуальный редактор</h2>
+        <button class="toggle-panel" id="togglePanel" title="Свернуть/Развернуть панель">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+
+      <div class="panel-content">
+        <!-- Режим редактирования -->
+        <div class="panel-section">
+          <label class="section-label">
+            <input type="checkbox" id="editMode" checked>
+            <span>Режим редактирования</span>
+          </label>
+        </div>
+
+        <!-- Выбор элемента -->
+        <div class="panel-section">
+          <label class="section-label">Выбрать раздел:</label>
+          <select id="sectionSelector" class="select-input">
+            <option value="">Выберите раздел...</option>
+            <option value="header">Шапка (Header)</option>
+            <option value="hero">Герой (Hero)</option>
+            <option value="about">О нас</option>
+            <option value="benefits">Преимущества</option>
+            <option value="services">Услуги</option>
+            <option value="works">Работы</option>
+            <option value="footer">Подвал (Footer)</option>
+          </select>
+          <div id="sectionStatus" style="font-size: 11px; color: #888; margin-top: 6px; min-height: 16px;"></div>
+        </div>
+
+        <!-- Шрифты -->
+        <div class="panel-section">
+          <label class="section-label">Шрифт:</label>
+          <select id="fontFamily" class="select-input">
+            <option value="'Unbounded', system-ui">Unbounded</option>
+            <option value="'Spline Sans', system-ui">Spline Sans</option>
+            <option value="'Inter', system-ui">Inter</option>
+            <option value="'Roboto', sans-serif">Roboto</option>
+            <option value="'Open Sans', sans-serif">Open Sans</option>
+            <option value="'Montserrat', sans-serif">Montserrat</option>
+            <option value="'Poppins', sans-serif">Poppins</option>
+            <option value="system-ui, -apple-system">Системный</option>
+          </select>
+        </div>
+
+        <div class="panel-section">
+          <label class="section-label">
+            Размер шрифта: <span id="fontSizeValue">16px</span>
+          </label>
+          <input type="range" id="fontSize" min="10" max="72" value="16" class="slider">
+        </div>
+
+        <div class="panel-section">
+          <label class="section-label">
+            Толщина: <span id="fontWeightValue">400</span>
+          </label>
+          <input type="range" id="fontWeight" min="100" max="900" step="100" value="400" class="slider">
+        </div>
+
+        <!-- Отступы и размеры -->
+        <div class="panel-section">
+          <label class="section-label">Отступы разделов:</label>
+          <div class="spacing-controls">
+            <div class="spacing-item">
+              <label>Верх:</label>
+              <input type="number" id="paddingTop" value="0" class="number-input" placeholder="px">
+            </div>
+            <div class="spacing-item">
+              <label>Низ:</label>
+              <input type="number" id="paddingBottom" value="0" class="number-input" placeholder="px">
+            </div>
+            <div class="spacing-item">
+              <label>Слева:</label>
+              <input type="number" id="paddingLeft" value="0" class="number-input" placeholder="px">
+            </div>
+            <div class="spacing-item">
+              <label>Справа:</label>
+              <input type="number" id="paddingRight" value="0" class="number-input" placeholder="px">
+            </div>
+          </div>
+        </div>
+
+        <!-- Цвета -->
+        <div class="panel-section">
+          <label class="section-label">Цвет текста:</label>
+          <input type="color" id="textColor" value="#f5f2eb" class="color-input">
+        </div>
+
+        <div class="panel-section">
+          <label class="section-label">Фон:</label>
+          <input type="color" id="backgroundColor" value="#000000" class="color-input">
+        </div>
+
+        <!-- Действия -->
+        <div class="panel-section">
+          <button class="btn-primary" id="resetStyles">Сбросить изменения</button>
+          <button class="btn-secondary" id="exportCSS">Экспорт CSS</button>
+          <button class="btn-secondary" id="saveStyles">Сохранить</button>
+          <button class="btn-secondary" id="testConnection" style="margin-top: 10px; background: #7e63ff;">Тест подключения</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Область просмотра сайта -->
+    <div class="preview-area" id="previewArea">
+      <div class="preview-toolbar">
+        <div class="toolbar-left">
+          <span class="toolbar-label">Предпросмотр:</span>
+          <button class="btn-icon" id="refreshPreview" title="Обновить">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn-icon" id="fullscreen" title="Полный экран">
+            <i class="fas fa-expand"></i>
+          </button>
+        </div>
+      </div>
+      <iframe id="sitePreview" src="index.html" frameborder="0" allow="fullscreen"></iframe>
+      <div id="iframeError" style="display: none; padding: 20px; text-align: center; color: #ff6b6b;">
+        <p>⚠️ Не удалось загрузить сайт в редактор.</p>
+        <p style="font-size: 12px; margin-top: 10px;">Убедитесь, что вы открыли файл через локальный сервер (например, через server.js)</p>
+      </div>
+    </div>
+
+    <!-- Индикатор перетаскивания -->
+    <div class="resize-handle" id="resizeHandle" style="display: none;">
+      <div class="resize-line"></div>
+      <div class="resize-info">Перетащите для изменения размера</div>
+    </div>
+  </div>
+
+  <script src="js/visual-editor.js"></script>
+</body>
+</html>

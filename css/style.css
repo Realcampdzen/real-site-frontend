@@ -36,6 +36,7 @@
   /* Fonts */
   --font-display: 'Unbounded', system-ui, -apple-system, sans-serif;
   --font-body: 'Spline Sans', system-ui, -apple-system, sans-serif;
+  --font-primary: var(--font-display);
   
   /* Spacing */
   --container-max-width: 1900px;
@@ -191,22 +192,10 @@ body::before {
 }
 
 .studio-logo .logo-image {
-  width: 90px;
-  height: 90px;
-  object-fit: contain;
-  animation: pulse 2s ease-in-out infinite;
-  position: relative;
-  z-index: 1;
+  display: none;
 }
 
 .logo-placeholder {
-  position: absolute;
-  width: 90px;
-  height: 90px;
-  border-radius: 28px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) inset;
-  animation: pulse 1.6s ease-in-out infinite;
   display: none;
 }
 
@@ -232,15 +221,7 @@ body::before {
 }
 
 .loading-bar {
-  width: 350px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  overflow: hidden;
-  margin: 0 auto;
-  transform: translateX(30px); /* Смещение вправо для симметрии с логотипом */
-  position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: none;
 }
 
 .loading-progress {
@@ -1134,21 +1115,56 @@ body::before {
 }
 
 .hero-cta-row {
-  margin-top: 32px;
+  margin-top: 40px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
+  gap: 20px;
 }
 
 .hero-secondary-btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  color: var(--text-primary);
+  width: 95px !important;
+  height: 95px !important;
+  min-width: 95px !important;
+  min-height: 95px !important;
+  padding: 11px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.3;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.hero-secondary-btn::before {
+  display: none;
 }
 
 .hero-secondary-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(255, 255, 255, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.hero-secondary-btn:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 /* Стили для кнопки новогодних предложений на главной странице */
@@ -1458,30 +1474,80 @@ body::before {
   box-shadow: var(--btn-shadow-secondary);
 }
 
-/* Hero CTA: левая и правая кнопки — прозрачный фон с градиентной обводкой,
-   форма (радиус, высота, ширина) берётся из базовых стилей кнопок */
+/* Переопределяем для hero-секции - делаем круглой */
+.hero-cta-row .btn-secondary,
+.hero-cta-row .btn-secondary.hero-secondary-btn {
+  border-radius: 50% !important;
+  width: 95px !important;
+  height: 95px !important;
+  min-width: 95px !important;
+  min-height: 95px !important;
+  padding: 11px !important;
+}
+
+/* Анимация живого свечения для боковых кнопок */
+@keyframes warmGlow {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+                0 0 15px rgba(255, 155, 74, 0.4),
+                0 0 30px rgba(255, 155, 74, 0.25),
+                0 0 50px rgba(255, 155, 74, 0.15);
+  }
+  50% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(255, 155, 74, 0.5),
+                0 0 40px rgba(255, 155, 74, 0.35),
+                0 0 65px rgba(255, 155, 74, 0.2);
+  }
+}
+
+/* Hero CTA: левая и правая кнопки — прозрачные с белой обводкой */
 .hero-cta-row .btn-primary {
+  width: 95px;
+  height: 95px;
+  min-width: 95px;
+  min-height: 95px;
+  padding: 11px;
+  border-radius: 50%;
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+              0 0 15px rgba(255, 155, 74, 0.4),
+              0 0 30px rgba(255, 155, 74, 0.25),
+              0 0 50px rgba(255, 155, 74, 0.15);
+  animation: warmGlow 3s ease-in-out infinite;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.3;
+  white-space: normal;
+  word-wrap: break-word;
   position: relative;
-  background: transparent;
-  color: #ffffff;
-  border-radius: var(--btn-radius);
-  border: 1px solid transparent;
-  box-shadow: none;
+  overflow: visible;
+}
+
+.hero-cta-row .btn-primary:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  animation: none;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4),
+              0 0 25px rgba(255, 155, 74, 0.6),
+              0 0 50px rgba(255, 155, 74, 0.4),
+              0 0 80px rgba(255, 155, 74, 0.25);
 }
 
 .hero-cta-row .btn-primary::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: var(--gradient-primary);
-  /* Делаем только градиентную рамку, внутренность остаётся прозрачной */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
+  display: none;
+}
+
+.hero-cta-row .btn-primary::after {
+  display: none;
 }
 
 .hero-cta-row .btn-primary > * {
@@ -1490,8 +1556,23 @@ body::before {
 }
 
 .hero-cta-row .btn-primary:hover {
-  box-shadow: var(--btn-shadow-primary);
-  transform: translateY(-2px);
+  background: #ffffff;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.hero-cta-row .btn-primary:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .btn-secondary:hover {
@@ -1952,10 +2033,26 @@ body::before {
 }
 
 .projects-reel-caption {
-  padding: 14px 18px 18px;
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 10px 12px;
+  margin: 0;
+  max-width: min(82%, 480px);
   font-size: 14px;
-  color: #050505;
-  background: #d9ffe0;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--btn-radius);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
 }
 
 @media (max-width: 1024px) {
@@ -2155,6 +2252,44 @@ body::before {
     width: 110px;
     height: 110px;
     font-size: 30px;
+  }
+
+  /* Мобильные стили для кнопок hero-cta-row */
+  .hero-cta-row {
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .hero-cta-row .btn-primary {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
+    padding: 8px;
+    font-size: 11px;
+    line-height: 1.2;
+    border-radius: 50%;
+  }
+
+  .hero-cta-row .btn-secondary {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
+    padding: 8px;
+    font-size: 11px;
+    line-height: 1.2;
+    border-radius: 50%;
+  }
+
+  .hero-cta-row .btn-primary:hover,
+  .hero-cta-row .btn-secondary:hover {
+    transform: translateY(-2px) scale(1.05);
+  }
+
+  .hero-cta-row .btn-primary:active,
+  .hero-cta-row .btn-secondary:active {
+    transform: translateY(0) scale(1.02);
   }
 }
 
@@ -3414,33 +3549,68 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .step-footer {
-  margin-top: auto;
-  display: flex;
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
   align-items: center;
   justify-content: flex-start;
+  gap: 6px;
   text-align: left;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: var(--btn-radius);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 16px;
+  padding: 10px 12px;
   cursor: pointer;
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-  min-height: 50px;
+  min-height: 0;
   font-family: var(--font-primary);
   font-size: clamp(0.875rem, 1.2vw, 1rem);
   font-weight: 600;
   color: #ffffff;
   letter-spacing: 0.05em;
   line-height: 1.4;
+  max-width: min(82%, 480px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  margin: 0;
 }
 
 /* Уменьшаем размер контейнера для первого шага */
 .process-step:nth-child(1) .step-footer {
-  padding: 8px 10px;
-  min-height: auto;
-  max-width: 300px;
+  padding: 10px 12px;
+  min-height: 0;
+  max-width: min(82%, 480px);
+}
+
+/* Центр. шаг: держим подпись в одну строку на десктопе */
+.process-step:nth-child(2) .step-footer {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 24px);
+  letter-spacing: 0.03em;
+}
+
+/* Левый/правый шаги: такая же компактная одна строка */
+.process-step:nth-child(1) .step-footer,
+.process-step:nth-child(3) .step-footer {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 24px);
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 768px) {
+  .process-step:nth-child(2) .step-footer {
+    white-space: normal;
+  }
+  .process-step:nth-child(1) .step-footer,
+  .process-step:nth-child(3) .step-footer {
+    white-space: normal;
+  }
 }
 
 .step-footer:hover {
@@ -4814,20 +4984,23 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .assistant-footer {
-  margin-top: auto;
-  display: flex;
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
   align-items: center;
   justify-content: flex-start;
+  gap: 6px;
   text-align: left;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: var(--btn-radius);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 16px;
+  padding: 10px 12px;
   cursor: pointer;
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-  min-height: 50px;
+  min-height: 0;
   font-family: var(--font-primary);
   font-size: clamp(0.875rem, 1.2vw, 1rem);
   font-weight: 600;
@@ -4835,6 +5008,20 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   letter-spacing: 0.05em;
   line-height: 1.4;
   width: fit-content;
+  max-width: min(82%, 360px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .assistant-footer {
+    position: static;
+    margin-top: auto;
+    white-space: normal;
+    max-width: 100%;
+  }
 }
 
 .assistant-footer:hover {
