@@ -407,9 +407,23 @@
     const mobileNav = document.getElementById('mobile-nav');
     
     if (mobileMenuBtn && mobileNav) {
+      // На страницах товаров гармошка возвращает назад
       mobileMenuBtn.addEventListener('click', () => {
-        mobileNav.classList.toggle('active');
-        mobileMenuBtn.classList.toggle('active');
+        // Проверяем, что мы не на главной странице
+        if (window.location.pathname.includes('service-detail.html') || 
+            window.location.pathname.includes('ai-photo-detail.html')) {
+          // Возвращаемся назад
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            // Если нет истории, переходим на главную
+            window.location.href = 'index.html';
+          }
+        } else {
+          // На главной странице открываем меню как обычно
+          mobileNav.classList.toggle('active');
+          mobileMenuBtn.classList.toggle('active');
+        }
       });
       
       // Close menu when clicking on a link

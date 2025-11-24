@@ -26,12 +26,12 @@
   --nav-pill-text: #0b0b0b;
   --nav-icon-bg: rgba(255, 255, 255, 0.02);
   --nav-icon-border: rgba(255, 255, 255, 0.92);
-  --nav-cta-bg: #b7ff1f;
-  --nav-cta-bg-hover: #c9ff43;
-  --nav-cta-bg-active: #a7ef17;
-  --nav-cta-border: #99e612;
-  --nav-cta-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 28px rgba(169, 244, 28, 0.45);
-  --nav-cta-glow: 0 0 46px rgba(169, 244, 28, 0.5);
+  --nav-cta-bg: linear-gradient(135deg, #ff00ff 0%, #8b00ff 100%);
+  --nav-cta-bg-hover: linear-gradient(135deg, #ff1aff 0%, #9d00ff 100%);
+  --nav-cta-bg-active: linear-gradient(135deg, #e600e6 0%, #7a00cc 100%);
+  --nav-cta-border: #cc00cc;
+  --nav-cta-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 28px rgba(255, 0, 255, 0.45);
+  --nav-cta-glow: 0 0 46px rgba(255, 0, 255, 0.5), 0 0 30px rgba(139, 0, 255, 0.4);
 
   /* Fonts */
   --font-display: 'Unbounded', system-ui, -apple-system, sans-serif;
@@ -471,7 +471,7 @@ body::before {
   position: absolute;
   inset: -4px;
   border-radius: inherit;
-  background: radial-gradient(circle at 50% 50%, rgba(169, 244, 28, 0.45), rgba(169, 244, 28, 0));
+  background: radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.45), rgba(139, 0, 255, 0.25), rgba(255, 0, 255, 0));
   filter: blur(10px);
   z-index: -1;
   opacity: 1;
@@ -480,14 +480,14 @@ body::before {
 
 .nav-cta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.55), 0 0 38px rgba(169, 244, 28, 0.65), 0 0 90px rgba(169, 244, 28, 0.45);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.55), 0 0 38px rgba(255, 0, 255, 0.65), 0 0 90px rgba(139, 0, 255, 0.45);
   background: var(--nav-cta-bg-hover);
   border-color: var(--nav-cta-border);
 }
 
 .nav-cta:active {
   transform: translateY(0);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.42), 0 0 20px rgba(169, 244, 28, 0.38);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.42), 0 0 20px rgba(255, 0, 255, 0.38), 0 0 15px rgba(139, 0, 255, 0.3);
   background: var(--nav-cta-bg-active);
 }
 
@@ -520,7 +520,7 @@ body::before {
   text-transform: uppercase;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4), 0 0 24px rgba(169, 244, 28, 0.5);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4), 0 0 24px rgba(255, 0, 255, 0.5), 0 0 18px rgba(139, 0, 255, 0.4);
 }
 
 .nav-lang-toggle:hover {
@@ -531,7 +531,12 @@ body::before {
 }
 
 @media (max-width: 768px) {
+  /* На мобильных показываем только логотип, скрываем nav-pill-group */
   .nav-left {
+    display: flex !important;
+  }
+  
+  .nav-left .nav-pill-group {
     display: none;
   }
   
@@ -846,7 +851,7 @@ body::before {
   z-index: 1;
   /* Отступ от шапки до начала большого контейнера с видео + ещё меньше снизу,
      чтобы вторая секция подошла ближе (примерно вдвое меньше предыдущего) */
-  padding: 104px 24px 32px;
+  padding: 104px 24px 16px;
   overflow: hidden;
 }
 
@@ -874,6 +879,7 @@ body::before {
   box-shadow:
     0 32px 90px rgba(0, 0, 0, 0.9),
     0 0 0 1px rgba(255, 255, 255, 0.05);
+  cursor: pointer;
 }
 
 .hero-reel-video {
@@ -893,6 +899,59 @@ body::before {
     radial-gradient(circle at 15% 20%, rgba(255, 155, 74, 0.45), transparent 60%),
     radial-gradient(circle at 85% 80%, rgba(126, 99, 255, 0.5), transparent 60%);
   mix-blend-mode: normal;
+  pointer-events: none; /* Позволяет кликам проходить через overlay */
+  z-index: 1;
+}
+
+.hero-sound-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.hero-sound-toggle:hover {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
+.hero-sound-toggle:active {
+  transform: scale(0.95);
+}
+
+.hero-sound-toggle i {
+  transition: transform 0.2s ease;
+}
+
+.hero-sound-toggle:hover i {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .hero-sound-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    top: 15px;
+    right: 15px;
+  }
 }
 
 .hero-reel-content {
@@ -904,6 +963,8 @@ body::before {
   justify-content: center;
   text-align: center;
   padding: 40px 20px;
+  pointer-events: auto; /* Разрешаем клики на контент */
+  z-index: 2; /* Контент выше overlay, чтобы кнопки были кликабельны */
 }
 
 @media (max-width: 1200px) {
@@ -2224,7 +2285,7 @@ body::before {
 }
 
 .services-simple-grid {
-  margin-top: 24px;
+  margin-top: 4px;
   width: min(100%, 1400px);
   margin: 0 auto;
   display: flex;
@@ -2234,12 +2295,14 @@ body::before {
 
 /* Adjust services section spacing so the heading sits ещё ближе к верхнему краю блока */
 .services {
-  padding: 16px 0 60px;
+  padding: 0 0 60px;
+  margin-top: -8px;
 }
 
 /* Tighter space specifically under the "Услуги AI STUDIO" heading */
 .services .section-title {
-  margin-bottom: 16px;
+  margin-bottom: 4px;
+  margin-top: -4px;
 }
 
 .service-row {
