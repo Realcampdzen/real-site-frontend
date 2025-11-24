@@ -753,5 +753,81 @@ document.addEventListener('DOMContentLoaded', () => {
   document.head.appendChild(sectionStyle);
 
   initCookieBanner();
+  
+  // Hero video sound toggle
+  initHeroSoundToggle();
 });
+
+// Hero video sound toggle functionality
+function initHeroSoundToggle() {
+  const heroReel = document.getElementById('hero-reel-container');
+  const heroVideo = document.getElementById('hero-reel-video');
+  const heroContent = heroReel ? heroReel.querySelector('.hero-reel-content') : null;
+  const heroOverlay = heroReel ? heroReel.querySelector('.hero-reel-overlay') : null;
+  
+  if (!heroReel || !heroVideo) {
+    console.warn('Hero reel elements not found');
+    return;
+  }
+  
+  console.log('Initializing hero sound toggle...', {
+    heroReel: !!heroReel,
+    heroVideo: !!heroVideo,
+    videoMuted: heroVideo.muted,
+    videoReadyState: heroVideo.readyState
+  });
+  
+  function toggleSound(e) {
+    // Игнорируем клики по кнопкам - они должны работать как обычно
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+      return;
+    }
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Переключаем звук
+    const wasMuted = heroVideo.muted;
+    heroVideo.muted = !wasMuted;
+    
+    // Устанавливаем громкость и пытаемся воспроизвести при включении звука
+    if (!heroVideo.muted) {
+      heroVideo.volume = 1.0;
+      // Вызываем play() чтобы обойти политики автоплея браузера
+      const playPromise = heroVideo.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.log('🔊 Звук включен');
+        }).catch(err => {
+          console.error('❌ Не удалось воспроизвести видео со звуком:', err);
+          // Если не получилось, возвращаем muted
+          heroVideo.muted = true;
+        });
+      }
+    } else {
+      console.log('🔇 Звук выключен');
+    }
+  }
+  
+  // Обработчик клика на контейнер
+  heroReel.addEventListener('click', toggleSound);
+  console.log('Added click handler to heroReel');
+  
+  // Обработчик на само видео
+  heroVideo.addEventListener('click', toggleSound);
+  console.log('Added click handler to heroVideo');
+  
+  // Обработчик на overlay
+  if (heroOverlay) {
+    heroOverlay.style.pointerEvents = 'auto';
+    heroOverlay.style.cursor = 'pointer';
+    heroOverlay.addEventListener('click', toggleSound);
+    console.log('Added click handler to heroOverlay');
+  }
+  
+  // Курсор-указатель на контейнере
+  heroReel.style.cursor = 'pointer';
+  
+  console.log('✅ Hero sound toggle initialized');
+}
   
