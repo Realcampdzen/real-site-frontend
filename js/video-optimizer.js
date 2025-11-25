@@ -5,13 +5,31 @@
 
 class VideoOptimizer {
   constructor() {
-    this.isMobile = window.innerWidth <= 768;
+    this.isMobile = window.matchMedia
+      ? window.matchMedia('(max-width: 900px)').matches
+      : window.innerWidth <= 768;
+    this.connection =
+      navigator.connection ||
+      navigator.mozConnection ||
+      navigator.webkitConnection;
+    this.saveData = !!(this.connection && this.connection.saveData);
+    this.slowNetwork =
+    this.connection &&
+    ['slow-2g', '2g', '3g'].includes(this.connection.effectiveType);
+  this.prefersReducedMotion =
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  this.heroVideo = document.getElementById('hero-reel-video');
+    this.autoPlayDesktop = this.heroVideo
+      ? this.heroVideo.dataset.autoplayDesktop !== 'false'
+      : true;
     this.init();
   }
 
   init() {
     // Оптимизация hero видео
     this.optimizeHeroVideo();
+    this.initHeroControls();
     
     // Lazy loading для видео в портфолио
     this.setupLazyLoading();
@@ -21,14 +39,19 @@ class VideoOptimizer {
     
     // Обработка ошибок загрузки
     this.setupErrorHandling();
+
+    // Сетевые ограничения
+    this.optimizeForSlowConnection();
   }
 
   /**
    * Оптимизация hero видео с адаптивными источниками
    */
   optimizeHeroVideo() {
-    const heroVideo = document.getElementById('hero-reel-video');
+    const heroVideo =
+      this.heroVideo || document.getElementById('hero-reel-video');
     if (!heroVideo) return;
+    this.heroVideo = heroVideo;
 
     // Проверяем, есть ли уже адаптивные источники
     if (heroVideo.querySelector('source[media]')) {
@@ -90,15 +113,272 @@ class VideoOptimizer {
       posterImg.src = posterUrl;
     }
 
-    // Оптимизация preload стратегии
-    if (this.isMobile) {
-      heroVideo.setAttribute('preload', 'metadata'); // Только метаданные на мобильных
-    } else {
-      heroVideo.setAttribute('preload', 'auto'); // Полная загрузка на десктопе
+    // Не переопределяем preload, если он задан вручную в разметке
+    if (!heroVideo.hasAttribute('preload')) {
+      heroVideo.setAttribute('preload', this.isMobile ? 'metadata' : 'auto');
     }
 
-    // Перезагружаем видео для применения новых источников
+    // Гарантируем автозапуск
+    heroVideo.autoplay = true;
+    heroVideo.muted = true;
     heroVideo.load();
+    const playPromise = heroVideo.play();
+    if (playPromise && playPromise.catch) {
+      playPromise.catch(() =>
+        console.warn('Автовоспроизведение ограничено браузером')
+      );
+    }
+  }
+
+  initHeroControls() {
+    const video = this.heroVideo || document.getElementById('hero-reel-video');
+    const controls = document.getElementById('hero-controls');
+    if (!video || !controls) return;
+
+    this.heroVideo = video;
+
+    const playBtn = document.getElementById('hero-control-play');
+    const restartBtn = document.getElementById('hero-control-restart');
+    const volumeBtn = document.getElementById('hero-control-volume');
+    const qualityBtn = document.getElementById('hero-control-quality');
+    const speedBtn = document.getElementById('hero-control-speed');
+    const speedLabel = document.getElementById('hero-speed-label');
+    const fullscreenBtn = document.getElementById('hero-control-fullscreen');
+    const progressTrack = document.getElementById('hero-progress-track');
+    const progressFill = document.getElementById('hero-progress-fill');
+    const progressTime = document.getElementById('hero-progress-time');
+    const heroContainer = document.getElementById('hero-reel-container');
+    const isTouch =
+      'ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0;
+    let hideControlsTimeout = null;
+    const speedMenu = document.getElementById('hero-speed-menu');
+    const qualityMenu = document.getElementById('hero-quality-menu');
+
+    const speedSteps = [1, 1.25, 1.5, 0.75];
+    let speedIndex = 0;
+    let qualityIndex = 0;
+    const qualityStates = ['AUTO', 'HD', 'SD'];
+
+    const formatTime = (time) => {
+      if (!isFinite(time)) return '00:00';
+      const m = Math.floor(time / 60)
+        .toString()
+        .padStart(2, '0');
+      const s = Math.floor(time % 60)
+        .toString()
+        .padStart(2, '0');
+      return `${m}:${s}`;
+    };
+
+    const syncPlayState = () => {
+      if (!playBtn) return;
+      const icon = playBtn.querySelector('i');
+      if (video.paused) {
+        icon.className = 'fas fa-play';
+        playBtn.setAttribute('aria-label', 'Воспроизвести');
+      } else {
+        icon.className = 'fas fa-pause';
+        playBtn.setAttribute('aria-label', 'Пауза');
+      }
+    };
+
+    const updateProgress = () => {
+      if (!progressFill || !progressTrack || !progressTime) return;
+      const duration = video.duration || 0;
+      const current = video.currentTime || 0;
+      const percent = duration ? Math.min(100, (current / duration) * 100) : 0;
+      progressFill.style.width = `${percent}%`;
+      progressTrack.setAttribute('aria-valuenow', percent.toFixed(1));
+      progressTime.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+    };
+
+    const updateVolumeIcon = () => {
+      if (!volumeBtn) return;
+      const icon = volumeBtn.querySelector('i');
+      if (!icon) return;
+      icon.className = video.muted || video.volume === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+    };
+
+    const updateSpeedLabel = () => {
+      if (speedLabel) speedLabel.textContent = `${video.playbackRate.toFixed(2).replace(/\.00$/, '')}x`.replace('.50', '.5');
+    };
+
+    const updateFullscreenIcon = () => {
+      if (!fullscreenBtn) return;
+      const icon = fullscreenBtn.querySelector('i');
+      if (!icon) return;
+      const inFs = !!document.fullscreenElement;
+      icon.className = inFs ? 'fas fa-compress' : 'fas fa-expand';
+    };
+
+    const updateQualityLabel = () => {
+      if (!qualityBtn) return;
+      const icon = qualityBtn.querySelector('i');
+      if (!icon) return;
+      icon.className = 'fas fa-cog';
+      qualityBtn.title = `Качество: ${qualityStates[qualityIndex]}`;
+    };
+
+    const scheduleHideControls = () => {
+      if (isTouch || !controls) return;
+      clearTimeout(hideControlsTimeout);
+      hideControlsTimeout = setTimeout(() => {
+        const hovering =
+          controls.matches(':hover') || heroContainer?.matches(':hover');
+        if (hovering) {
+          scheduleHideControls();
+          return;
+        }
+        controls.classList.remove('is-active');
+      }, 2400);
+    };
+
+    const bumpControls = () => {
+      if (!controls) return;
+      controls.classList.add('is-active');
+      scheduleHideControls();
+    };
+
+    const hideMenus = () => {
+      speedMenu?.classList.remove('visible');
+      qualityMenu?.classList.remove('visible');
+    };
+
+    const toggleMenu = (menuEl) => {
+      if (!menuEl) return;
+      const willShow = !menuEl.classList.contains('visible');
+      hideMenus();
+      if (willShow) {
+        menuEl.classList.add('visible');
+      }
+    };
+
+    const seekTo = (clientX) => {
+      const rect = progressTrack.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      const duration = video.duration || 0;
+      video.currentTime = ratio * duration;
+    };
+
+    playBtn?.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+      bumpControls();
+    });
+
+    restartBtn?.addEventListener('click', () => {
+      video.currentTime = 0;
+      video.play();
+      bumpControls();
+    });
+
+    volumeBtn?.addEventListener('click', () => {
+      video.muted = !video.muted;
+      updateVolumeIcon();
+      bumpControls();
+    });
+
+    speedBtn?.addEventListener('click', () => {
+      toggleMenu(speedMenu);
+      bumpControls();
+    });
+
+    qualityBtn?.addEventListener('click', () => {
+      toggleMenu(qualityMenu);
+      bumpControls();
+    });
+
+    speedMenu?.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-speed]');
+      if (!target) return;
+      const value = parseFloat(target.dataset.speed || '1');
+      video.playbackRate = value;
+      speedIndex = Math.max(0, speedSteps.indexOf(value));
+      updateSpeedLabel();
+      hideMenus();
+      bumpControls();
+    });
+
+    qualityMenu?.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-quality]');
+      if (!target) return;
+      const quality = target.dataset.quality || 'auto';
+      qualityIndex = Math.max(0, qualityStates.indexOf(quality.toUpperCase()));
+      updateQualityLabel();
+      hideMenus();
+      bumpControls();
+    });
+
+    fullscreenBtn?.addEventListener('click', () => {
+      const target = heroContainer || video;
+      const inFs = !!document.fullscreenElement;
+      if (!inFs && target?.requestFullscreen) {
+        target.requestFullscreen();
+      } else if (inFs && document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+      bumpControls();
+    });
+
+    document.addEventListener('fullscreenchange', updateFullscreenIcon);
+
+    progressTrack?.addEventListener('click', (e) => {
+      seekTo(e.clientX);
+      bumpControls();
+    });
+
+    progressTrack?.addEventListener('keydown', (e) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+      e.preventDefault();
+      const step = video.duration ? video.duration * 0.02 : 1;
+      if (e.key === 'ArrowLeft') video.currentTime = Math.max(0, video.currentTime - step);
+      if (e.key === 'ArrowRight') video.currentTime = Math.min(video.duration, video.currentTime + step);
+      if (e.key === 'Home') video.currentTime = 0;
+      if (e.key === 'End') video.currentTime = video.duration || video.currentTime;
+      bumpControls();
+    });
+
+    video.addEventListener('loadedmetadata', updateProgress);
+    video.addEventListener('timeupdate', updateProgress);
+    video.addEventListener('play', syncPlayState);
+    video.addEventListener('pause', syncPlayState);
+    video.addEventListener('ended', syncPlayState);
+    video.addEventListener('volumechange', updateVolumeIcon);
+
+    // Начальная синхронизация
+    syncPlayState();
+    updateProgress();
+    updateVolumeIcon();
+    updateSpeedLabel();
+    updateFullscreenIcon();
+    updateQualityLabel();
+
+    if (!isTouch) {
+      const moveHandler = () => bumpControls();
+      heroContainer?.addEventListener('mousemove', moveHandler);
+      controls?.addEventListener('mousemove', moveHandler);
+      controls?.addEventListener('focusin', bumpControls);
+      controls?.addEventListener('mouseleave', scheduleHideControls);
+      heroContainer?.addEventListener('mouseleave', scheduleHideControls);
+      bumpControls();
+    } else if (controls) {
+      controls.classList.add('is-active');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (
+        e.target.closest('#hero-control-speed') ||
+        e.target.closest('#hero-control-quality') ||
+        e.target.closest('#hero-speed-menu') ||
+        e.target.closest('#hero-quality-menu')
+      ) {
+        return;
+      }
+      hideMenus();
+    });
   }
 
   /**
@@ -153,7 +433,9 @@ class VideoOptimizer {
    */
   setupPreloadStrategy() {
     // Предзагружаем poster изображение для hero видео
-    const heroVideo = document.getElementById('hero-reel-video');
+    const heroVideo =
+      this.heroVideo || document.getElementById('hero-reel-video');
+    if (heroVideo) this.heroVideo = heroVideo;
     if (heroVideo && heroVideo.hasAttribute('poster')) {
       const posterUrl = heroVideo.getAttribute('poster');
       const link = document.createElement('link');
@@ -167,12 +449,11 @@ class VideoOptimizer {
     if (this.isMobile) {
       window.addEventListener('load', () => {
         setTimeout(() => {
-          const heroVideo = document.getElementById('hero-reel-video');
-          if (heroVideo) {
-            // Начинаем загрузку видео после загрузки страницы
-            heroVideo.setAttribute('preload', 'auto');
-            heroVideo.load();
-          }
+          const heroVideo =
+            this.heroVideo || document.getElementById('hero-reel-video');
+          if (!heroVideo) return;
+          heroVideo.setAttribute('preload', 'auto');
+          heroVideo.load();
         }, 1000); // Задержка 1 секунда
       });
     }
@@ -240,19 +521,7 @@ class VideoOptimizer {
    * Оптимизация для медленных соединений
    */
   optimizeForSlowConnection() {
-    if ('connection' in navigator) {
-      const connection = navigator.connection;
-      const effectiveType = connection.effectiveType;
-      
-      if (effectiveType === 'slow-2g' || effectiveType === '2g') {
-        // Отключаем автоплей на медленных соединениях
-        const videos = document.querySelectorAll('video[autoplay]');
-        videos.forEach(video => {
-          video.removeAttribute('autoplay');
-          video.setAttribute('preload', 'none');
-        });
-      }
-    }
+    // Сохраняем автозапуск даже на медленных сетях по требованию заказчика.
   }
 }
 

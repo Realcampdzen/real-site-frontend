@@ -17,9 +17,6 @@
   <!-- FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
-  <!-- Bootstrap 4 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-
   <!-- Resource Hints для оптимизации загрузки -->
   <link rel="preload" href="css/style.css" as="style">
   <link rel="preload" href="css/mobile-improvements.css" as="style" media="(max-width: 900px)">
@@ -40,9 +37,6 @@
   
   <!-- Mobile advanced features -->
   <link rel="stylesheet" href="css/mobile-advanced.css" media="(max-width: 900px)">
-  
-  <!-- Snow Effect -->
-  <link rel="stylesheet" href="css/snow-effect.css">
   
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -191,7 +185,7 @@
     <!-- Hero Section -->
     <section class="hero">
     <div class="hero-reel" id="hero-reel-container">
-      <video class="hero-reel-video" id="hero-reel-video" autoplay loop muted playsinline preload="metadata">
+      <video class="hero-reel-video" id="hero-reel-video" loop muted playsinline preload="metadata" poster="public/works/hero-poster.jpg" data-autoplay-desktop="true">
         <!-- Мобильная версия (будет добавлена video-optimizer.js, если файл существует) -->
         <source src="public/works/%D1%88%D0%BE%D1%83%D1%80%D0%B8%D0%BB.mp4?v=20251124" type="video/mp4">
       </video>
@@ -214,6 +208,47 @@
           <button class="btn-primary" onclick="event.stopPropagation(); scrollToSection('cta-apply')">
             Оставить заявку
           </button>
+        </div>
+        <div class="hero-controls" id="hero-controls" aria-label="Управление шоурилом">
+          <div class="hero-control-left">
+            <button class="hero-control-btn" type="button" id="hero-control-play" aria-label="Пауза/Пуск">
+              <i class="fas fa-pause"></i>
+            </button>
+            <button class="hero-control-btn" type="button" id="hero-control-restart" aria-label="Смотреть с начала">
+              <i class="fas fa-rotate-left"></i>
+            </button>
+            <button class="hero-control-btn" type="button" id="hero-control-volume" aria-label="Звук">
+              <i class="fas fa-volume-up"></i>
+            </button>
+          </div>
+          <div class="hero-progress">
+            <div class="hero-progress-track" id="hero-progress-track" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+              <div class="hero-progress-fill" id="hero-progress-fill"></div>
+            </div>
+            <div class="hero-progress-time" id="hero-progress-time">00:00 / 00:00</div>
+          </div>
+          <div class="hero-control-right">
+            <button class="hero-control-btn" type="button" id="hero-control-quality" aria-label="Качество">
+              <i class="fas fa-cog"></i>
+            </button>
+            <button class="hero-control-btn hero-control-speed" type="button" id="hero-control-speed" aria-label="Скорость">
+              <span class="hero-btn-text" id="hero-speed-label">1x</span>
+            </button>
+            <button class="hero-control-btn" type="button" id="hero-control-fullscreen" aria-label="На весь экран">
+              <i class="fas fa-expand"></i>
+            </button>
+          </div>
+        </div>
+        <div class="hero-menu" id="hero-speed-menu" aria-label="Выбор скорости">
+          <button class="hero-menu-item" data-speed="0.75">0.75x</button>
+          <button class="hero-menu-item" data-speed="1">1x</button>
+          <button class="hero-menu-item" data-speed="1.25">1.25x</button>
+          <button class="hero-menu-item" data-speed="1.5">1.5x</button>
+        </div>
+        <div class="hero-menu" id="hero-quality-menu" aria-label="Выбор качества">
+          <button class="hero-menu-item" data-quality="auto">Auto</button>
+          <button class="hero-menu-item" data-quality="hd">HD</button>
+          <button class="hero-menu-item" data-quality="sd">SD</button>
         </div>
       </div>
     </div>
@@ -462,7 +497,7 @@
         <!-- Project 5: Промо-ролик (БОЛЬШОЙ, дубликат) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <video class="projects-reel-video" muted playsinline preload="metadata">
+            <video class="projects-reel-video" muted playsinline preload="none" poster="public/works/Hyperrealistic_cinematic_video_202511230411-poster.jpg">
               <source src="public/works/Hyperrealistic_cinematic_video_202511230411.mp4" type="video/mp4">
             </video>
             <button class="projects-reel-play" type="button" aria-label="Смотреть видео">
@@ -475,7 +510,7 @@
         <!-- Project 6: Креативный клип (малый, дубликат) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <video class="projects-reel-video" muted playsinline preload="metadata">
+            <video class="projects-reel-video" muted playsinline preload="none" poster="public/works/Oct_25__2209_16s_202510252255_leh5x-poster.jpg">
               <source src="public/works/Oct_25__2209_16s_202510252255_leh5x.mp4" type="video/mp4">
             </video>
             <button class="projects-reel-play" type="button" aria-label="Смотреть видео">
@@ -496,14 +531,6 @@
           <p class="cta-kicker">Реальный Vайб AI Studio</p>
           <h2 class="cta-title">Готовы обсудить ваш проект?</h2>
           <p class="cta-text">Оставьте заявку — вернёмся с идеями и сметой под ваши задачи.</p>
-        </div>
-        <div class="cta-actions">
-          <a data-contact-link="primary" class="btn-primary" href="https://t.me/Stivanovv">
-            Оставить заявку
-          </a>
-          <button class="btn-secondary" type="button" onclick="scrollToSection('portfolio')">
-            Смотреть портфолио
-          </button>
         </div>
       </div>
     </div>
@@ -721,104 +748,11 @@
   </div>
 
   <!-- Scripts -->
-  <!-- Bootstrap 4 JS Dependencies -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous" defer></script>
-  
-  <!-- Custom Scripts (defer для оптимизации загрузки) -->
+  <!-- Core scripts (defer для оптимизации загрузки) -->
   <script src="js/script.js" defer></script> 
   <script src="js/chat.js" defer></script> 
   <script src="js/services-carousel.js" defer></script>
-  
-  <!-- Glass UI System -->
-  <script src="chat-components/GlassUIWidget.js" defer></script>
-  <script src="js/glass-ui-hipych.js?v=20251127-emoji4" defer></script>
-  <script src="js/glass-ui-bro-cat.js?v=20251127-emoji4" defer></script>
-  <script src="js/glass-ui-valyusha.js?v=20251127-emoji4" defer></script>
-
-  <!-- Mobile enhancements -->
-  <script src="js/mobile-enhancements.js" defer></script>
-  
-  <!-- Performance optimizers -->
-  <script src="js/video-optimizer.js" defer></script>
-  <script src="js/image-optimizer.js" defer></script>
-  <script src="js/skeleton-loader.js" defer></script>
-  <script src="js/pull-to-refresh.js" defer></script>
-  <script src="js/haptic-feedback.js" defer></script>
-  
-  <!-- Snow Effect -->
-  <script src="js/snow-effect.js" defer></script>
-  
-  <!-- Snow Effect Test -->
-  <script>
-    // Простая проверка загрузки скрипта
-    setTimeout(function() {
-      if (typeof window.snowEffect === 'undefined') {
-        console.error('❌ SnowEffect: скрипт не загружен! Проверьте путь к файлу js/snow-effect.js');
-      } else {
-        console.log('✅ SnowEffect: скрипт загружен, экземпляр:', window.snowEffect);
-      }
-    }, 2000);
-  </script>
-
-  <!-- Glass UI Status Check -->
-  <script>
-    // Проверяем загрузку Glass UI компонентов
-    setTimeout(() => {
-      console.log('🔮 Проверка Glass UI системы:');
-      console.log('GlassUIWidget:', typeof window.GlassUIWidget);
-      console.log('GlassUIHipych:', typeof window.GlassUIHipych);
-      console.log('GlassUIBroCat:', typeof window.GlassUIBroCat);
-      console.log('glassUIHipych:', typeof window.glassUIHipych);
-      console.log('glassUIBroCat:', typeof window.glassUIBroCat);
-      
-      if (window.glassUIHipych && window.glassUIBroCat) {
-        console.log('✅ Glass UI система загружена успешно!');
-        console.log('🎮 Хипыч готов:', window.glassUIHipych);
-        console.log('🐱 Кот Бро готов:', window.glassUIBroCat);
-        
-        // Проверяем что кнопки созданы (по классу, не по id)
-        const hipychBtn = document.querySelector('.glass-ui-hipych-button');
-        const broCatBtn = document.querySelector('.glass-ui-bro-cat-button');
-        
-        if (hipychBtn) {
-          console.log('✅ Кнопка Хипыча найдена');
-          const styles = window.getComputedStyle(hipychBtn);
-          console.log('  Animation Хипыча:', styles.animation);
-          console.log('  Position:', styles.position, styles.bottom, styles.right);
-        } else {
-          console.error('❌ Кнопка Хипыча НЕ найдена!');
-        }
-        
-        if (broCatBtn) {
-          console.log('✅ Кнопка Кота Бро найдена');
-          const styles = window.getComputedStyle(broCatBtn);
-          console.log('  Animation Кота:', styles.animation);
-          console.log('  Position:', styles.position, styles.bottom, styles.right);
-        } else {
-          console.error('❌ Кнопка Кота Бро НЕ найдена!');
-        }
-      } else {
-        console.log('⚠️ Некоторые Glass UI компоненты не загружены');
-      }
-      
-      // Проверяем карусель
-      if (window.servicesCarousel) {
-        console.log('✅ Карусель инициализирована');
-        console.log('  Всего карточек:', window.servicesCarousel.totalCards);
-        console.log('  Текущий индекс:', window.servicesCarousel.currentIndex);
-        
-        // Проверяем transitions на карточках
-        const firstCard = document.querySelector('.service-carousel-card');
-        if (firstCard) {
-          const styles = window.getComputedStyle(firstCard);
-          console.log('  Transition карточки:', styles.transition);
-          console.log('  Transform карточки:', styles.transform);
-        }
-      }
-    }, 500);
-  </script>
+  <script src="js/performance-loader.js" defer></script>
 
   <script>
     // Handle service card clicks - prevent navigation if clicking on interactive elements

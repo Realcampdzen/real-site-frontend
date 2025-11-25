@@ -12,6 +12,10 @@ class VisualEditor {
     this.dragType = null;
     this.dragStart = { x: 0, y: 0 };
     this.moveStart = { x: 0, y: 0 };
+    this.selectionListeners = null;
+    this.hoveredElement = null;
+    this.hoverTarget = null;
+    this.hoverRafId = null;
     
     this.init();
   }
@@ -230,8 +234,12 @@ class VisualEditor {
 
   initializeEditor(iframe, errorDiv) {
     try {
+      this.cleanupElementSelection();
       this.injectEditorScript(iframe);
       this.loadStylesToIframe(iframe);
+      if (this.editMode) {
+        this.toggleEditMode();
+      }
       if (errorDiv) errorDiv.style.display = 'none';
       iframe.style.display = 'block';
       console.log('Редактор инициализирован успешно');
@@ -287,9 +295,12 @@ class VisualEditor {
           
           applyStyleToElement: function(element, property, value) {
             if (element) {
+              console.log('Применяю стиль к элементу в iframe:', element, property, '=', value);
               element.style[property] = value;
+              console.log('Стиль применен, текущее значение:', element.style[property]);
               return true;
             }
+            console.warn('Элемент не найден для применения стиля');
             return false;
           },
           
@@ -378,6 +389,10 @@ class VisualEditor {
     iframeDoc.head.appendChild(style);
     console.log('Стили редактора добавлены');
     return true;
+    } catch (e) {
+      console.error('Ошибка при инжекте скрипта в iframe:', e);
+      return false;
+    }
   }
 
   selectSection(sectionId) {
@@ -564,13 +579,22 @@ class VisualEditor {
       
       // Если выбран конкретный элемент, применяем к нему
       if (this.currentElement) {
+        console.log('Применяю стиль к элементу:', this.currentElement, property, '=', value);
         success = iframeWindow.visualEditor.applyStyleToElement(this.currentElement, cssProperty, value);
         styleKey = this.currentElementSelector || iframeWindow.visualEditor.getElementSelector(this.currentElement);
+        console.log('Результат применения:', success, 'ключ:', styleKey);
       } 
       // Иначе применяем к секции
       else if (this.currentSection) {
+        console.log('Применяю стиль к секции:', this.currentSection, property, '=', value);
         success = iframeWindow.visualEditor.applyStyle(this.currentSection, cssProperty, value);
         styleKey = this.currentSection;
+        console.log('Результат применения:', success);
+      } else {
+        console.warn('Нет выбранного элемента или секции!', {
+          hasElement: !!this.currentElement,
+          hasSection: !!this.currentSection
+        });
       }
 
       if (success && styleKey) {
@@ -579,8 +603,16 @@ class VisualEditor {
           this.styles[styleKey] = {};
         }
         this.styles[styleKey][property] = value;
+        console.log('Стиль сохранен:', styleKey, property, '=', value);
+        this.updateDebugInfo(`Стиль применен: ${property} = ${value}`);
       } else {
-        console.error('Не удалось применить стиль:', property, '=', value);
+        console.error('Не удалось применить стиль:', property, '=', value, {
+          success,
+          styleKey,
+          hasElement: !!this.currentElement,
+          hasSection: !!this.currentSection
+        });
+        this.updateDebugInfo(`Ошибка: не удалось применить ${property}`);
       }
     } catch (e) {
       console.error('Ошибка при применении стиля:', e);
@@ -671,80 +703,113 @@ class VisualEditor {
 
   loadStylesToIframe(iframe) {
     if (!iframe || Object.keys(this.styles).length === 0) return;
-    
-    iframe.addEventListener('load', () => {
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-      
-      Object.keys(this.styles).forEach(section => {
-        const selector = iframeDoc.defaultView.visualEditor.getSectionSelector(section);
-        const element = iframeDoc.querySelector(selector);
+
+    const applyStyles = () => {
+      try {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const iframeWindow = iframe.contentWindow;
+        if (!iframeDoc || !iframeWindow || !iframeWindow.visualEditor) return;
         
-        if (element) {
-          Object.keys(this.styles[section]).forEach(property => {
-            const cssProperty = property.replace(/([A-Z])/g, '-$1').toLowerCase();
-            element.style[cssProperty] = this.styles[section][property];
-          });
-        }
-      });
-    }, { once: true });
+        Object.keys(this.styles).forEach(section => {
+          const selector = iframeWindow.visualEditor.getSectionSelector(section);
+          const element = iframeDoc.querySelector(selector);
+          
+          if (element) {
+            Object.keys(this.styles[section]).forEach(property => {
+              const cssProperty = property.replace(/([A-Z])/g, '-$1').toLowerCase();
+              element.style[cssProperty] = this.styles[section][property];
+            });
+          }
+        });
+      } catch (error) {
+        console.error('Ошибка применения сохраненных стилей в iframe:', error);
+      }
+    };
+
+    if (iframe.contentDocument?.readyState === 'complete' && iframe.contentWindow?.visualEditor) {
+      applyStyles();
+    } else {
+      iframe.addEventListener('load', applyStyles, { once: true });
+    }
   }
 
   toggleEditMode() {
     const iframe = document.getElementById('sitePreview');
+    if (!iframe) return;
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
     
-    if (iframeDoc) {
-      if (this.editMode) {
-        iframeDoc.body.style.cursor = 'crosshair';
-        this.setupElementSelection(iframeDoc);
-        
-        // Показываем ручки для текущего элемента
-        if (this.currentElement) {
-          this.showResizeHandles(this.currentElement);
-        }
-      } else {
-        iframeDoc.body.style.cursor = 'default';
-        iframeDoc.querySelectorAll('.visual-editor-resize-handle').forEach(h => h.remove());
+    if (!iframeDoc) return;
+
+    if (this.editMode) {
+      iframeDoc.body.style.cursor = 'crosshair';
+      this.setupElementSelection(iframeDoc);
+      
+      // Показываем ручки для текущего элемента
+      if (this.currentElement) {
+        this.showResizeHandles(this.currentElement);
       }
+    } else {
+      iframeDoc.body.style.cursor = 'default';
+      this.cleanupElementSelection();
+      iframeDoc.querySelectorAll('.visual-editor-resize-handle').forEach(h => h.remove());
     }
   }
 
   setupElementSelection(iframeDoc) {
     const iframe = document.getElementById('sitePreview');
-    const iframeWindow = iframe.contentWindow;
-    let hoveredElement = null;
-    
-    // Hover эффект для показа границ элементов
-    iframeDoc.addEventListener('mousemove', (e) => {
+    const iframeWindow = iframe?.contentWindow;
+    if (!iframeDoc || !iframeWindow) return;
+
+    if (this.selectionListeners?.doc === iframeDoc) {
+      return; // уже подключены обработчики для этого документа
+    }
+
+    this.cleanupElementSelection();
+
+    const raf = iframeWindow.requestAnimationFrame || window.requestAnimationFrame;
+    const cancelRaf = iframeWindow.cancelAnimationFrame || window.cancelAnimationFrame;
+    const scheduleHover = (fn) => raf ? raf(fn) : setTimeout(fn, 16);
+    const clearHoverFrame = (id) => {
+      if (!id) return;
+      if (cancelRaf) {
+        cancelRaf(id);
+      } else {
+        clearTimeout(id);
+      }
+    };
+
+    const onMouseMove = (e) => {
       if (!this.editMode) return;
       
-      // Игнорируем ручки и выделенные элементы
       if (e.target.classList.contains('visual-editor-resize-handle') || 
           e.target.classList.contains('visual-editor-highlight')) {
         return;
       }
-      
-      const element = e.target;
-      
-      // Убираем предыдущий hover
-      if (hoveredElement && hoveredElement !== element && !hoveredElement.classList.contains('visual-editor-highlight')) {
-        hoveredElement.style.outline = '';
-        hoveredElement.style.outlineOffset = '';
-      }
-      
-      // Показываем границы текущего элемента
-      if (element !== hoveredElement && !element.classList.contains('visual-editor-highlight')) {
-        element.style.outline = '1px dashed rgba(126, 99, 255, 0.5)';
-        element.style.outlineOffset = '2px';
-        hoveredElement = element;
-      }
-    });
+
+      this.hoverTarget = e.target;
+
+      if (this.hoverRafId) return;
+      this.hoverRafId = scheduleHover(() => {
+        this.hoverRafId = null;
+        const element = this.hoverTarget;
+        if (!element) return;
+
+        if (this.hoveredElement && this.hoveredElement !== element && !this.hoveredElement.classList.contains('visual-editor-highlight')) {
+          this.hoveredElement.style.outline = '';
+          this.hoveredElement.style.outlineOffset = '';
+        }
+
+        if (element !== this.hoveredElement && !element.classList.contains('visual-editor-highlight')) {
+          element.style.outline = '1px dashed rgba(126, 99, 255, 0.5)';
+          element.style.outlineOffset = '2px';
+          this.hoveredElement = element;
+        }
+      });
+    };
     
-    // Клик для выбора элемента
-    iframeDoc.addEventListener('click', (e) => {
+    const onClick = (e) => {
       if (!this.editMode) return;
       
-      // Игнорируем клики на ручках
       if (e.target.classList.contains('visual-editor-resize-handle')) {
         return;
       }
@@ -754,48 +819,87 @@ class VisualEditor {
       
       const element = e.target;
       
-      // Выбираем элемент
       if (iframeWindow.visualEditor) {
         this.currentElement = iframeWindow.visualEditor.selectElementByClick(element);
         this.currentElementSelector = iframeWindow.visualEditor.getElementSelector(element);
         this.currentSection = null; // Сбрасываем секцию при выборе элемента
+        console.log('Элемент выбран:', this.currentElement, 'селектор:', this.currentElementSelector);
       } else {
         this.currentElement = element;
+        console.warn('visualEditor не доступен, используем элемент напрямую');
       }
       
-      // Загружаем стили элемента
       if (this.currentElement) {
         const computed = iframeWindow.getComputedStyle(this.currentElement);
         this.loadElementStylesFromComputed(computed);
         
-        // Показываем ручки
-        this.showResizeHandles(this.currentElement);
+        setTimeout(() => {
+          this.showResizeHandles(this.currentElement);
+        }, 50);
         
-        // Обновляем статус
         const statusDiv = document.getElementById('sectionStatus');
         if (statusDiv) {
-          statusDiv.textContent = '✓ Элемент выбран';
+          statusDiv.textContent = '✓ Элемент выбран: ' + (this.currentElement.tagName + (this.currentElement.id ? '#' + this.currentElement.id : '') + (this.currentElement.className ? '.' + this.currentElement.className.split(' ')[0] : ''));
           statusDiv.style.color = '#33f5c8';
         }
+        
+        console.log('Элемент готов к редактированию:', this.currentElement);
+        this.updateDebugInfo('Элемент выбран: ' + this.currentElement.tagName);
+      } else {
+        console.error('Не удалось выбрать элемент');
+        this.updateDebugInfo('Ошибка: элемент не выбран');
       }
       
-      // Определяем раздел по элементу для выпадающего списка
       const section = this.detectSection(element);
       if (section) {
         document.getElementById('sectionSelector').value = section;
       } else {
         document.getElementById('sectionSelector').value = '';
       }
-    }, true);
+    };
     
-    // Убираем hover при уходе мыши
-    iframeDoc.addEventListener('mouseleave', () => {
-      if (hoveredElement && !hoveredElement.classList.contains('visual-editor-highlight')) {
-        hoveredElement.style.outline = '';
-        hoveredElement.style.outlineOffset = '';
-        hoveredElement = null;
+    const onMouseLeave = () => {
+      if (this.hoveredElement && !this.hoveredElement.classList.contains('visual-editor-highlight')) {
+        this.hoveredElement.style.outline = '';
+        this.hoveredElement.style.outlineOffset = '';
       }
-    });
+      this.hoverTarget = null;
+      this.hoveredElement = null;
+    };
+
+    iframeDoc.addEventListener('mousemove', onMouseMove, { passive: true });
+    iframeDoc.addEventListener('click', onClick, true);
+    iframeDoc.addEventListener('mouseleave', onMouseLeave);
+
+    this.selectionListeners = {
+      doc: iframeDoc,
+      mousemove: onMouseMove,
+      click: onClick,
+      mouseleave: onMouseLeave,
+      cancelHover: () => {
+        clearHoverFrame(this.hoverRafId);
+        this.hoverRafId = null;
+        if (this.hoveredElement && !this.hoveredElement.classList.contains('visual-editor-highlight')) {
+          this.hoveredElement.style.outline = '';
+          this.hoveredElement.style.outlineOffset = '';
+        }
+        this.hoverTarget = null;
+        this.hoveredElement = null;
+      }
+    };
+  }
+
+  cleanupElementSelection() {
+    if (!this.selectionListeners) return;
+
+    const { doc, mousemove, click, mouseleave, cancelHover } = this.selectionListeners;
+
+    if (doc && mousemove) doc.removeEventListener('mousemove', mousemove);
+    if (doc && click) doc.removeEventListener('click', click, true);
+    if (doc && mouseleave) doc.removeEventListener('mouseleave', mouseleave);
+    if (typeof cancelHover === 'function') cancelHover();
+
+    this.selectionListeners = null;
   }
 
   detectSection(element) {
@@ -1227,6 +1331,15 @@ class VisualEditor {
     const b = parseInt(match[3]).toString(16).padStart(2, '0');
     
     return `#${r}${g}${b}`;
+  }
+  
+  updateDebugInfo(message) {
+    const debugDiv = document.getElementById('debugInfo');
+    if (debugDiv) {
+      const time = new Date().toLocaleTimeString();
+      debugDiv.textContent = `[${time}] ${message}`;
+      debugDiv.scrollTop = debugDiv.scrollHeight;
+    }
   }
 }
 

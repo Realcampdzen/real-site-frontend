@@ -335,10 +335,19 @@ function initPreloader() {
       logoImg.style.display = 'none';
       logoPlaceholder.style.display = 'block';
     };
+    const hidePlaceholder = () => {
+      logoPlaceholder.style.display = 'none';
+      logoImg.style.display = 'block';
+    };
     if (logoImg.complete && logoImg.naturalHeight === 0) {
       showPlaceholder();
     } else {
       logoImg.addEventListener('error', showPlaceholder, { once: true });
+      logoImg.addEventListener('load', hidePlaceholder, { once: true });
+      // Если уже загрузилось успешно - сразу скрываем плейсхолдер
+      if (logoImg.complete && logoImg.naturalHeight !== 0) {
+        hidePlaceholder();
+      }
     }
   }
   
@@ -883,6 +892,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroSoundToggle();
 });
 
+document.addEventListener('DOMContentLoaded', () => initScrollRevealV2());
+window.addEventListener('load', () => initScrollRevealV2(true));
+
 // Hero video sound toggle functionality
 function initHeroSoundToggle() {
   const heroReel = document.getElementById('hero-reel-container');
@@ -955,4 +967,152 @@ function initHeroSoundToggle() {
   
   console.log('✅ Hero sound toggle initialized');
 }
-  
+
+// Scroll reveal animations (covers new sections even if legacy observer missed them)
+let scrollRevealInitialized = false;
+
+function initScrollRevealV2(force = false) {
+  if (scrollRevealInitialized && !force) return;
+  scrollRevealInitialized = true;
+
+  try {
+    ensureScrollRevealStyles();
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const selectors = [
+      '[data-animate]',
+      '.animate-on-scroll',
+      '.value-highlight',
+      '.projects-banner-section',
+      '.cta-section',
+      '.process-section',
+      '.assistants-section',
+      '.testimonials',
+      '.benefits-section',
+      '.services',
+      '.about',
+      'section'
+    ];
+
+    const candidates = Array.from(new Set(Array.from(document.querySelectorAll(selectors.join(',')))));
+    const prepared = [];
+
+    const prepareElement = (el, index = 0) => {
+      if (!el || el.dataset.scrollRevealReady === '1') return;
+      if (el.classList.contains('hero') || el.dataset.animate === 'off') return;
+      el.dataset.scrollRevealReady = '1';
+      el.classList.add('scroll-animate');
+      const customDelay = el.getAttribute('data-animate-delay') || el.dataset.animateDelay;
+      const delayValue = customDelay ? parseInt(customDelay, 10) : (index % 7) * 70;
+      el.style.setProperty('--scroll-animate-delay', `${Math.max(0, delayValue || 0)}ms`);
+      prepared.push(el);
+    };
+
+    candidates.forEach((el, index) => prepareElement(el, index));
+    if (prepared.length === 0) return;
+
+    const revealElement = (el) => {
+      el.classList.add('scroll-animate--visible');
+      el.classList.remove('section-hidden', 'reveal-base');
+    };
+
+    const showVisibleImmediately = () => {
+      prepared.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * -0.1) {
+          revealElement(el);
+        }
+      });
+    };
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      prepared.forEach(revealElement);
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          revealElement(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.05,
+      rootMargin: '18% 0px -8% 0px'
+    });
+
+    prepared.forEach((el) => observer.observe(el));
+    showVisibleImmediately();
+    // Реакция на динамически добавленные блоки
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach(({ addedNodes }) => {
+        addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+          const matchedSelf = selectors.some((selector) => node.matches?.(selector));
+          const targets = matchedSelf ? [node] : Array.from(node.querySelectorAll?.(selectors.join(',')) || []);
+          targets.forEach((target, idx) => {
+            prepareElement(target, idx);
+            if (target.dataset.scrollRevealReady === '1' && !prefersReducedMotion) {
+              observer.observe(target);
+            } else if (target.dataset.scrollRevealReady === '1') {
+              revealElement(target);
+            }
+          });
+        });
+      });
+    });
+
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+  } catch (error) {
+    console.error('Ошибка инициализации scroll reveal анимаций:', error);
+  }
+}
+
+function ensureScrollRevealStyles() {
+  if (document.getElementById('scroll-reveal-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'scroll-reveal-styles';
+  style.textContent = `
+    .scroll-animate {
+      opacity: 0;
+      transform: translateY(30px) scale(0.88);
+      filter: blur(0.4px);
+      transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.75s ease;
+      transition-delay: var(--scroll-animate-delay, 0ms);
+      will-change: opacity, transform, filter;
+    }
+
+    .scroll-animate--visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: none;
+      animation-delay: var(--scroll-animate-delay, 0ms);
+      animation: scroll-pop 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes scroll-pop {
+      0% { opacity: 0; transform: translateY(30px) scale(0.86); }
+      48% { opacity: 1; transform: translateY(-6px) scale(1.04); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-animate {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition: none;
+      }
+      .scroll-animate--visible {
+        animation: none;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Фолбек: запустить сразу, если DOM уже готов (дефер-сценарий)
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  initScrollRevealV2(true);
+}
