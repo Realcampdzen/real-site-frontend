@@ -220,7 +220,7 @@ class VideoOptimizer {
     };
 
     const scheduleHideControls = () => {
-      if (isTouch || !controls) return;
+      if (!controls) return;
       clearTimeout(hideControlsTimeout);
       hideControlsTimeout = setTimeout(() => {
         const hovering =
@@ -364,8 +364,13 @@ class VideoOptimizer {
       controls?.addEventListener('mouseleave', scheduleHideControls);
       heroContainer?.addEventListener('mouseleave', scheduleHideControls);
       bumpControls();
-    } else if (controls) {
-      controls.classList.add('is-active');
+    } else {
+      // На тач-устройствах показываем контролы по тапу и автоскрываем их
+      const tapHandler = () => {
+        bumpControls();
+      };
+      heroContainer?.addEventListener('click', tapHandler);
+      video.addEventListener('click', tapHandler);
     }
 
     document.addEventListener('click', (e) => {
