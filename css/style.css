@@ -1199,6 +1199,17 @@ body::before {
   margin: 10px auto 0;
 }
 
+/* Скрываем надписи и кнопки в герое при полноэкранном режиме видео */
+.hero-fullscreen-active .hero-tagline,
+.hero-fullscreen-active .hero-title,
+.hero-fullscreen-active .hero-title-reel,
+.hero-fullscreen-active .hero-subtitle,
+.hero-fullscreen-active .hero-cta-row {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
 .hero-controls {
   position: absolute;
   left: 50%;

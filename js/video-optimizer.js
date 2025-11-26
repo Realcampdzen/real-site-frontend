@@ -204,11 +204,27 @@ class VideoOptimizer {
     };
 
     const updateFullscreenIcon = () => {
-      if (!fullscreenBtn) return;
-      const icon = fullscreenBtn.querySelector('i');
-      if (!icon) return;
-      const inFs = !!document.fullscreenElement;
-      icon.className = inFs ? 'fas fa-compress' : 'fas fa-expand';
+      if (fullscreenBtn) {
+        const icon = fullscreenBtn.querySelector('i');
+        if (icon) {
+          const inFs = !!document.fullscreenElement;
+          icon.className = inFs ? 'fas fa-compress' : 'fas fa-expand';
+        }
+      }
+
+      // Прячем надписи и кнопки в герое, когда видео раскрыто на весь экран
+      if (heroContainer) {
+        const inFs = !!document.fullscreenElement;
+        const isHeroFs =
+          document.fullscreenElement === heroContainer ||
+          document.fullscreenElement === video;
+
+        if (inFs && isHeroFs) {
+          heroContainer.classList.add('hero-fullscreen-active');
+        } else {
+          heroContainer.classList.remove('hero-fullscreen-active');
+        }
+      }
     };
 
     const updateQualityLabel = () => {
