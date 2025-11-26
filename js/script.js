@@ -296,12 +296,29 @@ function initTiltEffect() {
 function initPreloader() {
   const preloader = document.getElementById('preloader');
   const progressBar = document.querySelector('.loading-progress');
+  const progressContainer = document.querySelector('.loading-bar');
   const statusText = document.querySelector('.preloader-hint');
-  const logoImg = document.querySelector('.preloader .logo-image');
-  const logoPlaceholder = document.querySelector('.preloader .logo-placeholder');
+  const criticalLogos = document.querySelectorAll('.nav-logo .logo-image');
   
   if (!preloader) {
     return;
+  }
+
+  criticalLogos.forEach((logo) => {
+    logo.setAttribute('loading', 'eager');
+    logo.setAttribute('decoding', 'async');
+    logo.setAttribute('fetchpriority', 'high');
+  });
+
+  if (progressContainer) {
+    progressContainer.setAttribute('role', 'progressbar');
+    progressContainer.setAttribute('aria-valuemin', '0');
+    progressContainer.setAttribute('aria-valuemax', '100');
+    progressContainer.setAttribute('aria-valuenow', '0');
+    progressContainer.setAttribute('aria-label', 'Загрузка страницы');
+  }
+  if (statusText && !statusText.textContent.trim()) {
+    statusText.textContent = 'Подгружаем медиа...';
   }
   
   let isComplete = false;
@@ -316,6 +333,9 @@ function initPreloader() {
       currentProgress = Math.max(currentProgress, Math.min(progress, 100));
       progressBar.style.width = currentProgress + '%';
     }
+    if (progressContainer) {
+      progressContainer.setAttribute('aria-valuenow', String(Math.round(currentProgress)));
+    }
     if (statusText) {
       if (currentProgress < 30) {
         statusText.textContent = 'Подгружаем медиа...';
@@ -325,28 +345,6 @@ function initPreloader() {
         statusText.textContent = 'Оптимизируем анимации...';
       } else {
         statusText.textContent = 'Почти готово!';
-      }
-    }
-  }
-
-  // Логотип: если не загрузился, показываем плейсхолдер вместо битой картинки
-  if (logoImg && logoPlaceholder) {
-    const showPlaceholder = () => {
-      logoImg.style.display = 'none';
-      logoPlaceholder.style.display = 'block';
-    };
-    const hidePlaceholder = () => {
-      logoPlaceholder.style.display = 'none';
-      logoImg.style.display = 'block';
-    };
-    if (logoImg.complete && logoImg.naturalHeight === 0) {
-      showPlaceholder();
-    } else {
-      logoImg.addEventListener('error', showPlaceholder, { once: true });
-      logoImg.addEventListener('load', hidePlaceholder, { once: true });
-      // Если уже загрузилось успешно - сразу скрываем плейсхолдер
-      if (logoImg.complete && logoImg.naturalHeight !== 0) {
-        hidePlaceholder();
       }
     }
   }

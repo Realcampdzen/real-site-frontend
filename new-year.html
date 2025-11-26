@@ -11,7 +11,7 @@
   <meta name="keywords" content="новогодние скидки, AI, нейросети, боты, специальные предложения">
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Spline+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
   <!-- FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
@@ -45,16 +45,16 @@
   <!-- Preloader -->
   <div id="preloader" class="preloader">
     <div class="preloader-content">
-      <div class="studio-logo">
-        <img src="public/новый лого 2.png" alt="Реальный Vайб AI Studio" class="logo-image">
-        <div class="logo-text">
-          <span class="studio-name">Реальный Vайб</span>
-          <span class="studio-label">AI&nbsp;Studio</span>
+      <div class="preloader-brand" aria-label="Реальный Вайб AI Studio">
+        <div class="preloader-wordmark">
+          <div class="preloader-kicker">Реальный Vайб</div>
+          <div class="preloader-title">AI Studio</div>
         </div>
       </div>
-      <div class="loading-bar">
+      <div class="loading-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Загрузка страницы">
         <div class="loading-progress"></div>
       </div>
+      <div class="preloader-hint" aria-live="polite">Подгружаем медиа...</div>
     </div>
   </div>
 
@@ -63,7 +63,7 @@
     <div class="nav-container">
       <div class="nav-logo">
         <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;" onclick="event.preventDefault(); window.location.href = 'index.html?reload=' + Date.now(); return false;">
-          <img src="public/новый лого 2.png" alt="Реальный Vайб AI Studio" class="logo-image">
+          <img src="public/logo-mark.svg" alt="Реальный Vайб AI Studio" class="logo-image">
           <div class="logo-text">
             <span class="studio-name">Реальный Vайб</span>
             <span class="studio-label">AI&nbsp;Studio</span>
