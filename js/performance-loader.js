@@ -72,7 +72,21 @@
       ) {
         return;
       }
-      img.loading = 'lazy';
+      
+      // Проверяем, находится ли изображение в первых 2 экранах
+      const rect = img.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const isAboveFold = rect.top < viewportHeight * 2.5;
+      
+      // Не используем lazy loading для изображений, которые скоро появятся
+      // Это предотвращает "люк" - пустые контейнеры
+      if (!isAboveFold) {
+        img.loading = 'lazy';
+      } else {
+        // Для изображений выше fold используем eager loading
+        img.loading = 'eager';
+      }
+      
       if (!img.getAttribute('decoding')) {
         img.setAttribute('decoding', 'async');
       }
@@ -85,8 +99,8 @@
 
   function runCoreOptimizers() {
     lazyImages();
+    // video-optimizer.js загружается напрямую в index.html, не нужно загружать здесь
     schedule(() => {
-      loadScript('js/video-optimizer.js');
       loadScript('js/image-optimizer.js');
       loadScript('js/skeleton-loader.js');
     }, 120);

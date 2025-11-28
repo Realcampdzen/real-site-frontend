@@ -217,14 +217,24 @@ class MobileNavigation {
   }
   
   scrollToElement(element) {
-    const offset = isMobile() ? 80 : 100;
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
+    if (!element) return;
     
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    });
+    const offset = isMobile() ? 80 : 100;
+    
+    // Используем ScrollManager если доступен
+    if (window.scrollManager) {
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollManager.scrollToPosition(offsetPosition);
+    } else {
+      // Fallback
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   }
   
   addAutoClose() {
@@ -420,6 +430,15 @@ class MobilePerformanceOptimizer {
   }
   
   throttleScrollEvents() {
+    // Используем централизованный ScrollManager вместо собственного обработчика
+    // Это предотвращает дублирование и улучшает производительность
+    if (window.scrollManager) {
+      // ScrollManager уже обрабатывает все события прокрутки оптимально
+      // Дополнительные обработчики не нужны
+      return;
+    }
+    
+    // Fallback для старых браузеров
     let ticking = false;
     
     const throttledScroll = () => {
@@ -440,11 +459,17 @@ class MobilePerformanceOptimizer {
     const scrollProgress = document.getElementById('scroll-progress');
     if (!scrollProgress) return;
     
-    const scrollTop = window.pageYOffset;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = (scrollTop / docHeight) * 100;
-    
-    scrollProgress.style.width = `${Math.min(scrollPercent, 100)}%`;
+    // Используем ScrollManager если доступен
+    if (window.scrollManager) {
+      const scrollPercent = window.scrollManager.getScrollPercent();
+      scrollProgress.style.width = `${scrollPercent}%`;
+    } else {
+      // Fallback
+      const scrollTop = window.pageYOffset;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+      scrollProgress.style.width = `${Math.min(scrollPercent, 100)}%`;
+    }
   }
   
   optimizeParticles() {
@@ -645,7 +670,7 @@ class ServiceWorkerManager {
 
 // ===== ОПТИМИЗАЦИЯ ИЗОБРАЖЕНИЙ =====
 
-class ImageOptimizer {
+class MobileImageOptimizer {
   constructor() {
     this.init();
   }
@@ -998,6 +1023,7 @@ class NetworkOptimizer {
     // Отключаем тяжелые элементы
     const heavyElements = document.querySelectorAll('.bg-animation, video, .particle-canvas');
     heavyElements.forEach(el => {
+      if (el.id === 'hero-reel-video') return; // Герой оставляем
       el.style.display = 'none';
     });
     
@@ -1023,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Инициализируем новые компоненты
   new LazyImageLoader();
   new ServiceWorkerManager();
-  new ImageOptimizer();
+  new MobileImageOptimizer();
   new AdvancedTouchGestures();
   new BatteryOptimizer();
   new NetworkOptimizer();

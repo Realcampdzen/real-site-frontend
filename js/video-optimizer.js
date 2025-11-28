@@ -8,22 +8,177 @@ class VideoOptimizer {
     this.isMobile = window.matchMedia
       ? window.matchMedia('(max-width: 900px)').matches
       : window.innerWidth <= 768;
+    this.isYandex =
+      navigator.userAgent &&
+      /YaBrowser|Yandex/i.test(navigator.userAgent);
     this.connection =
       navigator.connection ||
       navigator.mozConnection ||
       navigator.webkitConnection;
     this.saveData = !!(this.connection && this.connection.saveData);
     this.slowNetwork =
-    this.connection &&
-    ['slow-2g', '2g', '3g'].includes(this.connection.effectiveType);
-  this.prefersReducedMotion =
-    window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  this.heroVideo = document.getElementById('hero-reel-video');
+      this.connection &&
+      ['slow-2g', '2g', '3g'].includes(this.connection.effectiveType);
+    this.prefersReducedMotion =
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.heroVideo = document.getElementById('hero-reel-video');
     this.autoPlayDesktop = this.heroVideo
       ? this.heroVideo.dataset.autoplayDesktop !== 'false'
       : true;
     this.init();
+  }
+
+  normalizeSrc(src) {
+    if (!src) return '';
+    try {
+      return encodeURI(src);
+    } catch (e) {
+      console.warn('Не удалось нормализовать src видео', src, e);
+      return src;
+    }
+  }
+
+  getHeroSources(video) {
+    const desktopRaw =
+      video.dataset.desktopSrc ||
+      video.getAttribute('src') ||
+      video.querySelector('source')?.src ||
+      'public/works/шоурил.mp4';
+    const mobileRaw =
+      video.dataset.mobileSrc ||
+      video.querySelector('source[data-mobile]')?.src ||
+      '';
+
+    return {
+      desktop: this.normalizeSrc(desktopRaw),
+      mobile: mobileRaw ? this.normalizeSrc(mobileRaw) : ''
+    };
+  }
+
+  ensureHeroAttributes(video) {
+    // Для hero видео используем 'auto' для более быстрого автозапуска
+    const preloadMode =
+      this.isYandex || (!this.slowNetwork && !this.saveData)
+        ? 'auto'
+        : 'metadata';
+
+    video.setAttribute('preload', preloadMode);
+    video.preload = preloadMode;
+
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.muted = true;
+    video.setAttribute('muted', '');
+    video.defaultMuted = true;
+
+    // Для hero видео всегда включаем автозапуск (игнорируем prefers-reduced-motion)
+    // так как это критичный элемент дизайна
+    const shouldAutoplay = this.autoPlayDesktop;
+    video.autoplay = shouldAutoplay;
+    if (shouldAutoplay) {
+      video.setAttribute('autoplay', '');
+      console.log('🎬 Автозапуск видео включен');
+    } else {
+      video.removeAttribute('autoplay');
+      console.log('⏸️ Автозапуск видео отключен (настройки)');
+    }
+    
+    console.log('📹 Настройки hero видео:', {
+      preload: preloadMode,
+      autoplay: shouldAutoplay,
+      muted: video.muted,
+      readyState: video.readyState,
+      src: video.currentSrc || video.src
+    });
+  }
+
+  ensurePlayback(video) {
+    let played = false;
+
+    // Убеждаемся, что видео muted для автозапуска
+    if (!video.muted) {
+      video.muted = true;
+      video.setAttribute('muted', '');
+    }
+
+    const attemptPlay = () => {
+      if (played || video.ended) return;
+      
+      // Проверяем, что видео не на паузе и не закончилось
+      if (!video.paused && video.currentTime > 0) {
+        played = true;
+        return;
+      }
+
+      const playPromise = video.play();
+      if (playPromise && playPromise.catch) {
+        playPromise
+          .then(() => {
+            console.log('✅ Видео успешно запущено');
+            played = true;
+          })
+          .catch((err) => {
+            console.warn('⚠️ Автовоспроизведение ограничено браузером:', err?.name || err);
+            // Продолжаем попытки даже при ошибке
+          });
+      }
+    };
+
+    const markPlayed = () => {
+      played = true;
+    };
+
+    video.addEventListener('play', markPlayed, { once: true });
+    video.addEventListener('playing', markPlayed, { once: true });
+
+    // Немедленная попытка, если видео уже готово
+    if (video.readyState >= 2) {
+      attemptPlay();
+    } else {
+      // Пробуем сразу после загрузки метаданных
+      video.addEventListener('loadedmetadata', attemptPlay, { once: true });
+      video.addEventListener('loadeddata', attemptPlay, { once: true });
+      video.addEventListener('canplay', attemptPlay, { once: true });
+      video.addEventListener('canplaythrough', attemptPlay, { once: true });
+    }
+
+    // Гарантия запуска после первого взаимодействия
+    const resumeOnInteract = () => {
+      attemptPlay();
+    };
+    video.addEventListener('pointerdown', resumeOnInteract, { once: true });
+    video.addEventListener('touchstart', resumeOnInteract, { once: true });
+
+    // Повторные попытки для капризных браузеров (например, Яндекс)
+    setTimeout(attemptPlay, 100);
+    setTimeout(attemptPlay, 500);
+    setTimeout(attemptPlay, 1000);
+    setTimeout(attemptPlay, 2000);
+    
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') attemptPlay();
+    });
+    
+    video.addEventListener('mouseenter', attemptPlay, { once: true });
+    video.addEventListener('stalled', attemptPlay);
+    video.addEventListener('suspend', attemptPlay);
+
+    // Брутфорс-фоллбек: несколько попыток с интервалом
+    let retries = 0;
+    const retryInterval = setInterval(() => {
+      if (played || (!video.paused && !video.ended && video.currentTime > 0)) {
+        clearInterval(retryInterval);
+        return;
+      }
+      attemptPlay();
+      retries += 1;
+      if (retries >= 8) {
+        clearInterval(retryInterval);
+        console.warn('⚠️ Превышено количество попыток автозапуска видео');
+      }
+    }, 800);
   }
 
   init() {
@@ -50,83 +205,99 @@ class VideoOptimizer {
   optimizeHeroVideo() {
     const heroVideo =
       this.heroVideo || document.getElementById('hero-reel-video');
-    if (!heroVideo) return;
+    if (!heroVideo) {
+      console.warn('⚠️ Hero видео не найдено на странице');
+      return;
+    }
     this.heroVideo = heroVideo;
+    console.log('🎥 Инициализация hero видео:', {
+      id: heroVideo.id,
+      autoplay: heroVideo.autoplay,
+      muted: heroVideo.muted,
+      readyState: heroVideo.readyState,
+      src: heroVideo.currentSrc || heroVideo.src
+    });
 
     // Проверяем, есть ли уже адаптивные источники
     if (heroVideo.querySelector('source[media]')) {
+      this.ensureHeroAttributes(heroVideo);
+      this.ensurePlayback(heroVideo);
       return; // Уже настроено
     }
 
-    // Получаем текущий источник видео
-    const currentSrc = heroVideo.getAttribute('src') || 
-                      heroVideo.querySelector('source')?.src || 
-                      'public/works/шоурил.mp4';
+    const { desktop, mobile } = this.getHeroSources(heroVideo);
 
-    // Сначала добавляем desktop источник (fallback)
-    const desktopSource = document.createElement('source');
-    desktopSource.src = currentSrc;
-    desktopSource.type = 'video/mp4';
-
-    // Очищаем старый src и добавляем desktop источник
+    // Сначала очищаем старые источники
     heroVideo.removeAttribute('src');
     const existingSources = heroVideo.querySelectorAll('source');
-    existingSources.forEach(s => s.remove());
+    existingSources.forEach((s) => s.remove());
+
+    // Desktop источник (fallback)
+    const desktopSource = document.createElement('source');
+    desktopSource.src = desktop || 'public/works/шоурил.mp4';
+    desktopSource.type = 'video/mp4';
+    desktopSource.setAttribute('data-quality', 'desktop');
+
+    // Мобильный источник (если указан)
+    if (mobile) {
+      const mobileSource = document.createElement('source');
+      mobileSource.src = mobile;
+      mobileSource.type = 'video/mp4';
+      mobileSource.media = '(max-width: 900px)';
+      mobileSource.setAttribute('data-mobile', 'true');
+      heroVideo.appendChild(mobileSource);
+    }
+
     heroVideo.appendChild(desktopSource);
 
-    // Проверяем существование мобильной версии перед добавлением
-    // Если файл не существует, браузер будет использовать desktop версию
-    const mobileSource = document.createElement('source');
-    mobileSource.src = 'public/works/шоурил-mobile.mp4';
-    mobileSource.type = 'video/mp4';
-    mobileSource.media = '(max-width: 768px)';
-    mobileSource.setAttribute('data-mobile', 'true');
-    
-    // Проверяем существование файла через fetch HEAD запрос
-    fetch(mobileSource.src, { method: 'HEAD' })
-      .then(response => {
-        if (response.ok) {
-          // Файл существует, добавляем мобильный источник первым
-          heroVideo.insertBefore(mobileSource, desktopSource);
-          console.log('✅ Мобильная версия видео найдена и добавлена');
-        } else {
-          console.log('ℹ️ Мобильная версия видео не найдена, используется desktop версия');
-        }
-      })
-      .catch(() => {
-        // Ошибка сети или файл не найден - используем только desktop
-        console.log('ℹ️ Мобильная версия видео недоступна, используется desktop версия');
-      });
-
     // Добавляем poster изображение если его нет (с проверкой существования)
-    if (!heroVideo.hasAttribute('poster')) {
-      const posterUrl = 'public/works/шоурил-poster.jpg';
-      // Проверяем существование poster через Image
-      const posterImg = new Image();
-      posterImg.onload = () => {
-        heroVideo.setAttribute('poster', posterUrl);
-      };
-      posterImg.onerror = () => {
-        console.log('Poster изображение не найдено, используется первый кадр видео');
-        // Не устанавливаем poster, браузер покажет первый кадр
-      };
-      posterImg.src = posterUrl;
-    }
+    const posterUrl =
+      heroVideo.getAttribute('poster') ||
+      heroVideo.dataset.poster ||
+      'public/works/hero-poster.jpg';
+    heroVideo.setAttribute('poster', posterUrl);
 
-    // Не переопределяем preload, если он задан вручную в разметке
-    if (!heroVideo.hasAttribute('preload')) {
-      heroVideo.setAttribute('preload', this.isMobile ? 'metadata' : 'auto');
-    }
+    this.ensureHeroAttributes(heroVideo);
 
-    // Гарантируем автозапуск
-    heroVideo.autoplay = true;
-    heroVideo.muted = true;
-    heroVideo.load();
-    const playPromise = heroVideo.play();
-    if (playPromise && playPromise.catch) {
-      playPromise.catch(() =>
-        console.warn('Автовоспроизведение ограничено браузером')
-      );
+    // Запускаем сразу, не ждём requestAnimationFrame
+    const initVideo = () => {
+      heroVideo.load();
+      
+      // Убеждаемся, что видео muted для автозапуска
+      heroVideo.muted = true;
+      heroVideo.setAttribute('muted', '');
+      
+      // Всегда пытаемся запустить видео, даже если autoplay не сработал
+      // Это критичный элемент дизайна, должен запускаться всегда
+      this.ensurePlayback(heroVideo);
+      
+      // Явно запускаем для Яндекса и других браузеров
+      if (this.isYandex) {
+        heroVideo.play().catch(() => {});
+        setTimeout(() => heroVideo.play().catch(() => {}), 300);
+        setTimeout(() => heroVideo.play().catch(() => {}), 800);
+      }
+      
+      // Дополнительные попытки для всех браузеров
+      heroVideo.addEventListener('loadeddata', () => {
+        heroVideo.play().catch(() => {});
+      }, { once: true });
+      
+      heroVideo.addEventListener('canplay', () => {
+        heroVideo.play().catch(() => {});
+      }, { once: true });
+      
+      heroVideo.addEventListener('canplaythrough', () => {
+        heroVideo.play().catch(() => {});
+      }, { once: true });
+    };
+
+    // Запускаем сразу, если DOM готов
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initVideo, { once: true });
+    } else {
+      // Используем requestAnimationFrame для синхронизации с рендерингом
+      requestAnimationFrame(initVideo);
     }
   }
 
@@ -422,11 +593,19 @@ class VideoOptimizer {
       });
 
       portfolioVideos.forEach(video => {
-        // Устанавливаем poster если его нет
-        if (!video.hasAttribute('poster') && video.querySelector('source')) {
-          const source = video.querySelector('source');
-          const videoName = source.src.split('/').pop().replace('.mp4', '');
-          video.setAttribute('poster', `public/works/${videoName}-poster.jpg`);
+        // Не устанавливаем poster автоматически - он должен быть указан в HTML
+        // если файл существует. Это предотвращает 404 ошибки для несуществующих файлов.
+        
+        // Обрабатываем ошибки загрузки poster, чтобы они не засоряли консоль
+        if (video.hasAttribute('poster')) {
+          const posterUrl = video.getAttribute('poster');
+          video.addEventListener('error', (e) => {
+            // Если ошибка связана с poster, просто игнорируем её
+            if (e.target === video && video.networkState === video.NETWORK_NO_SOURCE) {
+              // Это может быть ошибка poster, но не критично
+              return;
+            }
+          }, { once: true });
         }
         
         video.setAttribute('preload', 'none'); // Не загружаем до появления
@@ -473,7 +652,9 @@ class VideoOptimizer {
           const heroVideo =
             this.heroVideo || document.getElementById('hero-reel-video');
           if (!heroVideo) return;
+          if (this.saveData || this.slowNetwork) return;
           heroVideo.setAttribute('preload', 'auto');
+          heroVideo.preload = 'auto';
           heroVideo.load();
         }, 1000); // Задержка 1 секунда
       });
@@ -488,6 +669,23 @@ class VideoOptimizer {
     
     videos.forEach(video => {
       video.addEventListener('error', (e) => {
+        const desktopSource = video.querySelector('source[data-quality="desktop"]');
+        const mobileSources = video.querySelectorAll('source[data-mobile]');
+        const isHero = video.id === 'hero-reel-video';
+
+        // Для hero сначала пытаемся упасть на desktop, если мобильный не загрузился
+        if (isHero && desktopSource && !video.dataset.heroFallbackTried) {
+          video.dataset.heroFallbackTried = 'true';
+          mobileSources.forEach((s) => s.remove());
+          video.load();
+          const playPromise = video.play();
+          if (playPromise && playPromise.catch) {
+            playPromise.catch(() => {});
+          }
+          console.warn('Hero video: mobile источник недоступен, переключаемся на desktop');
+          return;
+        }
+
         console.warn('Ошибка загрузки видео:', video.src || video.currentSrc);
         
         // Показываем poster изображение при ошибке
@@ -542,19 +740,34 @@ class VideoOptimizer {
    * Оптимизация для медленных соединений
    */
   optimizeForSlowConnection() {
-    // Сохраняем автозапуск даже на медленных сетях по требованию заказчика.
+    // Автовоспроизведение сохраняем даже на медленных сетях (требование заказчика).
+    // Ограничиваемся только лёгким preload на слабых соединениях (выставляется в ensureHeroAttributes).
   }
 }
 
-// Инициализация при загрузке DOM
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
+// Инициализация при загрузке DOM (защита от дублирования)
+if (!window.videoOptimizerInitialized) {
+  window.videoOptimizerInitialized = true;
+  
+  const initVideoOptimizer = () => {
+    if (window.videoOptimizer) {
+      console.warn('⚠️ VideoOptimizer уже инициализирован, пропускаем повторную инициализацию');
+      return;
+    }
+    console.log('🚀 Инициализация VideoOptimizer...');
     window.videoOptimizer = new VideoOptimizer();
-  });
+    console.log('✅ VideoOptimizer инициализирован');
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVideoOptimizer);
+  } else {
+    // Если DOM уже готов, запускаем сразу
+    initVideoOptimizer();
+  }
 } else {
-  window.videoOptimizer = new VideoOptimizer();
+  console.warn('⚠️ Попытка повторной инициализации VideoOptimizer заблокирована');
 }
 
 // Экспорт для использования в других модулях
 window.VideoOptimizer = VideoOptimizer;
-

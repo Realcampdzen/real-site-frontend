@@ -46,7 +46,16 @@ class EnhancedNeuralNetwork {
     // Event listeners
     window.addEventListener('resize', () => this.handleResize());
     document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
-    document.addEventListener('scroll', () => this.handleScroll());
+    
+    // Используем ScrollManager для оптимизации прокрутки
+    if (window.scrollManager) {
+      this.scrollUnsubscribe = window.scrollManager.subscribe((scrollY) => {
+        this.handleScroll();
+      });
+    } else {
+      // Fallback для старых браузеров
+      document.addEventListener('scroll', () => this.handleScroll(), { passive: true });
+    }
   }
   
   resizeCanvas() {
@@ -383,6 +392,11 @@ class EnhancedNeuralNetwork {
     }
     window.removeEventListener('resize', this.handleResize);
     document.removeEventListener('mousemove', this.handleMouseMove);
+    // Отписываемся от событий прокрутки
+    if (this.scrollUnsubscribe) {
+      this.scrollUnsubscribe();
+    }
+    // Fallback для старых браузеров
     document.removeEventListener('scroll', this.handleScroll);
   }
 }

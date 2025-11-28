@@ -125,10 +125,14 @@ function toggleSection(id) {
 function scrollToSection(sectionId) {
   const element = document.getElementById(sectionId);
   if (element) {
-    element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
+    if (window.scrollManager) {
+      window.scrollManager.scrollToElement(element, { block: 'start' });
+    } else {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   }
 }
 
@@ -234,10 +238,7 @@ function updateScrollProgress() {
   const scrollProgress = document.getElementById('scroll-progress');
   if (!scrollProgress) return;
   
-  const scrollTop = window.pageYOffset;
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const scrollPercent = (scrollTop / docHeight) * 100;
-  
+  const scrollPercent = window.scrollManager ? window.scrollManager.getScrollPercent() : 0;
   scrollProgress.style.width = scrollPercent + '%';
 }
 
@@ -246,19 +247,35 @@ function initBackToTop() {
   const backToTopBtn = document.getElementById('back-to-top');
   if (!backToTopBtn) return;
   
-  window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 300) {
-      backToTopBtn.classList.add('visible');
-    } else {
-      backToTopBtn.classList.remove('visible');
-    }
-  });
+  // Используем ScrollManager для оптимизации
+  if (window.scrollManager) {
+    window.scrollManager.subscribe((scrollY) => {
+      if (scrollY > 300) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    });
+  } else {
+    // Fallback для старых браузеров
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    }, { passive: true });
+  }
   
   backToTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    if (window.scrollManager) {
+      window.scrollManager.scrollToPosition(0);
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
   });
 }
 
@@ -495,6 +512,39 @@ function hidePreloader() {
   }
 }
 
+// Предзагрузка изображений для элементов, которые скоро появятся
+function preloadImagesForUpcomingElements() {
+  const animatedElements = document.querySelectorAll(
+    '.service-card, .service-simple-card, .process-step, .stat-card, .contact-card, .stats-grid, ' +
+    '.highlight-service-card, .benefit-card, .projects-banner-inner, .projects-reel-card, ' +
+    '.portfolio-card, .assistant-card, .testimonial-card, .value-card'
+  );
+  
+  const viewportHeight = window.innerHeight;
+  
+  animatedElements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    // Если элемент в пределах 3 экранов от viewport, предзагружаем его изображения
+    const isNearViewport = rect.top < viewportHeight * 3 && rect.top > -viewportHeight;
+    
+    if (isNearViewport) {
+      const images = el.querySelectorAll('img[loading="lazy"]');
+      images.forEach(img => {
+        // Меняем на eager для предзагрузки
+        img.loading = 'eager';
+        // Принудительно загружаем изображение
+        if (img.src && !img.complete) {
+          const link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.href = img.src;
+          document.head.appendChild(link);
+        }
+      });
+    }
+  });
+}
+
 // Main DOMContentLoaded Event
 document.addEventListener('DOMContentLoaded', () => {
   // Проверяем, что мы на главной странице, а не на новогодней
@@ -570,6 +620,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
+  // Предзагружаем изображения для элементов, которые скоро появятся
+  preloadImagesForUpcomingElements();
+  
   // Инициализировать прелоадер с реальным отслеживанием загрузки
   initPreloader();
 
@@ -587,19 +640,34 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize tilt effect
   initTiltEffect();
   
-  // Navbar scroll effect
+  // Navbar scroll effect - используем ScrollManager для оптимизации
   const navbar = document.querySelector('.navbar');
   
-  window.addEventListener('scroll', () => {
-    updateScrollProgress();
-    
-    if (!navbar) return;
-    if (window.scrollY > 50) {
-      navbar.classList.add('navbar-solid');
-    } else {
-      navbar.classList.remove('navbar-solid');
-    }
-  });
+  if (window.scrollManager) {
+    // Подписываемся на события прокрутки через ScrollManager
+    window.scrollManager.subscribe((scrollY) => {
+      updateScrollProgress();
+      
+      if (!navbar) return;
+      if (scrollY > 50) {
+        navbar.classList.add('navbar-solid');
+      } else {
+        navbar.classList.remove('navbar-solid');
+      }
+    });
+  } else {
+    // Fallback для старых браузеров
+    window.addEventListener('scroll', () => {
+      updateScrollProgress();
+      
+      if (!navbar) return;
+      if (window.scrollY > 50) {
+        navbar.classList.add('navbar-solid');
+      } else {
+        navbar.classList.remove('navbar-solid');
+      }
+    }, { passive: true });
+  }
 
   // Navigation links smooth scrolling
   document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
@@ -611,22 +679,28 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Intersection Observer for animations
+  // Увеличиваем rootMargin, чтобы элементы начинали появляться раньше (за 50% до появления в viewport)
   const observerOptions = {
     threshold: 0.01,
-    rootMargin: '15% 0px -6% 0px'
+    rootMargin: '50% 0px -10% 0px'
   };
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
+        // Добавляем класс для анимации
         entry.target.classList.add('reveal-show');
-
+        entry.target.classList.remove('reveal-base');
+        
         // Animate counters when they come into view
         const counters = entry.target.querySelectorAll('[data-target]');
         counters.forEach(counter => {
           const target = parseInt(counter.getAttribute('data-target'));
           animateCounter(counter, target);
         });
+        
+        // Прекращаем наблюдение после появления
+        observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
@@ -637,11 +711,44 @@ document.addEventListener('DOMContentLoaded', () => {
     '.highlight-service-card, .benefit-card, .projects-banner-inner, .projects-reel-card, ' +
     '.portfolio-card, .assistant-card, .testimonial-card, .value-card'
   );
+  
+  console.log(`🎬 Инициализация анимаций для ${animatedElements.length} элементов`);
+  
+  // Предзагружаем изображения для элементов, которые скоро появятся
+  const preloadImagesForElements = (elements) => {
+    elements.forEach(el => {
+      const images = el.querySelectorAll('img[loading="lazy"]');
+      images.forEach(img => {
+        // Убираем lazy loading для изображений в элементах, которые скоро появятся
+        // Это предотвращает "люк" - пустые контейнеры
+        img.loading = 'eager';
+        img.removeAttribute('loading');
+        // Принудительно загружаем изображение
+        if (img.src && !img.complete) {
+          const tempImg = new Image();
+          tempImg.src = img.src;
+        }
+      });
+    });
+  };
+  
   animatedElements.forEach((el, index) => {
-    el.classList.add('reveal-base');
-    // Легкая задержка, чтобы элементы появлялись каскадом
-    el.style.setProperty('--reveal-delay', `${(index % 8) * 80}ms`);
-    observer.observe(el);
+    // Убеждаемся, что элемент не виден изначально
+    if (!el.classList.contains('reveal-show')) {
+      el.classList.add('reveal-base');
+      // Легкая задержка, чтобы элементы появлялись каскадом
+      el.style.setProperty('--reveal-delay', `${(index % 8) * 80}ms`);
+      observer.observe(el);
+      
+      // Предзагружаем изображения для элементов, которые в ближайших 2 экранах
+      const rect = el.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const isNearViewport = rect.top < viewportHeight * 2.5 && rect.top > -viewportHeight;
+      
+      if (isNearViewport) {
+        preloadImagesForElements([el]);
+      }
+    }
   });
 
   // Add stagger effect to service cards
@@ -762,13 +869,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }, {
-    threshold: 0.08,
-    rootMargin: '12% 0px -6% 0px'
+    threshold: 0.01,
+    rootMargin: '50% 0px -10% 0px'
   });
 
   sections.forEach(section => {
-    section.classList.add('section-hidden');
-    sectionObserver.observe(section);
+    // Пропускаем hero секцию, она должна быть видна сразу
+    if (!section.classList.contains('hero') && !section.id.includes('hero')) {
+      section.classList.add('section-hidden');
+      sectionObserver.observe(section);
+    }
   });
 
   // Подстраховка: сразу показываем блоки, уже попавшие в вьюпорт (важно для мобильных под героем)
@@ -789,6 +899,7 @@ document.addEventListener('DOMContentLoaded', () => {
     animatedElements.forEach(el => {
       if (!el.classList.contains('reveal-show') && isElementMostlyVisible(el, 0.08)) {
         el.classList.add('reveal-show');
+        el.classList.remove('reveal-base');
         el.style.transitionDelay = '0s';
         el.style.setProperty('--reveal-delay', '0ms');
         try {
@@ -812,11 +923,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  revealInViewport();
+  // Не показываем элементы сразу - пусть они появляются при прокрутке
+  // revealInViewport(); // Закомментировано, чтобы элементы появлялись только при прокрутке
+  
+  // Показываем только элементы, которые уже видны при загрузке (выше fold)
   window.addEventListener('load', () => {
-    revealInViewport();
-    setTimeout(revealInViewport, 180);
+    // Показываем только элементы, которые уже в viewport при загрузке
+    animatedElements.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const isAboveFold = rect.top < window.innerHeight && rect.top > -100;
+      if (isAboveFold && !el.classList.contains('reveal-show')) {
+        el.classList.add('reveal-show');
+        el.classList.remove('reveal-base');
+        try {
+          observer.unobserve(el);
+        } catch (e) {}
+      }
+    });
+    
+    sections.forEach(section => {
+      if (!section.classList.contains('hero') && !section.id.includes('hero')) {
+        const rect = section.getBoundingClientRect();
+        const isAboveFold = rect.top < window.innerHeight && rect.top > -100;
+        if (isAboveFold && !section.classList.contains('section-visible')) {
+          section.classList.add('section-visible');
+          section.classList.remove('section-hidden');
+          try {
+            sectionObserver.unobserve(section);
+          } catch (e) {}
+        }
+      }
+    });
   });
+  
   window.addEventListener('resize', () => {
     revealInViewport();
   });
@@ -1036,8 +1175,8 @@ function initScrollRevealV2(force = false) {
         }
       });
     }, {
-      threshold: 0.05,
-      rootMargin: '18% 0px -8% 0px'
+      threshold: 0.01,
+      rootMargin: '50% 0px -10% 0px'
     });
 
     prepared.forEach((el) => observer.observe(el));
