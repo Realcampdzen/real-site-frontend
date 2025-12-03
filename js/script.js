@@ -515,7 +515,7 @@ function hidePreloader() {
 // Предзагрузка изображений для элементов, которые скоро появятся
 function preloadImagesForUpcomingElements() {
   const animatedElements = document.querySelectorAll(
-    '.service-card, .service-simple-card, .process-step, .stat-card, .contact-card, .stats-grid, ' +
+    '.service-card, .service-simple-card, .stat-card, .contact-card, .stats-grid, ' +
     '.highlight-service-card, .benefit-card, .projects-banner-inner, .projects-reel-card, ' +
     '.portfolio-card, .assistant-card, .testimonial-card, .value-card'
   );
@@ -705,9 +705,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, observerOptions);
 
-  // Observe animated elements
+  // Observe animated elements (process-step excluded - handled separately)
   const animatedElements = document.querySelectorAll(
-    '.service-card, .service-simple-card, .process-step, .stat-card, .contact-card, .stats-grid, ' +
+    '.service-card, .service-simple-card, .stat-card, .contact-card, .stats-grid, ' +
     '.highlight-service-card, .benefit-card, .projects-banner-inner, .projects-reel-card, ' +
     '.portfolio-card, .assistant-card, .testimonial-card, .value-card'
   );
@@ -756,10 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
     card.style.transitionDelay = `${index * 0.1}s`;
   });
 
-  // Add stagger effect to process steps
-  document.querySelectorAll('.process-step').forEach((step, index) => {
-    step.style.transitionDelay = `${index * 0.1}s`;
-  });
+  // Process steps are handled by initProcessScrollAnimation() - see below
   
   // Add stagger effect to stat cards
   document.querySelectorAll('.stat-card').forEach((card, index) => {
@@ -1027,6 +1024,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Hero video sound toggle
   initHeroSoundToggle();
+  
+  // Hero enter animation
+  initHeroEnterAnimation();
+  
+  // Process scroll animation
+  initProcessScrollAnimation();
 });
 
 document.addEventListener('DOMContentLoaded', () => initScrollRevealV2());
@@ -1252,4 +1255,83 @@ function ensureScrollRevealStyles() {
 // Фолбек: запустить сразу, если DOM уже готов (дефер-сценарий)
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   initScrollRevealV2(true);
+}
+
+// Hero Animation Initialization (OLD - disabled, using initHeroEnterAnimation instead)
+// function initHeroAnimation() {
+//   const hero = document.querySelector('.hero');
+//   if (!hero) return;
+//   hero.classList.add('hero-animate-ready');
+//   const observer = new IntersectionObserver((entries) => {
+//     entries.forEach(entry => {
+//       if (entry.isIntersecting) {
+//         setTimeout(() => {
+//           hero.classList.add('hero-in-view');
+//         }, 50);
+//         observer.unobserve(hero);
+//       }
+//     });
+//   }, { threshold: 0.1 });
+//   observer.observe(hero);
+// }
+
+// Hero enter animation
+function initHeroEnterAnimation() {
+  const hero = document.querySelector('.hero');
+  if (!hero) {
+    console.warn('Hero element not found');
+    return;
+  }
+  
+  const heroContent = hero.querySelector('.hero-content');
+  if (!heroContent) {
+    console.warn('Hero content element not found');
+    return;
+  }
+  
+  const children = heroContent.children;
+  console.log('🔍 Hero content children:', children.length);
+  
+  hero.classList.add('hero-enter');
+  console.log('✅ Hero enter animation initialized, class added to:', hero);
+}
+
+// Process scroll animation
+function initProcessScrollAnimation() {
+  const steps = document.querySelectorAll('.process-step');
+  console.log('🔍 Process steps found:', steps.length);
+  
+  if (!steps.length) {
+    console.warn('No process steps found');
+    return;
+  }
+
+  // Чередуем лево/право
+  steps.forEach((step, index) => {
+    const sideClass = index % 2 === 0 ? 'process-step--left' : 'process-step--right';
+    step.classList.add(sideClass);
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      const step = entry.target;
+      const index = Array.from(steps).indexOf(step);
+      const delay = index * 100; // 0.1s
+
+      console.log('👁️ Process step visible:', index, step);
+
+      setTimeout(() => {
+        step.classList.add('is-visible');
+      }, delay);
+
+      observer.unobserve(step);
+    });
+  }, {
+    threshold: 0.01  // Упрощённый threshold для более раннего срабатывания
+  });
+
+  steps.forEach((step) => observer.observe(step));
+  console.log('✅ Process scroll animation initialized');
 }

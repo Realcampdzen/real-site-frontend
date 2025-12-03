@@ -1042,6 +1042,65 @@ body::before {
   z-index: 1;
 }
 
+/* --- Hero background clip reveal --- */
+/* Clip-path reveal is handled by JavaScript (hero-reveal.js) */
+/* Initial state will be set by JavaScript */
+
+/* Убеждаемся, что overlay не обрезается и остаётся поверх видео */
+.hero-reel-overlay {
+  clip-path: none;
+  -webkit-clip-path: none;
+}
+
+
+/* --- Hero enter animation --- */
+@keyframes heroFadeUpBlur {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Hero enter animation - базовое состояние */
+.hero.hero-enter .hero-content > * {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(6px);
+}
+
+/* Disable old hero animation styles when using new one */
+.hero.hero-enter.hero-animate-ready .hero-reel-content > *,
+.hero.hero-enter.hero-in-view .hero-reel-content > * {
+  animation: none;
+}
+
+.hero.hero-enter .hero-content > *:nth-child(1) {
+  animation: heroFadeUpBlur 0.7s ease-out 0s both;
+}
+
+.hero.hero-enter .hero-content > *:nth-child(2) {
+  animation: heroFadeUpBlur 0.7s ease-out 0.15s both;
+}
+
+.hero.hero-enter .hero-content > *:nth-child(3) {
+  animation: heroFadeUpBlur 0.7s ease-out 0.30s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero.hero-enter .hero-content > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
 .hero-sound-toggle {
   position: absolute;
   top: 20px;
@@ -1212,13 +1271,17 @@ body::before {
 
 .hero-controls {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   bottom: clamp(8px, 2vh, 16px);
-  transform: translate(-50%, 8px);
+  transform: translateY(8px);
   width: calc(100% - 64px);
   max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   align-items: center;
+  /* Используем margin: auto для центрирования вместо left: 50% + transform */
   gap: 10px;
   justify-content: center;
   padding: 0;
@@ -1236,13 +1299,13 @@ body::before {
 .hero-controls:hover,
 .hero-controls:focus-within {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translateY(0);
   pointer-events: auto;
 }
 
 .hero-controls.is-active {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translateY(0);
   pointer-events: auto;
 }
 
@@ -1346,14 +1409,14 @@ body::before {
     padding: 0;
     width: 94%;
     opacity: 0;
-    transform: translate(-50%, 8px);
+    transform: translateY(8px);
     pointer-events: none;
   }
 
   /* Показываем контролы при взаимодействии (тап) */
   .hero:active .hero-controls {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
     pointer-events: auto;
   }
 
@@ -2617,7 +2680,7 @@ body::before {
 
 /* Поднимаем заголовок в секции "Как работает AI Studio" */
 .process-section .section-title {
-  margin-top: -40px;
+  margin-top: 0;
 }
 
 /* Поднимаем заголовок в секции "НАШИ AI АССИСТЕНТЫ" */
@@ -3769,10 +3832,11 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 40px;
-  margin-top: -40px;
+  margin-top: 0;
   position: relative;
 }
 
+/* --- Process steps scroll animation --- */
 .process-step {
   text-align: center;
   padding: 0;
@@ -3781,10 +3845,30 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   border: var(--panel-border);
   border-radius: var(--panel-radius);
   box-shadow: var(--panel-shadow);
-  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.3s ease;
   overflow: hidden;
   margin-bottom: 20px;
   aspect-ratio: 16 / 9;
+  /* Animation styles */
+  opacity: 0;
+  transform: translateX(0);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out,
+    box-shadow 0.35s ease,
+    border-color 0.3s ease;
+}
+
+.process-step--left {
+  transform: translateX(-40px);
+}
+
+.process-step--right {
+  transform: translateX(40px);
+}
+
+.process-step.is-visible {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .process-step::before {
@@ -8949,3 +9033,32 @@ body.new-year-page {
 }
 
 /* Виджеты ботов теперь разрешены на странице новогодних предложений */
+/* Hero Animation */
+@keyframes heroFadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Only apply opacity 0 when not yet in view if JS is active */
+.hero.hero-animate-ready .hero-reel-content > *:nth-child(-n+4) {
+  opacity: 0;
+}
+
+.hero.hero-in-view .hero-reel-content > *:nth-child(-n+4) {
+  animation: heroFadeSlideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-fill-mode: both;
+}
+
+.hero.hero-in-view .hero-reel-content > *:nth-child(1) { animation-delay: 0.15s; }
+.hero.hero-in-view .hero-reel-content > *:nth-child(2) { animation-delay: 0.30s; }
+.hero.hero-in-view .hero-reel-content > *:nth-child(3) { animation-delay: 0.45s; }
+.hero.hero-in-view .hero-reel-content > *:nth-child(4) { animation-delay: 0.60s; }
+
