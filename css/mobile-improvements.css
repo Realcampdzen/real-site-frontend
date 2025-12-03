@@ -1058,7 +1058,7 @@
 /* ===== РЕЖИМ ЭКОНОМИИ ТРАФИКА ===== */
 
 .data-save-mode .bg-animation,
-.data-save-mode video,
+.data-save-mode video:not(#hero-reel-video),
 .data-save-mode .particle-canvas {
   display: none !important;
 }

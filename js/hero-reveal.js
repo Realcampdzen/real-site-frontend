@@ -106,4 +106,3 @@ window.addEventListener('load', function() {
   console.log('Window load fired');
   tryInit();
 });
-
