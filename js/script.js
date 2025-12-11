@@ -1,10 +1,10 @@
 // AI Studio - Enhanced Interactive Features
 
 const CONTACTS = {
-    phone: { href: 'tel:+79650255750', display: '+7 965 025 57 50' },
-    email: { href: 'mailto:hello@stepan-ai.studio', display: 'hello@stepan-ai.studio' },
+    phone: { href: 'tel:+79319671483', display: '+7 931 967 14 83' },
+    email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
-    whatsapp: { href: 'https://wa.me/79650255750' },
+    whatsapp: { href: 'https://wa.me/79319671483' },
     vk: { href: 'https://vk.com' },
     youtube: { href: 'https://youtube.com' },
     tiktok: { href: 'https://www.tiktok.com' },
@@ -690,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (entry.isIntersecting) {
         // Добавляем класс для анимации
         entry.target.classList.add('reveal-show');
-        entry.target.classList.remove('reveal-base');
+        entry.target.classList.remove('reveal-base', 'reveal-base--left', 'reveal-base--right');
         
         // Animate counters when they come into view
         const counters = entry.target.querySelectorAll('[data-target]');
@@ -705,11 +705,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, observerOptions);
 
-  // Observe animated elements (process-step excluded - handled separately)
+  // Universal scroll animation for ALL elements
+  // Select all major content elements on the page
   const animatedElements = document.querySelectorAll(
     '.service-card, .service-simple-card, .stat-card, .contact-card, .stats-grid, ' +
     '.highlight-service-card, .benefit-card, .projects-banner-inner, .projects-reel-card, ' +
-    '.portfolio-card, .assistant-card, .testimonial-card, .value-card'
+    '.portfolio-card, .assistant-card, .testimonial-card, .value-card, ' +
+    'section > .container, section > .section-content, ' +
+    '.section-title, .section-subtitle, .section-description, ' +
+    '.about-content, .benefits-grid > *, .services-grid > *, ' +
+    '.testimonials-grid > *, .assistants-grid > *, ' +
+    '.projects-grid > *, .portfolio-grid > *, ' +
+    '.cta-content, .cta-text, .cta-buttons, ' +
+    'article, .article-content, .content-block, ' +
+    '.card, .panel, .box, .feature-item'
   );
   
   console.log(`🎬 Инициализация анимаций для ${animatedElements.length} элементов`);
@@ -732,22 +741,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
   
+  // Apply left/right animation classes and observe
   animatedElements.forEach((el, index) => {
-    // Убеждаемся, что элемент не виден изначально
-    if (!el.classList.contains('reveal-show')) {
-      el.classList.add('reveal-base');
-      // Легкая задержка, чтобы элементы появлялись каскадом
-      el.style.setProperty('--reveal-delay', `${(index % 8) * 80}ms`);
-      observer.observe(el);
-      
-      // Предзагружаем изображения для элементов, которые в ближайших 2 экранах
-      const rect = el.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const isNearViewport = rect.top < viewportHeight * 2.5 && rect.top > -viewportHeight;
-      
-      if (isNearViewport) {
-        preloadImagesForElements([el]);
-      }
+    // Skip if already animated or is hero/process (handled separately)
+    if (el.classList.contains('reveal-show') || 
+        el.closest('.hero') || 
+        el.closest('.process-step')) {
+      return;
+    }
+
+    // Alternate left/right based on index
+    const isLeft = index % 2 === 0;
+    const sideClass = isLeft ? 'reveal-base--left' : 'reveal-base--right';
+    const startX = isLeft ? '-60px' : '60px';
+    
+    el.classList.add('reveal-base', sideClass);
+    el.style.setProperty('--reveal-delay', `${(index % 8) * 100}ms`);
+    el.style.setProperty('--reveal-start-x', startX);
+    
+    observer.observe(el);
+    
+    // Предзагружаем изображения для элементов, которые в ближайших 2 экранах
+    const rect = el.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const isNearViewport = rect.top < viewportHeight * 2.5 && rect.top > -viewportHeight;
+    
+    if (isNearViewport) {
+      preloadImagesForElements([el]);
     }
   });
 
@@ -896,7 +916,7 @@ document.addEventListener('DOMContentLoaded', () => {
     animatedElements.forEach(el => {
       if (!el.classList.contains('reveal-show') && isElementMostlyVisible(el, 0.08)) {
         el.classList.add('reveal-show');
-        el.classList.remove('reveal-base');
+        el.classList.remove('reveal-base', 'reveal-base--left', 'reveal-base--right');
         el.style.transitionDelay = '0s';
         el.style.setProperty('--reveal-delay', '0ms');
         try {
@@ -962,21 +982,34 @@ document.addEventListener('DOMContentLoaded', () => {
   sectionStyle.textContent = `
     .reveal-base {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.55s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateX(0);
+      transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
       will-change: transform, opacity;
+    }
+
+    .reveal-base--left {
+      transform: translateX(-60px);
+    }
+
+    .reveal-base--right {
+      transform: translateX(60px);
     }
 
     .reveal-show {
       opacity: 1;
-      transform: translateY(0);
-      animation: reveal-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+      transform: translateX(0);
+      animation: reveal-slide 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms) both;
     }
 
-    @keyframes reveal-pop {
-      0% { opacity: 0; transform: translateY(24px); }
-      55% { opacity: 1; transform: translateY(-4px); }
-      100% { opacity: 1; transform: translateY(0); }
+    @keyframes reveal-slide {
+      0% { 
+        opacity: 0; 
+        transform: translateX(var(--reveal-start-x, 0));
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateX(0);
+      }
     }
 
     .section-hidden {
@@ -1009,12 +1042,15 @@ document.addEventListener('DOMContentLoaded', () => {
         animation: none;
         transform: none;
       }
-      .reveal-base {
+      .reveal-base,
+      .reveal-base--left,
+      .reveal-base--right {
         opacity: 1;
         transform: none;
       }
       .reveal-show {
         animation: none;
+        transform: none;
       }
     }
   `;
@@ -1119,9 +1155,34 @@ function initScrollRevealV2(force = false) {
     ensureScrollRevealStyles();
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isDesktop = window.matchMedia('(min-width: 901px)').matches;
     const selectors = [
       '[data-animate]',
       '.animate-on-scroll',
+      '.service-card',
+      '.service-simple-card',
+      '.stat-card',
+      '.contact-card',
+      '.highlight-service-card',
+      '.projects-banner-inner',
+      '.projects-reel-card',
+      '.portfolio-card',
+      '.assistant-card',
+      '.testimonial-card',
+      '.value-card',
+      '.benefits-grid > *',
+      '.services-grid > *',
+      '.testimonials-grid > *',
+      '.assistants-grid > *',
+      '.projects-grid > *',
+      '.portfolio-grid > *',
+      '.cta-content',
+      '.cta-text',
+      '.cta-buttons',
+      '.card',
+      '.panel',
+      '.box',
+      '.feature-item',
       '.value-highlight',
       '.projects-banner-section',
       '.cta-section',
@@ -1145,6 +1206,15 @@ function initScrollRevealV2(force = false) {
       const customDelay = el.getAttribute('data-animate-delay') || el.dataset.animateDelay;
       const delayValue = customDelay ? parseInt(customDelay, 10) : (index % 7) * 70;
       el.style.setProperty('--scroll-animate-delay', `${Math.max(0, delayValue || 0)}ms`);
+
+      // Directional reveal: alternate left/right on desktop, keep neutral on mobile unless overridden
+      const directionAttr = el.dataset.animateDirection || el.getAttribute('data-animate-direction');
+      const direction = directionAttr || (isDesktop ? (index % 2 === 0 ? 'left' : 'right') : 'up');
+      const xOffset = direction === 'left' ? '-56px' : direction === 'right' ? '56px' : '0px';
+      const yOffset = direction === 'up' ? '30px' : '20px';
+      el.dataset.animateDirection = direction;
+      el.style.setProperty('--scroll-animate-x', xOffset);
+      el.style.setProperty('--scroll-animate-y', yOffset);
       prepared.push(el);
     };
 
@@ -1170,6 +1240,23 @@ function initScrollRevealV2(force = false) {
       return;
     }
 
+    const revealIfInViewport = () => {
+      let remaining = 0;
+      prepared.forEach((el) => {
+        if (el.classList.contains('scroll-animate--visible')) return;
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.92 && rect.bottom > window.innerHeight * -0.15) {
+          revealElement(el);
+        } else {
+          remaining += 1;
+        }
+      });
+      if (remaining === 0) {
+        window.removeEventListener('scroll', revealIfInViewport);
+        window.removeEventListener('resize', revealIfInViewport);
+      }
+    };
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -1184,6 +1271,12 @@ function initScrollRevealV2(force = false) {
 
     prepared.forEach((el) => observer.observe(el));
     showVisibleImmediately();
+    revealIfInViewport();
+    window.addEventListener('scroll', revealIfInViewport, { passive: true });
+    window.addEventListener('resize', revealIfInViewport);
+    setTimeout(revealIfInViewport, 450);
+    setTimeout(revealIfInViewport, 1200);
+
     // Реакция на динамически добавленные блоки
     const mutationObserver = new MutationObserver((mutations) => {
       mutations.forEach(({ addedNodes }) => {
@@ -1216,7 +1309,7 @@ function ensureScrollRevealStyles() {
   style.textContent = `
     .scroll-animate {
       opacity: 0;
-      transform: translateY(30px) scale(0.88);
+      transform: translate3d(var(--scroll-animate-x, 0), var(--scroll-animate-y, 30px), 0) scale(0.88);
       filter: blur(0.4px);
       transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.75s ease;
       transition-delay: var(--scroll-animate-delay, 0ms);
@@ -1225,16 +1318,16 @@ function ensureScrollRevealStyles() {
 
     .scroll-animate--visible {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translate3d(0, 0, 0) scale(1);
       filter: none;
       animation-delay: var(--scroll-animate-delay, 0ms);
       animation: scroll-pop 0.8s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     @keyframes scroll-pop {
-      0% { opacity: 0; transform: translateY(30px) scale(0.86); }
-      48% { opacity: 1; transform: translateY(-6px) scale(1.04); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% { opacity: 0; transform: translate3d(var(--scroll-animate-x, 0), var(--scroll-animate-y, 30px), 0) scale(0.86); }
+      48% { opacity: 1; transform: translate3d(0, -6px, 0) scale(1.04); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
 
     @media (prefers-reduced-motion: reduce) {
