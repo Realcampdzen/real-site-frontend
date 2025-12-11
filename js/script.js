@@ -1,14 +1,14 @@
 // AI Studio - Enhanced Interactive Features
 
 const CONTACTS = {
-    phone: { href: 'tel:+79319671483', display: '+7 931 967 14 83' },
+    phone: { href: 'tel:+79650255750', display: '+7 965 025 57 50' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
-    whatsapp: { href: 'https://wa.me/79319671483' },
+    whatsapp: { href: 'https://wa.me/79650255750' },
     vk: { href: 'https://vk.com' },
     youtube: { href: 'https://youtube.com' },
     tiktok: { href: 'https://www.tiktok.com' },
-    primary: { href: 'https://t.me/Stivanovv' }
+    primary: { href: 'tel:+79650255750' }
 };
 
 function applyContactConfig() {
