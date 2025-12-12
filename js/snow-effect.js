@@ -120,22 +120,48 @@ class SnowEffect {
 
     this.toggleButton.addEventListener('click', () => this.toggle());
 
-    // Добавляем кнопку в правый блок навигации, чтобы она выглядела как обычная иконка
-    const navRight = document.querySelector('.nav-right');
-    const navbar = document.querySelector('.navbar');
+    // Убеждаемся, что кнопка видна сразу
+    this.toggleButton.style.display = 'flex';
+    this.toggleButton.style.alignItems = 'center';
+    this.toggleButton.style.justifyContent = 'center';
+    this.toggleButton.style.visibility = 'visible';
+    this.toggleButton.style.opacity = '1';
 
-    if (navRight) {
-      this.toggleButton.classList.add('nav-icon-btn', 'snow-toggle-btn');
-      // Ставим снежинку перед бургером, если он есть
-      const mobileMenuBtn = navRight.querySelector('.mobile-menu-btn');
-      navRight.insertBefore(this.toggleButton, mobileMenuBtn || null);
-    } else if (navbar) {
-      // Фолбэк: добавляем в сам navbar как иконку
-      this.toggleButton.classList.add('nav-icon-btn', 'snow-toggle-btn');
-      navbar.appendChild(this.toggleButton);
-    } else {
-      // Если навбара нет, добавляем в body
-      document.body.appendChild(this.toggleButton);
+    // Функция для добавления кнопки в навбар
+    const addButtonToNavbar = () => {
+      const navRight = document.querySelector('.nav-right');
+      const navbar = document.querySelector('.navbar');
+
+      if (navRight) {
+        this.toggleButton.classList.add('nav-icon-btn', 'snow-toggle-btn');
+        // Ставим снежинку перед бургером, если он есть
+        const mobileMenuBtn = navRight.querySelector('.mobile-menu-btn');
+        navRight.insertBefore(this.toggleButton, mobileMenuBtn || null);
+        return true;
+      } else if (navbar) {
+        // Фолбэк: добавляем в сам navbar как иконку
+        this.toggleButton.classList.add('nav-icon-btn', 'snow-toggle-btn');
+        navbar.appendChild(this.toggleButton);
+        return true;
+      }
+      return false;
+    };
+
+    // Пытаемся добавить кнопку сразу
+    if (!addButtonToNavbar()) {
+      // Если навбар ещё не готов, ждём и пробуем снова
+      let attempts = 0;
+      const maxAttempts = 10;
+      const checkInterval = setInterval(() => {
+        attempts++;
+        if (addButtonToNavbar() || attempts >= maxAttempts) {
+          clearInterval(checkInterval);
+          // Если после всех попыток навбар не найден, добавляем в body
+          if (!this.toggleButton.parentElement) {
+            document.body.appendChild(this.toggleButton);
+          }
+        }
+      }, 50);
     }
   }
   

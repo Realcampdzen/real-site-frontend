@@ -106,6 +106,39 @@
     }, 120);
   }
 
+  // Загружаем снежинку сразу после DOM готовности, чтобы кнопка была видна сразу
+  function loadSnowEffect() {
+    // Проверяем, не загружены ли уже файлы снежинки напрямую в HTML
+    const snowCSSLoaded = Array.from(document.styleSheets).some(sheet => {
+      try {
+        return sheet.href && sheet.href.includes('snow-effect.css');
+      } catch (e) {
+        return false;
+      }
+    });
+    const snowJSLoaded = window.snowEffect !== undefined;
+    
+    // Если файлы уже загружены напрямую, не загружаем их повторно
+    if (snowCSSLoaded && snowJSLoaded) {
+      return;
+    }
+    
+    if (!prefersReducedMotion && !saveData && !slowNetwork) {
+      // Загружаем CSS и JS только если они ещё не загружены
+      if (!snowCSSLoaded) {
+        loadStyle('css/snow-effect.css?v=20250117-snow-visible-fix');
+      }
+      if (!snowJSLoaded) {
+        loadScript('js/snow-effect.js?v=20250117-snow-visible-fix');
+      }
+    } else {
+      const snowContainer = document.getElementById('snow-container');
+      if (snowContainer) {
+        snowContainer.remove();
+      }
+    }
+  }
+
   let deferredStarted = false;
 
   function startDeferredExtras() {
@@ -135,28 +168,19 @@
           console.warn('[perf-loader] Glass UI skipped', err);
         });
     }, 240);
-
-    // Snow effect only for capable devices
-    if (!prefersReducedMotion && !saveData && !slowNetwork) {
-      schedule(() => {
-        loadStyle('css/snow-effect.css');
-        loadScript('js/snow-effect.js');
-      }, 320);
-    } else {
-      const snowContainer = document.getElementById('snow-container');
-      if (snowContainer) {
-        snowContainer.remove();
-      }
-    }
   }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       runCoreOptimizers();
+      // Загружаем снежинку сразу после DOM готовности
+      loadSnowEffect();
       schedule(() => startDeferredExtras(), 120);
     });
   } else {
     runCoreOptimizers();
+    // Загружаем снежинку сразу, если DOM уже готов
+    loadSnowEffect();
     schedule(() => startDeferredExtras(), 120);
   }
 

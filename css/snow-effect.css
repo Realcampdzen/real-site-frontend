@@ -51,6 +51,11 @@
   border-color: rgba(255, 255, 255, 0.9);
   background: transparent !important;
   box-shadow: none;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .navbar .snow-toggle.snow-toggle-btn:hover {
