@@ -106,7 +106,12 @@
     }, 120);
   }
 
-  function runDeferredExtras() {
+  let deferredStarted = false;
+
+  function startDeferredExtras() {
+    if (deferredStarted) return;
+    deferredStarted = true;
+
     // Mobile helpers
     if (isMobile) {
       schedule(() => loadScript('js/mobile-enhancements.js'), 220);
@@ -146,10 +151,14 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runCoreOptimizers);
+    document.addEventListener('DOMContentLoaded', () => {
+      runCoreOptimizers();
+      schedule(() => startDeferredExtras(), 120);
+    });
   } else {
     runCoreOptimizers();
+    schedule(() => startDeferredExtras(), 120);
   }
 
-  window.addEventListener('load', runDeferredExtras);
+  window.addEventListener('load', startDeferredExtras);
 })();

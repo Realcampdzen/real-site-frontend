@@ -76,6 +76,13 @@
   transform: scale(1.05);
 }
 
+.navbar .snow-toggle.snow-toggle-btn:not(.active) img,
+.navbar .snow-toggle.snow-toggle-btn:not(.active) .snow-toggle-icon {
+  width: 82%;
+  height: 82%;
+  transform: scale(1.05);
+}
+
 /* Если кнопка не в навбаре (fallback) – компактная и менее навязчивая */
 .snow-toggle:not(.navbar .snow-toggle) {
   position: fixed;
