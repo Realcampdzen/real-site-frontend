@@ -4,14 +4,14 @@
 window.__AI_STUDIO_BUILD = '20251216-animfix';
 
 const CONTACTS = {
-    phone: { href: 'tel:+79650255750', display: '+7 965 025 57 50' },
+    phone: { href: 'tel:+79319671483', display: '+79319671483' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
-    whatsapp: { href: 'https://wa.me/79650255750' },
+    whatsapp: { href: 'https://wa.me/79319671483' },
     vk: { href: 'https://vk.com' },
     youtube: { href: 'https://youtube.com' },
     tiktok: { href: 'https://www.tiktok.com' },
-    primary: { href: 'tel:+79650255750' }
+    primary: { href: 'tel:+79319671483' }
 };
 
 function applyContactConfig() {
@@ -896,21 +896,19 @@ function initScrollRevealV2(force = false) {
       el.dataset.scrollRevealReady = '1';
       el.classList.add('scroll-animate');
       const customDelay = el.getAttribute('data-animate-delay') || el.dataset.animateDelay;
-      const delayValue = customDelay ? parseInt(customDelay, 10) : (index % 7) * 70;
-      el.style.setProperty('--scroll-animate-delay', `${Math.max(0, delayValue || 0)}ms`);
+      const delayValue = customDelay ? parseInt(customDelay, 10) : 0;
+      const delayMs = Math.max(0, delayValue || 0);
+      el.dataset.scrollRevealDelay = String(delayMs);
+      el.style.setProperty('--scroll-animate-delay', `${delayMs}ms`);
 
-      // Directional reveal: alternate left/right on desktop, keep neutral on mobile unless overridden
+      // Directional reveal: alternate left/right (like process-step), unless overridden
       const directionAttr = el.dataset.animateDirection || el.getAttribute('data-animate-direction');
-      const isTextBlock = el.matches?.(
-        '.section-title, .section-subtitle, .section-description, .projects-banner-title, .cta-copy > *'
-      );
-      const direction =
-        directionAttr || (isTextBlock ? 'up' : (isDesktop ? (index % 2 === 0 ? 'left' : 'right') : 'up'));
-      const xOffset = direction === 'left' ? '-56px' : direction === 'right' ? '56px' : '0px';
-      const yOffset = direction === 'up' ? '30px' : '20px';
+      const direction = directionAttr || (index % 2 === 0 ? 'left' : 'right');
+      const baseOffset = isDesktop ? 60 : 40;
+      const xOffset =
+        direction === 'left' ? `-${baseOffset}px` : direction === 'right' ? `${baseOffset}px` : '0px';
       el.dataset.animateDirection = direction;
       el.style.setProperty('--scroll-animate-x', xOffset);
-      el.style.setProperty('--scroll-animate-y', yOffset);
       prepared.push(el);
     };
 
@@ -918,6 +916,8 @@ function initScrollRevealV2(force = false) {
     if (prepared.length === 0) return;
 
     const revealElement = (el) => {
+      if (!el || el.dataset.scrollRevealed === '1') return;
+      el.dataset.scrollRevealed = '1';
       el.classList.add('scroll-animate--visible');
       el.classList.remove(
         'section-hidden',
@@ -938,12 +938,30 @@ function initScrollRevealV2(force = false) {
           animateCounter(counter, target);
         }
       });
+
+      // Cleanup: remove reveal classes after animation so hover transforms work normally
+      const delayMs = parseInt(el.dataset.scrollRevealDelay || '0', 10) || 0;
+      const cleanup = () => {
+        if (el.dataset.scrollRevealCleaned === '1') return;
+        el.dataset.scrollRevealCleaned = '1';
+        el.classList.remove('scroll-animate');
+        el.classList.remove('scroll-animate--visible');
+        el.style.removeProperty('--scroll-animate-delay');
+        el.style.removeProperty('--scroll-animate-x');
+        el.removeEventListener('transitionend', onEnd);
+      };
+      const onEnd = (e) => {
+        if (e && e.propertyName && e.propertyName !== 'transform') return;
+        cleanup();
+      };
+      el.addEventListener('transitionend', onEnd);
+      setTimeout(cleanup, 900 + delayMs);
     };
 
     const showVisibleImmediately = () => {
       prepared.forEach((el) => {
         const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * -0.1) {
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
           revealElement(el);
         }
       });
@@ -962,8 +980,8 @@ function initScrollRevealV2(force = false) {
         }
       });
     }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -10% 0px'
+      threshold: 0.01,
+      rootMargin: '0px 0px 15% 0px'
     });
 
     prepared.forEach((el) => observer.observe(el));

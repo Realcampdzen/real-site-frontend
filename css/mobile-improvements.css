@@ -331,18 +331,24 @@
   }
 }
 
-/* Откладываем отрисовку секций вне экрана для ускорения первого рендера */
+/* Откладываем отрисовку секций вне экрана — ТОЛЬКО в режимах экономии.
+   Иначе на мобильных появляются “пустоты” при плавном скролле (контент рисуется поздно). */
 @media (max-width: 900px) {
   @supports (content-visibility: auto) {
-    .hero,
-    .services,
-    .benefits-section,
-    .value-highlight,
-    .projects-banner-section,
-    .cta-section,
-    .process-section,
-    .assistants-section,
-    .testimonials {
+    .data-save-mode .services,
+    .data-save-mode .benefits-section,
+    .data-save-mode .value-highlight,
+    .data-save-mode .projects-banner-section,
+    .data-save-mode .cta-section,
+    .data-save-mode .assistants-section,
+    .data-save-mode .testimonials,
+    .power-save-mode .services,
+    .power-save-mode .benefits-section,
+    .power-save-mode .value-highlight,
+    .power-save-mode .projects-banner-section,
+    .power-save-mode .cta-section,
+    .power-save-mode .assistants-section,
+    .power-save-mode .testimonials {
       content-visibility: auto;
       contain-intrinsic-size: 800px;
     }
