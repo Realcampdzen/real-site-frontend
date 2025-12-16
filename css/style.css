@@ -41,13 +41,13 @@
   
   /* Spacing */
   --container-max-width: 1900px;
-  --section-padding: 120px 0;
+  --section-padding: 7.5rem 0;
 
   /* Buttons */
   --btn-height: 54px;
-  --btn-padding-y: 14px;
-  --btn-padding-x: 26px;
-  --btn-radius: 16px;
+  --btn-padding-y: 0.875rem;
+  --btn-padding-x: 1.625rem;
+  --btn-radius: 1rem;
   --btn-font-family: var(--font-body);
   --btn-font-size: 14px;
   --btn-font-weight: 600;
@@ -70,10 +70,10 @@
   --panel-radius: 26px;
 
   /* Унифицированные вертикальные отступы секций */
-  --section-space: 64px;
-  --section-space-compact: 48px;
-  --section-space-mobile: 44px;
-  --section-gap-tight: 28px;
+  --section-space: 4rem;
+  --section-space-compact: 3rem;
+  --section-space-mobile: 2.75rem;
+  --section-gap-tight: 1.75rem;
 }
 
 /* Reset and Base */
@@ -111,7 +111,7 @@ body {
   top: 0;
   background: rgba(10, 10, 10, 0.95);
   color: var(--text-primary);
-  padding: 10px 16px;
+  padding: 0.625rem 1rem;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
@@ -183,7 +183,7 @@ body::before {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
   min-width: 0;
   width: auto;
   padding: 0;
@@ -204,10 +204,10 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
   font-family: var(--font-primary);
   margin-bottom: 6px;
-  padding: 10px 14px;
+  padding: 0.625rem 0.875rem;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -301,13 +301,13 @@ body::before {
   color: var(--text-secondary);
   letter-spacing: 0.25px;
   opacity: 0.9;
-  margin-top: 2px;
+  margin-top: 0.125rem;
 }
 
 @media (max-width: 480px) {
   .preloader-content {
     padding: 0;
-    gap: 12px;
+    gap: 0.75rem;
   }
 
   .loading-bar {
@@ -374,7 +374,7 @@ body::before {
   -webkit-backdrop-filter: none;
   border-bottom: none;
   z-index: 1001;
-  padding: 8px 0;
+  padding: 0.5rem 0;
   box-shadow: none;
   transition: all 0.3s ease, box-shadow 0.25s ease;
 }
@@ -401,7 +401,7 @@ body::before {
   padding: 0 40px 0 24px;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 1.5rem;
   /* Правый блок уводим вправо через margin-left:auto у .nav-right */
   justify-content: flex-start;
   position: relative; /* нужно для абсолютного центрирования заголовка */
@@ -411,7 +411,7 @@ body::before {
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 1.125rem;
 }
 
 /* Логотип именно в шапке скрываем, оставляем только кнопки навигации слева */
@@ -450,7 +450,7 @@ body::before {
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   margin-left: auto; /* фиксируем правый блок у правого края, независимо от ширины nav-left */
 }
 
@@ -462,7 +462,7 @@ body::before {
 .nav-pill-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .nav-pill {
@@ -470,7 +470,7 @@ body::before {
   border: 1px solid var(--nav-pill-border);
   background: var(--nav-pill-bg);
   color: var(--nav-pill-text);
-  padding: 8px 17px;
+  padding: 0.5rem 1.0625rem;
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 700;
@@ -514,7 +514,7 @@ body::before {
 
 .nav-icon-btn + .nav-icon-btn {
   /* Максимально стягиваем вторую и третью иконку к предыдущей при увеличенном размере */
-  margin-left: -44px;
+  margin-left: -2.75rem;
 }
 
 /* Сдвигаем всю тройку иконок правее относительно границы блока */
@@ -535,11 +535,11 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   min-height: 70px;
-  padding: 14px 28px;
+  padding: 0.875rem 1.75rem;
   /* Лёгкий сдвиг группы левее: уменьшаем отрицательный отступ номера относительно иконок */
-  margin-left: -16px;
+  margin-left: -1rem;
   border-radius: 999px;
   min-width: 200px;
   text-decoration: none;
@@ -648,7 +648,7 @@ body::before {
   /* Уплотняем шапку, чтобы все кнопки вмещались */
   .nav-container {
     padding: 0 12px;
-    gap: 10px;
+    gap: 0.625rem;
     min-height: 56px;
   }
 
@@ -657,7 +657,7 @@ body::before {
   }
 
   .nav-right {
-    gap: 8px;
+    gap: 0.5rem;
     flex-wrap: wrap;
     justify-content: flex-end;
   }
@@ -675,12 +675,12 @@ body::before {
   .nav-cta {
     min-width: 0;
     width: 100%;
-    padding: 12px 16px;
+    padding: 0.75rem 1rem;
     margin-left: 0;
     order: 5;
     justify-content: center;
     min-height: 0;
-    gap: 6px;
+    gap: 0.375rem;
   }
 
   .nav-lang-toggle {
@@ -693,7 +693,7 @@ body::before {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .nav-logo .logo-image {
@@ -753,12 +753,12 @@ body::before {
 .mobile-menu-btn {
   display: none;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.25rem;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
-  margin-left: 4px;
+  padding: 0.5rem;
+  margin-left: 0.25rem;
 }
 
 .mobile-menu-btn span {
@@ -787,7 +787,7 @@ body::before {
   background: rgba(5, 5, 5, 0.92);
   backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 28px 22px 40px;
+  padding: 1.75rem 1.375rem 2.5rem;
   z-index: 1200;
   overflow-y: auto;
   animation: fadeIn 0.3s ease;
@@ -796,20 +796,20 @@ body::before {
 .mobile-nav.active {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.25rem;
 }
 
 .mobile-nav-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .mobile-nav-brand {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.125rem;
 }
 
 .mobile-nav-brand .brand-title {
@@ -848,14 +848,14 @@ body::before {
 .mobile-nav-links {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .mobile-nav-link {
   display: block;
   color: var(--text-primary);
   text-decoration: none;
-  padding: 14px 16px;
+  padding: 0.875rem 1rem;
   border-radius: 16px;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.04);
@@ -871,11 +871,11 @@ body::before {
 }
 
 .mobile-nav-meta {
-  margin-top: 4px;
+  margin-top: 0.25rem;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 14px;
+  gap: 0.75rem;
+  padding: 0.875rem;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -891,14 +891,14 @@ body::before {
 .mobile-nav-actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .mobile-nav-chip {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
+  gap: 0.625rem;
+  padding: 0.75rem 0.875rem;
   border-radius: 14px;
   text-decoration: none;
   color: var(--text-primary);
@@ -921,7 +921,7 @@ body::before {
 
 .mobile-nav-lang {
   align-self: flex-start;
-  margin-top: 6px;
+  margin-top: 0.375rem;
 }
 
 @keyframes slideDown {
@@ -951,7 +951,7 @@ body::before {
 
   .nav-center-title {
     font-size: 12px;
-    padding: 8px 20px;
+    padding: 0.5rem 1.25rem;
   }
 }
 
@@ -961,11 +961,11 @@ body::before {
   }
 
   .nav-right {
-    gap: 8px;
+    gap: 0.5rem;
   }
 
   .nav-cta {
-    padding: 12px 16px;
+    padding: 0.75rem 1rem;
   }
 
   .nav-lang-toggle {
@@ -990,7 +990,7 @@ body::before {
   z-index: 1;
   /* Отступ от шапки до начала большого контейнера с видео + ещё меньше снизу,
      чтобы вторая секция подошла ближе (примерно вдвое меньше предыдущего) */
-  padding: 104px 24px 16px;
+  padding: 6.5rem 1.5rem 1rem;
   overflow: hidden;
 }
 
@@ -1160,7 +1160,7 @@ body::before {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 40px 20px;
+  padding: 2.5rem 1.25rem;
   pointer-events: auto; /* Разрешаем клики на контент */
   z-index: 2; /* Контент выше overlay, чтобы кнопки были кликабельны */
 }
@@ -1191,11 +1191,11 @@ body::before {
 }
 
 .hero-tagline {
-  font-size: 13px;
+  font-size: clamp(0.8125rem, 1vw, 0.875rem);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 
 .hero-container {
@@ -1208,11 +1208,11 @@ body::before {
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   background: rgba(15, 14, 19, 0.6);
   border: 1px solid rgba(255, 155, 74, 0.4);
   border-radius: 999px;
-  padding: 12px 26px;
+  padding: 0.75rem 1.625rem;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 32px;
@@ -1252,10 +1252,10 @@ body::before {
 }
 
 .hero-subtitle {
-  font-size: 14px;
+  font-size: clamp(0.875rem, 1.2vw, 1rem);
   max-width: 640px;
   color: var(--text-secondary);
-  margin: 10px auto 0;
+  margin: 0.625rem auto 0;
 }
 
 /* Скрываем надписи и кнопки в герое при полноэкранном режиме видео */
@@ -1282,7 +1282,7 @@ body::before {
   display: flex;
   align-items: center;
   /* Используем margin: auto для центрирования вместо left: 50% + transform */
-  gap: 10px;
+  gap: 0.625rem;
   justify-content: center;
   padding: 0;
   background: transparent;
@@ -1312,14 +1312,14 @@ body::before {
 .hero-control-left {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   flex-shrink: 0;
 }
 
 .hero-control-btn {
   width: auto;
   height: auto;
-  padding: 4px;
+  padding: 0.25rem;
   border-radius: 50%;
   border: none;
   background: transparent;
@@ -1345,14 +1345,14 @@ body::before {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: center;
 }
 
 .hero-control-right {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   margin-left: 8px;
 }
 
@@ -1405,7 +1405,7 @@ body::before {
 @media (max-width: 768px) {
   .hero-controls {
     flex-direction: column;
-    gap: 8px;
+    gap: 0.5rem;
     padding: 0;
     width: 94%;
     opacity: 0;
@@ -1423,7 +1423,7 @@ body::before {
   .hero-progress {
     width: 100%;
     grid-template-columns: 1fr auto;
-    gap: 10px;
+    gap: 0.625rem;
   }
 
   .hero-progress-time {
@@ -1443,8 +1443,8 @@ body::before {
   bottom: 46px;
   display: none;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px 10px;
+  gap: 0.375rem;
+  padding: 0.5rem 0.625rem;
   background: rgba(0, 0, 0, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
@@ -1457,7 +1457,7 @@ body::before {
 }
 
 .hero-menu-item {
-  padding: 6px 10px;
+  padding: 0.375rem 0.625rem;
   border: none;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.08);
@@ -1483,7 +1483,7 @@ body::before {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 1.25rem;
 }
 
 .hero-secondary-btn {
@@ -1491,7 +1491,7 @@ body::before {
   height: 95px !important;
   min-width: 95px !important;
   min-height: 95px !important;
-  padding: 11px !important;
+  padding: 0.6875rem !important;
   border-radius: 50% !important;
   background: rgba(255, 255, 255, 0.15) !important;
   backdrop-filter: blur(20px) saturate(180%);
@@ -1540,7 +1540,7 @@ body::before {
   position: relative;
   z-index: 1;
   animation: newYearPulse 3s ease-in-out infinite !important;
-  margin: 10px auto 0;
+  margin: 0.625rem auto 0;
   width: 478px !important;
   height: 96px !important;
   max-width: 478px !important;
@@ -1622,7 +1622,7 @@ body::before {
 }
 
 .hero-description {
-  font-size: 17px;
+  font-size: clamp(1.0625rem, 1.4vw, 1.125rem);
   color: var(--text-secondary);
   margin-bottom: 36px;
   max-width: 680px;
@@ -1636,7 +1636,7 @@ body::before {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 1.25rem;
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 48px;
@@ -1646,7 +1646,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 1.25rem;
   flex-wrap: nowrap;
   width: 100%;
   max-width: 100%;
@@ -1791,7 +1791,7 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
   transition: transform 0.2s ease, box-shadow 0.25s ease, background-color 0.2s ease,
     color 0.2s ease, border-color 0.2s ease;
   text-transform: uppercase;
@@ -1846,7 +1846,7 @@ body::before {
   height: 95px !important;
   min-width: 95px !important;
   min-height: 95px !important;
-  padding: 11px !important;
+  padding: 0.6875rem !important;
 }
 
 /* Анимация живого свечения для боковых кнопок */
@@ -1871,7 +1871,7 @@ body::before {
   height: 95px;
   min-width: 95px;
   min-height: 95px;
-  padding: 11px;
+  padding: 0.6875rem;
   border-radius: 50%;
   background: transparent !important;
   backdrop-filter: none;
@@ -1989,7 +1989,7 @@ body::before {
 .about-intro-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: 32px;
+  gap: 2rem;
   align-items: stretch;
 }
 
@@ -2011,7 +2011,7 @@ body::before {
 
 .highlight-services-grid {
   display: grid;
-  gap: 16px;
+  gap: 1rem;
   grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 
@@ -2054,13 +2054,13 @@ body::before {
   inset: 0;
   display: flex;
   align-items: flex-end;
-  padding: 28px;
+  padding: 1.75rem;
 }
 
 .highlight-label {
   display: inline-flex;
   align-items: center;
-  padding: 10px 18px;
+  padding: 0.625rem 1.125rem;
   border-radius: 14px;
   background: linear-gradient(120deg, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0.5));
   color: #fff;
@@ -2159,7 +2159,7 @@ body::before {
   /* Фиксированная высота рядов, чтобы размеры карточек совпадали с референсом:
      боковые блоки — одна ячейка, центральный — две ячейки по высоте */
   grid-auto-rows: 260px;
-  gap: 40px;
+  gap: 2.5rem;
   grid-template-areas:
     "benefit-speed benefit-main benefit-team"
     "benefit-business benefit-main benefit-innovation";
@@ -2172,12 +2172,12 @@ body::before {
   /* Жирная белая граница и прозрачный внутренний фон */
   border: 3px solid rgba(255, 255, 255, 0.9);
   background: transparent;
-  padding: 32px 36px;
+  padding: 2rem 2.25rem;
   box-shadow: var(--panel-shadow);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 0.875rem;
   align-items: flex-start;
 }
 
@@ -2200,7 +2200,7 @@ body::before {
 .benefit-card-main {
   position: relative;
   grid-area: benefit-main;
-  padding: 40px 40px;
+  padding: 2.5rem 2.5rem;
   border-radius: 40px;
   border: 3px solid rgba(255, 255, 255, 0.9);
   background: transparent;
@@ -2286,13 +2286,13 @@ body::before {
 .projects-banner-inner {
   max-width: 1200px;
   margin: 0 auto 40px;
-  padding: 18px 28px;
+  padding: 1.125rem 1.75rem;
   border-radius: 28px;
   background: #d2ff46;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .projects-banner-title {
@@ -2306,7 +2306,7 @@ body::before {
 .projects-banner-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .projects-arrow {
@@ -2334,14 +2334,14 @@ body::before {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 30px; /* вертикальный зазор между рядами */
+  gap: 1.875rem; /* вертикальный зазор между рядами */
 }
 
 .projects-row {
   display: grid;
   grid-template-rows: var(--service-card-height-desktop);
-  column-gap: 30px; /* расстояние между большим и малым контейнером */
-  row-gap: 30px;
+  column-gap: 1.875rem; /* расстояние между большим и малым контейнером */
+  row-gap: 1.875rem;
 }
 
 /* Ряды с большим контейнером слева */
@@ -2425,8 +2425,8 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 6px;
-  padding: 10px 12px;
+  gap: 0.375rem;
+  padding: 0.625rem 0.75rem;
   margin: 0;
   max-width: calc(100% - 24px);
   font-size: clamp(0.82rem, 0.95vw, 0.92rem);
@@ -2471,14 +2471,14 @@ body::before {
 
   .projects-reel-grid {
     max-width: none;
-    gap: 16px;
+    gap: 1rem;
   }
 
   .projects-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: var(--service-card-height-tablet);
-    column-gap: 16px;
-    row-gap: 16px;
+    column-gap: 1rem;
+    row-gap: 1rem;
   }
 }
 
@@ -2506,14 +2506,14 @@ body::before {
   }
 
   .projects-reel-grid {
-    gap: 14px;
+    gap: 0.875rem;
   }
 
   .projects-row {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto;
     column-gap: 0;
-    row-gap: 14px;
+    row-gap: 0.875rem;
   }
 }
 
@@ -2527,12 +2527,12 @@ body::before {
 .studio-footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 32px 28px;
+  padding: 2rem 2rem 1.75rem;
   border-radius: 40px 40px 0 0;
   background: #d2ff46;
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.1fr) 180px;
-  gap: 32px;
+  gap: 2rem;
   position: relative;
 }
 
@@ -2547,7 +2547,7 @@ body::before {
 .studio-footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 0.625rem;
   margin-top: 22px;
 }
 
@@ -2555,7 +2555,7 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 18px;
+  padding: 0.625rem 1.125rem;
   border-radius: 999px;
   border: 1px solid #050505;
   background: #050505;
@@ -2578,7 +2578,7 @@ body::before {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 18px;
+  gap: 1.125rem;
   font-size: 14px;
 }
 
@@ -2589,7 +2589,7 @@ body::before {
 .studio-footer-legal {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.375rem;
 }
 
 .studio-footer-legal a {
@@ -2635,7 +2635,7 @@ body::before {
 @media (max-width: 768px) {
   .studio-footer-inner {
     border-radius: 30px 30px 0 0;
-    padding: 24px 20px 22px;
+    padding: 1.5rem 1.25rem 1.375rem;
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -2647,7 +2647,7 @@ body::before {
 
   /* Мобильные стили для кнопок hero-cta-row */
   .hero-cta-row {
-    gap: 16px;
+    gap: 1rem;
     margin-top: 32px;
   }
 
@@ -2656,7 +2656,7 @@ body::before {
     height: 80px;
     min-width: 80px;
     min-height: 80px;
-    padding: 8px;
+    padding: 0.5rem;
     font-size: 11px;
     line-height: 1.2;
     border-radius: 50%;
@@ -2667,7 +2667,7 @@ body::before {
     height: 80px;
     min-width: 80px;
     min-height: 80px;
-    padding: 8px;
+    padding: 0.5rem;
     font-size: 11px;
     line-height: 1.2;
     border-radius: 50%;
@@ -2789,11 +2789,11 @@ body::before {
   border: var(--panel-border);
   border-radius: var(--panel-radius);
   box-shadow: var(--panel-shadow);
-  padding: 32px 32px 28px;
+  padding: 2rem 2rem 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 1.5rem;
   flex-wrap: wrap;
 }
 
@@ -2825,7 +2825,7 @@ body::before {
 .cta-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 0.875rem;
   flex-wrap: wrap;
 }
 
@@ -2859,18 +2859,18 @@ body::before {
 .value-card {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: 14px;
+  gap: 0.875rem;
   align-items: center;
   background: var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--panel-radius);
   /* Максимально компактные отступы внутри карты ценности */
-  padding: 8px 24px;
+  padding: 0.5rem 1.5rem;
   box-shadow: var(--panel-shadow);
 }
 
 .value-kicker {
-  font-size: 13px;
+  font-size: clamp(0.8125rem, 1vw, 0.875rem);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -2895,14 +2895,14 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 14px;
+  gap: 0.875rem;
   flex-wrap: wrap;
 }
 
 @media (max-width: 768px) {
   .value-card {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 0.75rem;
   }
 
   .value-right {
@@ -2916,7 +2916,7 @@ body::before {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 1.875rem;
 }
 
 /* Adjust services section spacing so the heading sits ещё ближе к верхнему краю блока */
@@ -2934,8 +2934,8 @@ body::before {
 .service-row {
   display: grid;
   grid-template-rows: var(--service-card-height-desktop);
-  column-gap: 30px; /* расстояние между большим и малым контейнером в ряду */
-  row-gap: 30px;
+  column-gap: 1.875rem; /* расстояние между большим и малым контейнером в ряду */
+  row-gap: 1.875rem;
 }
 
 /* Ряды с большим контейнером слева */
@@ -2951,7 +2951,7 @@ body::before {
 /* Ряды с тремя контейнерами одинакового размера */
 .service-row-three {
   grid-template-columns: repeat(3, 1fr);
-  column-gap: 30px;
+  column-gap: 1.875rem;
 }
 
 /* Ряд: два маленьких слева (один под другим), один большой справа */
@@ -2959,8 +2959,8 @@ body::before {
   display: grid;
   grid-template-columns: 445px 925px;
   grid-template-rows: var(--service-card-height-desktop) var(--service-card-height-desktop);
-  column-gap: 30px;
-  row-gap: 30px;
+  column-gap: 1.875rem;
+  row-gap: 1.875rem;
 }
 
 /* Первый маленький контейнер - слева, сверху */
@@ -3068,7 +3068,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .service-simple-content {
   position: relative;
   z-index: 1;
-  padding: 18px 18px 16px;
+  padding: 1.125rem 1.125rem 1rem;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -3111,7 +3111,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   -webkit-backdrop-filter: blur(8px);
   border-radius: var(--btn-radius);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 16px;
+  padding: 1rem;
   cursor: pointer;
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
   min-height: 50px;
@@ -3148,7 +3148,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   font-size: var(--btn-font-size);
   font-weight: var(--btn-font-weight);
   border-color: rgba(255, 155, 74, 0.6);
-  gap: 8px;
+  gap: 0.5rem;
   box-shadow: var(--btn-shadow-primary);
   text-transform: none;
 }
@@ -3168,21 +3168,21 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   .services-simple-grid {
     width: 100%;
     max-width: none;
-    gap: 16px;
+    gap: 1rem;
   }
 
   .service-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: var(--service-card-height-tablet);
-    column-gap: 16px;
-    row-gap: 16px;
+    column-gap: 1rem;
+    row-gap: 1rem;
   }
 
   .service-row-two-small-one-big {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: var(--service-card-height-tablet) var(--service-card-height-tablet);
-    column-gap: 16px;
-    row-gap: 16px;
+    column-gap: 1rem;
+    row-gap: 1rem;
   }
 
   .service-row-two-small-one-big .service-simple-card:nth-child(3) {
@@ -3202,21 +3202,21 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .services-simple-grid {
     width: 100%;
-    gap: 14px;
+    gap: 0.875rem;
   }
 
   .service-row {
     grid-template-columns: 1fr;
     grid-template-rows: var(--service-card-height-mobile);
     column-gap: 0;
-    row-gap: 14px;
+    row-gap: 0.875rem;
   }
 
   .service-row-two-small-one-big {
     grid-template-columns: 1fr;
     grid-template-rows: var(--service-card-height-mobile);
     column-gap: 0;
-    row-gap: 14px;
+    row-gap: 0.875rem;
   }
 
   .service-row-two-small-one-big .service-simple-card:nth-child(3) {
@@ -3259,7 +3259,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 24px;
-  padding: 32px 28px;
+  padding: 2rem 1.75rem;
   text-align: center;
   transform-origin: center center;
   backdrop-filter: blur(16px);
@@ -3427,7 +3427,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 /* Card content styles */
 .service-carousel-card h3 {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: clamp(1.375rem, 2.3vw, 1.875rem);
   font-weight: 600;
   margin-bottom: 12px;
   line-height: 1.3;
@@ -3436,7 +3436,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .service-carousel-card .service-description {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: clamp(0.875rem, 1.2vw, 1rem);
   line-height: 1.5;
   margin-bottom: 18px;
 }
@@ -3444,17 +3444,17 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .service-features {
   list-style: none;
   padding: 0;
-  margin: 18px 0;
+  margin: 1.125rem 0;
   text-align: left;
 }
 
 .service-features li {
-  padding: 8px 0;
+  padding: 0.5rem 0;
   font-size: 14px;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .service-features li i {
@@ -3463,8 +3463,8 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-price {
-  margin: 18px 0;
-  padding: 16px;
+  margin: 1.125rem 0;
+  padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -3492,7 +3492,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .service-btn {
   width: 100%;
-  padding: 14px 28px;
+  padding: 0.875rem 1.75rem;
   background: var(--gradient-primary);
   border: none;
   border-radius: 12px;
@@ -3505,7 +3505,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
   margin-top: 20px;
 }
 
@@ -3564,7 +3564,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   z-index: 100;
   width: 100%;
   margin: 0;
@@ -3719,13 +3719,14 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .service-card h3 {
   font-family: var(--font-primary);
-  font-size: 24px;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 600;
   margin-bottom: 16px;
 }
 
 .service-card .service-description {
   color: var(--text-secondary);
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
   margin-bottom: 30px;
   line-height: 1.6;
 }
@@ -3737,7 +3738,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-card li {
-  padding: 12px 0;
+  padding: 0.75rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: space-between;
@@ -3762,13 +3763,13 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px;
+  gap: 2.5rem;
   margin-top: 60px;
 }
 
 .stat-card {
   text-align: center;
-  padding: 40px 24px;
+  padding: 2.5rem 1.5rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
@@ -3848,7 +3849,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .process-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
+  gap: 2.5rem;
   margin-top: 0;
   position: relative;
 }
@@ -3975,7 +3976,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   position: absolute;
   inset: 0;
   z-index: 1;
-  padding: 18px 18px 16px;
+  padding: 1.125rem 1.125rem 1rem;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -3998,14 +3999,14 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 3px;
+  gap: 0.1875rem;
   text-align: left;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.1));
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: var(--btn-radius);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 3px 7px;
+  padding: 0.1875rem 0.4375rem;
   cursor: pointer;
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
   min-height: 0;
@@ -4023,7 +4024,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 /* Уменьшаем размер контейнера для первого шага */
 .process-step:nth-child(1) .step-footer {
-  padding: 3px 7px;
+  padding: 0.1875rem 0.4375rem;
   min-height: 0;
 }
 
@@ -4165,7 +4166,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--panel-radius);
-  padding: 40px;
+  padding: 2.5rem;
   backdrop-filter: blur(10px);
   display: none;
   animation: fadeIn 0.5s ease;
@@ -4197,7 +4198,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .testimonial-author {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .author-avatar {
@@ -4225,7 +4226,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .testimonial-nav {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 0.75rem;
   margin-top: 20px; /* Уменьшаем отступ сверху, поднимаем индикаторы выше */
 }
 
@@ -4269,7 +4270,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 32px;
+  gap: 2rem;
   margin-bottom: 60px;
 }
 
@@ -4277,7 +4278,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--panel-radius);
-  padding: 32px 24px;
+  padding: 2rem 1.5rem;
   text-align: center;
   backdrop-filter: blur(10px);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
@@ -4329,7 +4330,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .contact-card h3 {
   font-family: var(--font-primary);
-  font-size: 19px;
+  font-size: clamp(1.1875rem, 2vw, 1.5rem);
   font-weight: 600;
   margin-bottom: 12px;
 }
@@ -4374,7 +4375,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .contact-actions {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 1.25rem;
   flex-wrap: wrap;
 }
 
@@ -4387,10 +4388,10 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(10, 10, 10, 0.94);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 18px;
-  padding: 16px 18px;
+  padding: 1rem 1.125rem;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
   z-index: 1100;
   opacity: 0;
@@ -4422,8 +4423,8 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   .cookie-banner {
     flex-direction: column;
     align-items: flex-start;
-    padding: 16px;
-    gap: 12px;
+    padding: 1rem;
+    gap: 0.75rem;
   }
 
   .cookie-banner .cookie-action {
@@ -4512,11 +4513,11 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .chat-header {
-  padding: 20px 24px;
+  padding: 1.25rem 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -4547,7 +4548,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .chat-info h3 {
   font-family: var(--font-primary);
   font-weight: 600;
-  font-size: 18px;
+  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
   color: var(--text-primary);
   margin-bottom: 4px;
 }
@@ -4581,16 +4582,16 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .chat-messages {
   flex: 1;
-  padding: 24px;
+  padding: 1.5rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .chat-message {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: flex-start;
 }
 
@@ -4631,7 +4632,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(255, 120, 73, 0.15);
   border: 1px solid rgba(255, 120, 73, 0.3);
   border-radius: 18px;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   max-width: 70%;
   word-wrap: break-word;
   backdrop-filter: blur(8px);
@@ -4648,15 +4649,15 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 /* Quick Questions */
 .quick-questions {
-  padding: 16px;
+  padding: 1rem;
   border-top: 1px solid rgba(255, 120, 73, 0.2);
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .quick-btn {
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   border: 1px solid rgba(255, 120, 73, 0.3);
   border-radius: 20px;
   background: rgba(255, 120, 73, 0.1);
@@ -4678,7 +4679,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(255, 120, 73, 0.05);
   border: 1px solid rgba(255, 120, 73, 0.2);
   border-radius: 25px;
-  padding: 12px 20px;
+  padding: 0.75rem 1.25rem;
   color: var(--text-primary);
   font-size: 14px;
   outline: none;
@@ -4728,7 +4729,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .hero {
-    padding: 100px 0 80px;
+    padding: 6.25rem 0 5rem;
   }
 
   .hero-title {
@@ -4738,12 +4739,12 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .hero-actions {
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
   }
 
   .new-year-banner-wrapper {
     flex-direction: row;
-    gap: 15px;
+    gap: 0.9375rem;
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
@@ -4792,21 +4793,21 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .hero-actions {
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
   }
 
   .hero-stats {
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 1.25rem;
   }
 
   .services-grid {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 1.875rem;
 }
 
   .service-card {
-    padding: 30px 20px;
+    padding: 1.875rem 1.25rem;
   }
 
   /* Mobile carousel adjustments */
@@ -4818,7 +4819,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .service-carousel-card {
     width: 340px;
-    padding: 28px 24px;
+    padding: 1.75rem 1.5rem;
   }
 
   .service-carousel-card .service-icon {
@@ -4840,17 +4841,17 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-features {
-    margin: 16px 0;
+    margin: 1rem 0;
   }
 
   .service-features li {
     font-size: 13px;
-    padding: 7px 0;
+    padding: 0.4375rem 0;
   }
 
   .service-price {
-    margin: 16px 0;
-    padding: 14px;
+    margin: 1rem 0;
+    padding: 0.875rem;
   }
 
   .price-value {
@@ -4875,7 +4876,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
     bottom: -50px;
     left: 0;
     right: 0;
-    gap: 8px;
+    gap: 0.5rem;
     justify-content: center;
     width: 100%;
   }
@@ -4896,12 +4897,12 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 1.25rem;
   }
 
   .process-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 2.5rem;
   }
   
   .process-grid::before {
@@ -4909,7 +4910,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
   
   .process-step {
-    padding: 30px 20px;
+    padding: 1.875rem 1.25rem;
   }
   
   .step-number {
@@ -4920,7 +4921,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
   
   .process-step h3 {
-    font-size: 19px;
+    font-size: clamp(1.1875rem, 2vw, 1.5rem);
     margin-bottom: 16px;
   }
   
@@ -4934,12 +4935,12 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .contact-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 1.25rem;
   }
 
   .contact-actions {
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
   }
 
   /* Chat Mobile Styles */
@@ -4950,24 +4951,24 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .chat-header {
-    padding: 16px 20px;
+    padding: 1rem 1.25rem;
   }
 
   .chat-messages {
-  padding: 20px;
+  padding: 1.25rem;
   }
 
   .quick-questions {
-    padding: 12px 20px;
+    padding: 0.75rem 1.25rem;
   }
 
   .quick-btn {
-    padding: 6px 10px;
+    padding: 0.375rem 0.625rem;
     font-size: 11px;
   }
 
   .chat-input-container {
-    padding: 16px 20px;
+    padding: 1rem 1.25rem;
    }
 }
 
@@ -4977,7 +4978,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .new-year-banner-wrapper {
-    gap: 10px;
+    gap: 0.625rem;
   }
 
   .new-year-text-left,
@@ -5026,7 +5027,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
    }
   
   .service-card {
-    padding: 32px 24px;
+    padding: 2rem 1.5rem;
   }
   
   /* Small mobile carousel adjustments */
@@ -5037,7 +5038,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .service-carousel-card {
     width: 300px;
-    padding: 24px 20px;
+    padding: 1.5rem 1.25rem;
   }
 
   .service-carousel-card h3 {
@@ -5059,17 +5060,17 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-features {
-    margin: 14px 0;
+    margin: 0.875rem 0;
   }
 
   .service-features li {
     font-size: 12px;
-    padding: 6px 0;
+    padding: 0.375rem 0;
   }
 
   .service-price {
-    margin: 14px 0;
-    padding: 14px;
+    margin: 0.875rem 0;
+    padding: 0.875rem;
   }
 
   .price-value {
@@ -5077,7 +5078,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-btn {
-    padding: 12px 24px;
+    padding: 0.75rem 1.5rem;
     font-size: 14px;
   }
 
@@ -5283,18 +5284,18 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .process-grid {
     margin-top: 0;
-    gap: 24px;
+    gap: 1.5rem;
   }
 
   .testimonials-slider {
-    margin: 12px auto 0;
+    margin: 0.75rem auto 0;
   }
 }
 
 .assistants-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 1.875rem;
   margin-top: 30px; /* Поднимаем контейнер с ботами выше */
   margin-bottom: -20px; /* Небольшое уменьшение отступа снизу */
   grid-template-rows: calc(var(--service-card-height-desktop) * 1.2);
@@ -5315,7 +5316,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   .assistants-grid {
     grid-template-columns: 1fr;
     grid-template-rows: calc(var(--service-card-height-mobile) * 1.2);
-    gap: 14px;
+    gap: 0.875rem;
   }
 }
 
@@ -5447,7 +5448,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .assistant-content {
   position: relative;
   z-index: 1;
-  padding: 18px 18px 16px;
+  padding: 1.125rem 1.125rem 1rem;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -5461,14 +5462,14 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 6px;
+  gap: 0.375rem;
   text-align: left;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.1));
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: var(--btn-radius);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 6px 10px;
+  padding: 0.375rem 0.625rem;
   cursor: pointer;
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
   min-height: 0;
@@ -5522,7 +5523,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .assistant-features {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
   margin-bottom: 24px;
   justify-content: center;
   position: relative;
@@ -5532,7 +5533,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .feature-tag {
   background: rgba(102, 126, 234, 0.2);
   color: var(--accent-color);
-  padding: 6px 12px;
+  padding: 0.375rem 0.75rem;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
@@ -5562,7 +5563,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   box-shadow: var(--btn-shadow-primary);
   text-transform: none;
 }
@@ -5640,8 +5641,8 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: var(--gradient-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 24px;
-  margin: 24px 0 16px;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  margin: 1.5rem 0 1rem;
 }
 
 .try-assistant-btn.featured {
@@ -5686,21 +5687,21 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .portfolio-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
+  gap: 1.875rem;
   margin-top: 40px;
 }
 
 @media (max-width: 1024px) {
   .portfolio-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    gap: 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
   .portfolio-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 1.25rem;
   }
 }
 
@@ -5746,7 +5747,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .portfolio-content {
-  padding: 24px;
+  padding: 1.5rem;
 }
 
 .portfolio-content h3 {
@@ -6285,7 +6286,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 /* Хедер Хипыча */
 .hipych-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 18px 25px;
+  padding: 1.125rem 1.5625rem;
   color: white;
   display: flex;
   align-items: center;
@@ -6295,7 +6296,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .hipych-info {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 0.9375rem;
 }
 
 .hipych-avatar {
@@ -6345,7 +6346,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   min-height: 400px; /* Увеличиваю минимальную высоту */
   max-height: 460px; /* Увеличиваю максимальную высоту */
   overflow-y: auto;
-  padding: 18px;
+  padding: 1.125rem;
   background: #1a1a2e;
 }
 
@@ -6387,7 +6388,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .hipych-message-content {
   max-width: 280px;
-  padding: 14px 18px;
+  padding: 0.875rem 1.125rem;
   border-radius: 18px;
   font-size: 14px;
   line-height: 1.4;
@@ -6407,9 +6408,9 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 /* Быстрые кнопки */
 .hipych-quick-actions {
-  padding: 10px 15px;
+  padding: 0.625rem 0.9375rem;
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   overflow-x: auto;
   background: rgba(0, 0, 0, 0.1);
 }
@@ -6418,7 +6419,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
   border: 1px solid rgba(102, 126, 234, 0.3);
   color: #a1a1aa;
-  padding: 12px 18px;
+  padding: 0.75rem 1.125rem;
   border-radius: 25px;
   font-size: 14px;
   font-weight: 500;
@@ -6429,7 +6430,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   min-height: 44px;
   text-align: center;
   line-height: 1.3;
@@ -6444,10 +6445,10 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 /* Поле ввода */
 .hipych-input-container {
-  padding: 15px;
+  padding: 0.9375rem;
   background: #16213e;
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: center;
 }
 
@@ -6456,7 +6457,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(102, 126, 234, 0.3);
   border-radius: 20px;
-  padding: 10px 15px;
+  padding: 0.625rem 0.9375rem;
   color: #e0e0e0;
   font-size: 14px;
   outline: none;
@@ -6499,15 +6500,15 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .hipych-typing {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 10px 15px;
+  gap: 0.3125rem;
+  padding: 0.625rem 0.9375rem;
   color: rgba(224, 224, 224, 0.6);
   font-size: 12px;
 }
 
 .hipych-typing-dots {
   display: flex;
-  gap: 3px;
+  gap: 0.1875rem;
 }
 
 .hipych-typing-dot {
@@ -6692,7 +6693,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 /* Хедер Кота Бро */
 .bro-cat-header {
   background: linear-gradient(135deg, #ff8c42 0%, #ff6b1a 100%);
-  padding: 18px 25px;
+  padding: 1.125rem 1.5625rem;
   color: white;
   display: flex;
   align-items: center;
@@ -6704,7 +6705,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .bro-cat-info {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 0.9375rem;
 }
 
 .bro-cat-avatar {
@@ -6754,7 +6755,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   min-height: 380px; /* Увеличиваю минимальную высоту */
   max-height: 440px; /* Увеличиваю максимальную высоту */
   overflow-y: auto;
-  padding: 18px;
+  padding: 1.125rem;
   background: rgba(46, 26, 10, 0.95);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -6798,7 +6799,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .bro-cat-message-content {
   max-width: 280px;
-  padding: 14px 18px;
+  padding: 0.875rem 1.125rem;
   border-radius: 18px;
   font-size: 14px;
   line-height: 1.4;
@@ -6820,9 +6821,9 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 /* Быстрые кнопки Кота Бро */
 .bro-cat-quick-actions {
-  padding: 10px 15px;
+  padding: 0.625rem 0.9375rem;
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   overflow-x: auto;
   background: rgba(0, 0, 0, 0.2);
 }
@@ -6831,7 +6832,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: linear-gradient(135deg, rgba(255, 140, 66, 0.15) 0%, rgba(255, 107, 26, 0.15) 100%);
   border: 1px solid rgba(255, 140, 66, 0.3);
   color: #f4e8dc;
-  padding: 12px 18px;
+  padding: 0.75rem 1.125rem;
   border-radius: 25px;
   font-size: 14px;
   font-weight: 500;
@@ -6842,7 +6843,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   min-height: 44px;
   text-align: center;
   line-height: 1.3;
@@ -6857,16 +6858,16 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 /* Поле ввода Кота Бро */
 .bro-cat-input-container {
-  padding: 15px;
+  padding: 0.9375rem;
   background: rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .bro-cat-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   border: 1px solid rgba(255, 140, 66, 0.3);
   border-radius: 25px;
   background: rgba(255, 140, 66, 0.08);
@@ -6923,7 +6924,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .bro-cat-typing-content {
   background: rgba(68, 44, 29, 0.8);
-  padding: 14px 18px;
+  padding: 0.875rem 1.125rem;
   border-radius: 18px;
   border: 1px solid rgba(255, 140, 66, 0.2);
   backdrop-filter: blur(8px);
@@ -6932,7 +6933,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .bro-cat-typing-dots {
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
 }
 
 .bro-cat-typing-dot {
@@ -7181,8 +7182,8 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .hipych-quick-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 18px;
+  gap: 0.625rem;
+  padding: 1.125rem;
   background: rgba(46, 26, 60, 0.3);
   border-top: 1px solid rgba(102, 126, 234, 0.2);
 }
@@ -7190,8 +7191,8 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .bro-cat-quick-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 18px;
+  gap: 0.625rem;
+  padding: 1.125rem;
   background: rgba(46, 26, 10, 0.5);
   border-top: 1px solid rgba(255, 140, 66, 0.2);
 }
@@ -7422,7 +7423,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .ai-assistant-header {
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 1.25rem;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -7480,15 +7481,15 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .ai-assistant-messages {
   height: 320px;
   overflow-y: auto;
-  padding: 20px;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .ai-assistant-message {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   animation: fadeInUp 0.3s ease;
 }
 
@@ -7520,7 +7521,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   color: white;
   font-size: 14px;
   line-height: 1.5;
@@ -7538,14 +7539,14 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   padding: 0 20px 16px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .ai-assistant-quick-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   color: white;
   font-size: 12px;
   cursor: pointer;
@@ -7561,8 +7562,8 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .ai-assistant-input-container {
   display: flex;
-  padding: 20px;
-  gap: 12px;
+  padding: 1.25rem;
+  gap: 0.75rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -7571,7 +7572,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   color: white;
   font-size: 14px;
   outline: none;
@@ -7614,7 +7615,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .ai-assistant-typing {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   animation: fadeInUp 0.3s ease;
 }
 
@@ -7622,9 +7623,9 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
 }
 
@@ -7679,12 +7680,12 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   
   .ai-assistant-quick-btn {
     font-size: 11px;
-    padding: 6px 10px;
+    padding: 0.375rem 0.625rem;
   }
   
   .ai-assistant-messages {
     height: calc(100vh - 260px);
-    padding: 16px;
+    padding: 1rem;
   }
 }
 
@@ -7712,7 +7713,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 /* ===== SERVICE DETAIL PAGE ===== */
 .service-detail-section {
   min-height: 100vh;
-  padding: 120px 0 80px;
+  padding: 7.5rem 0 5rem;
   background: var(--bg-primary);
   position: relative;
 }
@@ -7720,13 +7721,13 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .back-button {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   color: var(--text-primary);
   text-decoration: none;
   font-family: var(--font-body);
   font-size: 16px;
   margin-bottom: 40px;
-  padding: 12px 24px;
+  padding: 0.75rem 1.5rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -7754,7 +7755,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 32px;
-  padding: 60px 50px;
+  padding: 3.75rem 3.125rem;
   text-align: center;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -7811,14 +7812,14 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: transparent !important;
   position: relative;
   min-height: 100vh;
-  padding: 104px 24px 60px;
+  padding: 6.5rem 1.5rem 3.75rem;
 }
 
 /* Service Detail Hero Container */
 .service-detail-hero {
   width: 100%;
   max-width: 1400px;
-  margin: 40px auto 60px;
+  margin: 2.5rem auto 3.75rem;
   display: flex;
   justify-content: center;
 }
@@ -7840,7 +7841,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 2.5rem;
 }
 
 .service-detail-cta-btn {
@@ -7862,7 +7863,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
   text-transform: none;
   /* Green button with black text */
   background: #00ff00;
@@ -7887,7 +7888,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   max-width: 1400px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  gap: 2.5rem;
   color: #ffffff;
   font-family: var(--font-primary);
 }
@@ -7925,7 +7926,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .service-detail-services-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 1.875rem;
   grid-template-rows: calc(var(--service-card-height-desktop) * 1.2);
 }
 
@@ -7949,7 +7950,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   .service-detail-services-row {
     grid-template-columns: 1fr;
     grid-template-rows: calc(var(--service-card-height-mobile) * 1.2);
-    gap: 14px;
+    gap: 0.875rem;
   }
   
   .service-detail-services-row .service-simple-card {
@@ -7960,7 +7961,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 @media (max-width: 1024px) {
   .service-detail-cta-text {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 1.5rem;
   }
   
   .cta-text-left,
@@ -7976,7 +7977,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 @media (max-width: 768px) {
   .service-detail-section {
-    padding: 100px 20px 40px;
+    padding: 6.25rem 1.25rem 2.5rem;
   }
   
   .service-detail-hero {
@@ -7985,7 +7986,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   
   .service-detail-cta-section {
     margin-bottom: 40px;
-    gap: 24px;
+    gap: 1.5rem;
   }
   
   .service-detail-cta-btn {
@@ -8043,7 +8044,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-detail-features {
-  margin: 40px 0;
+  margin: 2.5rem 0;
   text-align: left;
   max-width: 500px;
   margin-left: auto;
@@ -8066,12 +8067,12 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-detail-card .service-features li {
-  padding: 12px 0;
+  padding: 0.75rem 0;
   font-size: 16px;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -8086,8 +8087,8 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-detail-card .service-price {
-  margin: 40px auto;
-  padding: 24px;
+  margin: 2.5rem auto;
+  padding: 1.5rem;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -8115,7 +8116,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
-  padding: 18px 32px;
+  padding: 1.125rem 2rem;
   background: var(--gradient-primary);
   border: none;
   border-radius: 16px;
@@ -8128,7 +8129,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
   box-shadow: 0 4px 20px rgba(255, 155, 74, 0.3);
 }
 
@@ -8142,7 +8143,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-detail-loading {
-  padding: 60px 20px;
+  padding: 3.75rem 1.25rem;
   text-align: center;
   color: var(--text-secondary);
   font-size: 18px;
@@ -8150,7 +8151,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .service-error {
   text-align: center;
-  padding: 60px 20px;
+  padding: 3.75rem 1.25rem;
   max-width: 600px;
   margin: 0 auto;
 }
@@ -8170,7 +8171,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .service-error .btn-primary {
   display: inline-block;
-  padding: 14px 32px;
+  padding: 0.875rem 2rem;
   background: var(--gradient-primary);
   color: white;
   text-decoration: none;
@@ -8197,7 +8198,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-detail-content-section {
-  margin: 50px 0;
+  margin: 3.125rem 0;
   text-align: left;
   max-width: 700px;
   margin-left: auto;
@@ -8216,7 +8217,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 .service-detail-item {
   margin-bottom: 30px;
-  padding: 24px;
+  padding: 1.5rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -8254,7 +8255,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-detail-list li {
-  padding: 16px 24px;
+  padding: 1rem 1.5rem;
   margin-bottom: 12px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -8285,7 +8286,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-detail-about-person {
-  padding: 24px;
+  padding: 1.5rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -8307,7 +8308,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-detail-about-person .service-detail-list li {
-  padding: 12px 0;
+  padding: 0.75rem 0;
   padding-left: 24px;
   background: transparent;
   border: none;
@@ -8342,17 +8343,17 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 /* Mobile styles for service detail page */
 @media (max-width: 768px) {
   .service-detail-section {
-    padding: 100px 0 60px;
+    padding: 6.25rem 0 3.75rem;
   }
 
   .back-button {
     font-size: 14px;
-    padding: 10px 20px;
+    padding: 0.625rem 1.25rem;
     margin-bottom: 30px;
   }
 
   .service-detail-card {
-    padding: 40px 30px;
+    padding: 2.5rem 1.875rem;
     border-radius: 24px;
   }
 
@@ -8373,7 +8374,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-features {
-    margin: 30px 0;
+    margin: 1.875rem 0;
   }
 
   .service-detail-features h3 {
@@ -8383,12 +8384,12 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .service-detail-card .service-features li {
     font-size: 14px;
-    padding: 10px 0;
+    padding: 0.625rem 0;
   }
 
   .service-detail-card .service-price {
-    margin: 30px auto;
-    padding: 20px;
+    margin: 1.875rem auto;
+    padding: 1.25rem;
   }
 
   .service-detail-card .price-value {
@@ -8396,7 +8397,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-card .service-btn {
-    padding: 16px 28px;
+    padding: 1rem 1.75rem;
     font-size: 16px;
   }
 
@@ -8406,7 +8407,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-content-section {
-    margin: 40px 0;
+    margin: 2.5rem 0;
   }
 
   .service-detail-section-title {
@@ -8415,7 +8416,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-item {
-    padding: 20px;
+    padding: 1.25rem;
     margin-bottom: 20px;
   }
 
@@ -8429,7 +8430,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-list li {
-    padding: 14px 20px;
+    padding: 0.875rem 1.25rem;
     padding-left: 36px;
     font-size: 14px;
     margin-bottom: 10px;
@@ -8441,7 +8442,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-about-person {
-    padding: 20px;
+    padding: 1.25rem;
   }
 
   .service-detail-person-name {
@@ -8450,7 +8451,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-about-person .service-detail-list li {
-    padding: 10px 0;
+    padding: 0.625rem 0;
     padding-left: 20px;
     font-size: 14px;
   }
@@ -8462,7 +8463,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 @media (max-width: 480px) {
   .service-detail-card {
-    padding: 30px 20px;
+    padding: 1.875rem 1.25rem;
     border-radius: 20px;
   }
 
@@ -8486,11 +8487,11 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
   .service-detail-card .service-features li {
     font-size: 14px;
-    padding: 8px 0;
+    padding: 0.5rem 0;
   }
 
   .service-detail-card .service-price {
-    padding: 16px;
+    padding: 1rem;
   }
 
   .service-detail-card .price-value {
@@ -8498,7 +8499,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-card .service-btn {
-    padding: 14px 24px;
+    padding: 0.875rem 1.5rem;
     font-size: 14px;
   }
 
@@ -8508,7 +8509,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-content-section {
-    margin: 30px 0;
+    margin: 1.875rem 0;
   }
 
   .service-detail-section-title {
@@ -8517,7 +8518,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-item {
-    padding: 16px;
+    padding: 1rem;
     margin-bottom: 16px;
   }
 
@@ -8531,7 +8532,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-list li {
-    padding: 12px 16px;
+    padding: 0.75rem 1rem;
     padding-left: 32px;
     font-size: 14px;
     margin-bottom: 6px;
@@ -8543,7 +8544,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-about-person {
-    padding: 16px;
+    padding: 1rem;
   }
 
   .service-detail-person-name {
@@ -8552,7 +8553,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   }
 
   .service-detail-about-person .service-detail-list li {
-    padding: 8px 0;
+    padding: 0.5rem 0;
     padding-left: 18px;
     font-size: 14px;
   }
@@ -8569,7 +8570,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 120px 24px 80px;
+  padding: 7.5rem 1.5rem 5rem;
   position: relative;
   background: transparent !important;
 }
@@ -8597,11 +8598,11 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .new-year-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   background: rgba(220, 38, 38, 0.2);
   border: 1px solid rgba(255, 155, 74, 0.5);
   border-radius: 999px;
-  padding: 12px 26px;
+  padding: 0.75rem 1.625rem;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 32px;
@@ -8634,7 +8635,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 1.25rem;
   flex-wrap: wrap;
 }
 
@@ -8697,7 +8698,7 @@ body.new-year-page {
 }
 
 .new-year-offers {
-  padding: 140px 0 80px;
+  padding: 8.75rem 0 5rem;
   background: transparent !important;
   position: relative;
 }
@@ -8731,7 +8732,7 @@ body.new-year-page {
 .offers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 30px;
+  gap: 1.875rem;
   margin-top: 70px;
 }
 
@@ -8740,7 +8741,7 @@ body.new-year-page {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 24px;
-  padding: 40px 30px;
+  padding: 2.5rem 1.875rem;
   text-align: center;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -8773,7 +8774,7 @@ body.new-year-page {
   right: 20px;
   background: linear-gradient(135deg, #dc2626 0%, #ff7849 100%);
   color: white;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 700;
   font-size: 18px;
@@ -8848,10 +8849,10 @@ body.new-year-page {
 }
 
 .offer-price {
-  margin: 20px 0;
+  margin: 1.25rem 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .old-price {
@@ -8877,17 +8878,17 @@ body.new-year-page {
 .offer-features {
   list-style: none;
   padding: 0;
-  margin: 20px 0;
+  margin: 1.25rem 0;
   text-align: left;
 }
 
 .offer-features li {
-  padding: 8px 0;
+  padding: 0.5rem 0;
   font-size: 14px;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .offer-features li i {
@@ -8897,7 +8898,7 @@ body.new-year-page {
 
 .offer-btn {
   width: 100%;
-  padding: 14px 28px;
+  padding: 0.875rem 1.75rem;
   background: var(--gradient-primary);
   border: none;
   border-radius: 12px;
@@ -8910,7 +8911,7 @@ body.new-year-page {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
   margin-top: 20px;
 }
 
@@ -8921,7 +8922,7 @@ body.new-year-page {
 
 .new-year-cta {
   margin-top: 60px;
-  padding: 40px;
+  padding: 2.5rem;
   background: rgba(255, 255, 255, 0.08) !important;
   border: 2px solid rgba(255, 155, 74, 0.3);
   border-radius: 24px;
@@ -8949,13 +8950,13 @@ body.new-year-page {
 /* Mobile styles for new year page */
 @media (max-width: 768px) {
   .new-year-hero {
-    padding: 100px 24px 60px;
+    padding: 6.25rem 1.5rem 3.75rem;
     min-height: auto;
   }
 
   .new-year-title {
     font-size: 2.5rem;
-    gap: 15px;
+    gap: 0.9375rem;
   }
 
   .new-year-page .new-year-hero-image,
@@ -8965,15 +8966,15 @@ body.new-year-page {
 
   .offers-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 1.5rem;
   }
 
   .offer-card {
-    padding: 30px 24px;
+    padding: 1.875rem 1.5rem;
   }
 
   .new-year-cta {
-    padding: 30px 24px;
+    padding: 1.875rem 1.5rem;
   }
 
   .new-year-cta h3 {
@@ -8985,7 +8986,7 @@ body.new-year-page {
   .new-year-title {
     font-size: 2rem;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.625rem;
   }
 
   .new-year-page .new-year-hero-image,
@@ -8994,18 +8995,18 @@ body.new-year-page {
   }
 
   .offer-card {
-    padding: 24px 20px;
+    padding: 1.5rem 1.25rem;
   }
 
   .offer-badge {
     top: 15px;
     right: 15px;
-    padding: 6px 12px;
+    padding: 0.375rem 0.75rem;
     font-size: 16px;
   }
 
   .new-year-cta {
-    padding: 24px 20px;
+    padding: 1.5rem 1.25rem;
   }
 
 .new-year-cta h3 {
@@ -9044,6 +9045,19 @@ body.new-year-page {
     filter: none;
     transition: none;
   }
+  .scroll-animate--visible {
+    animation: none;
+  }
+}
+
+/* Mobile perf: avoid expensive filters/overshoot keyframes on touch devices */
+@media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .scroll-animate {
+    filter: none;
+    transform: translate3d(var(--scroll-animate-x, 0), var(--scroll-animate-y, 22px), 0) scale(0.94);
+    will-change: opacity, transform;
+  }
+
   .scroll-animate--visible {
     animation: none;
   }

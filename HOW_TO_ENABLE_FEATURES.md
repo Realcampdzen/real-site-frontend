@@ -198,15 +198,38 @@ async handleMessage(message) {
 ### 3. Клики на карточки услуг (переход на страницы деталей)
 
 **Что отключено:**
-- При клике на карточки услуг в разделе "УСЛУГИ AI STUDIO" не происходит переход на страницу деталей услуги (`service-detail.html`)
+- При клике на карточки услуг в разделе "УСЛУГИ AI STUDIO" не происходит переход на страницу деталей услуги (`service-detail.html` или `ai-photo-detail.html`)
+- Отключены клики на всех 10 карточках услуг
 
 **Где находится:**
 - Файл: `deploy-ready/index.html`
-- Функция: `handleServiceCardClick` в inline скрипте в конце файла
+- Функция: `handleServiceCardClick` в inline скрипте в конце файла (строки ~779-795)
+- Прямой `onclick` на карточке "AI ФОТО" (строка ~290)
+- Добавленные `onclick` на карточках "ИИ АНИМАЦИЯ" и "SMM" (строки ~302 и ~311)
+- Универсальный обработчик для всех карточек (строки ~797-815)
+
+**Что было изменено:**
+
+1. **Функция `handleServiceCardClick`** — отключена для карточек с `onclick="handleServiceCardClick(event, X)"`:
+   - ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI (id=3)
+   - СОЗДАНИЕ МУЗЫКИ (id=0)
+   - ОЗВУЧКА И САУНДДИЗАЙН (id=5)
+   - AI-АВАТАРЫ (id=2)
+   - СОЗДАНИЕ AI-БОТОВ (id=4)
+   - СОЗДАНИЕ САЙТОВ С AI ФУНКЦИЯМИ (id=7)
+   - КАСТОМНЫЕ GPTs (id=1)
+
+2. **Карточка "AI ФОТО"** — заменён прямой `onclick="window.location.href='ai-photo-detail.html'"` на блокировку
+
+3. **Карточки "ИИ АНИМАЦИЯ" и "SMM"** — добавлены `onclick` с блокировкой
+
+4. **Универсальный обработчик** — добавлен для перехвата всех кликов на карточках в разделе `#services`
 
 **Как включить:**
 
-Найдите в `deploy-ready/index.html` функцию:
+#### Шаг 1: Восстановить функцию `handleServiceCardClick`
+
+Найдите в `deploy-ready/index.html` функцию (строки ~779-795):
 
 ```javascript
 function handleServiceCardClick(event, serviceId) {
@@ -228,7 +251,7 @@ function handleServiceCardClick(event, serviceId) {
 }
 ```
 
-Замените на оригинальную версию из `index.html`:
+Замените на:
 
 ```javascript
 function handleServiceCardClick(event, serviceId) {
@@ -243,6 +266,78 @@ function handleServiceCardClick(event, serviceId) {
   window.location.href = `service-detail.html?id=${serviceId}`;
 }
 ```
+
+#### Шаг 2: Восстановить карточку "AI ФОТО"
+
+Найдите карточку "AI ФОТО" (строка ~290):
+
+```html
+<article class="service-simple-card" onclick="event.preventDefault(); event.stopPropagation(); return false;">
+```
+
+Замените на:
+
+```html
+<article class="service-simple-card" onclick="window.location.href='ai-photo-detail.html'">
+```
+
+#### Шаг 3: Удалить добавленные `onclick` на карточках "ИИ АНИМАЦИЯ" и "SMM"
+
+Найдите карточку "ИИ АНИМАЦИЯ" (строка ~302):
+
+```html
+<article class="service-simple-card service-card-animation" onclick="event.preventDefault(); event.stopPropagation(); return false;">
+```
+
+Замените на:
+
+```html
+<article class="service-simple-card service-card-animation">
+```
+
+Найдите карточку "SMM" (строка ~311):
+
+```html
+<article class="service-simple-card" onclick="event.preventDefault(); event.stopPropagation(); return false;">
+```
+
+Замените на:
+
+```html
+<article class="service-simple-card">
+```
+
+#### Шаг 4: Удалить универсальный обработчик
+
+Найдите и удалите весь блок универсального обработчика (строки ~797-815):
+
+```javascript
+// ВРЕМЕННО: блокируем все клики на карточках услуг в разделе "УСЛУГИ AI STUDIO" (для production)
+document.addEventListener('DOMContentLoaded', function() {
+  const servicesSection = document.querySelector('#services');
+  if (servicesSection) {
+    servicesSection.querySelectorAll('.service-simple-card').forEach(function(card) {
+      // Блокируем клики на самой карточке, но не на интерактивных элементах внутри
+      card.addEventListener('click', function(e) {
+        // Пропускаем клики на интерактивных элементах (кнопки, ссылки, footer с data-contact-link)
+        if (e.target.closest('.service-simple-footer') ||
+            e.target.closest('a') ||
+            e.target.closest('button') ||
+            e.target.closest('[data-contact-link]')) {
+          return; // Разрешаем клик на интерактивных элементах
+        }
+        // Блокируем все остальные клики на карточке
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }, true); // Используем capture phase для раннего перехвата
+    });
+  }
+});
+```
+
+**Примечание:** После удаления этого блока все карточки вернутся к своему исходному поведению.
 
 ---
 

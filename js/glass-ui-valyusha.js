@@ -282,9 +282,67 @@ class GlassUIValyusha {
     }
 
     async handleMessage(message) {
-        await new Promise(resolve => setTimeout(resolve, 900 + Math.random() * 2000));
-        const response = this.responses[Math.floor(Math.random() * this.responses.length)];
-        return response;
+        console.log('💜 НейроВалюша: начинаю обработку сообщения:', message);
+        try {
+            const requestBody = {
+                message: message,
+                userId: 'user-' + Date.now()
+            };
+            console.log('💜 НейроВалюша: отправляю запрос к /api/valyusha/chat', requestBody);
+            
+            const response = await fetch('/api/valyusha/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            console.log('💜 НейроВалюша: получен ответ, статус:', response.status, response.statusText);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('💜 НейроВалюша: ошибка HTTP:', response.status, errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('💜 НейроВалюша: получены данные:', data);
+            
+            if (data.reply) {
+                console.log('💜 НейроВалюша: возвращаю ответ от AI:', data.reply.substring(0, 100));
+                return data.reply;
+            } else {
+                console.warn('💜 НейроВалюша: ответ пустой, используем fallback');
+                return this.getFallbackResponse(message);
+            }
+        } catch (error) {
+            console.error('💜 Ошибка при запросе к НейроВалюше:', error);
+            console.error('💜 Детали ошибки:', error.message);
+            // Fallback на статичные ответы
+            return this.getFallbackResponse(message);
+        }
+    }
+
+    getFallbackResponse(message) {
+        const lowerMessage = message.toLowerCase();
+        
+        // Проверяем ключевые слова для более релевантных ответов
+        if (lowerMessage.includes('привет') || lowerMessage.includes('здравствуй')) {
+            return this.responses[0];
+        }
+        if (lowerMessage.includes('лагер') || lowerMessage.includes('4к') || lowerMessage.includes('навык')) {
+            return this.responses[2];
+        }
+        if (lowerMessage.includes('значок') || lowerMessage.includes('достижен')) {
+            return "Я знаю все 246 значков Реального Лагеря! 💜 Могу рассказать про любой и как его получить. Какой значок тебя интересует? 📚✨";
+        }
+        if (lowerMessage.includes('бот') || lowerMessage.includes('персона')) {
+            return "Персона-боты с AI — это круто! 🌈 Я сама такой бот! Мы оживляем сайты и соцсети, создаем атмосферу. Хочешь такого же для своего проекта? @Stivanovv создаст! 💜✨";
+        }
+        
+        // Случайный ответ из массива
+        return this.responses[Math.floor(Math.random() * this.responses.length)];
     }
 
     closeOtherChats() {

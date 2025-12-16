@@ -1,5 +1,8 @@
 // AI Studio - Enhanced Interactive Features
 
+// Build marker (helps debug cache/service worker issues)
+window.__AI_STUDIO_BUILD = '20251216-animfix';
+
 const CONTACTS = {
     phone: { href: 'tel:+79650255750', display: '+7 965 025 57 50' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
@@ -678,121 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Intersection Observer for animations
-  // Увеличиваем rootMargin, чтобы элементы начинали появляться раньше (за 50% до появления в viewport)
-  const observerOptions = {
-    threshold: 0.01,
-    rootMargin: '50% 0px -10% 0px'
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Добавляем класс для анимации
-        entry.target.classList.add('reveal-show');
-        entry.target.classList.remove('reveal-base', 'reveal-base--left', 'reveal-base--right');
-        
-        // Animate counters when they come into view
-        const counters = entry.target.querySelectorAll('[data-target]');
-        counters.forEach(counter => {
-          const target = parseInt(counter.getAttribute('data-target'));
-          animateCounter(counter, target);
-        });
-        
-        // Прекращаем наблюдение после появления
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  // Universal scroll animation for ALL elements
-  // Select all major content elements on the page
-  const animatedElements = document.querySelectorAll(
-    '.service-card, .service-simple-card, .stat-card, .contact-card, .stats-grid, ' +
-    '.highlight-service-card, .benefit-card, .projects-banner-inner, .projects-reel-card, ' +
-    '.portfolio-card, .assistant-card, .testimonial-card, .value-card, ' +
-    'section > .container, section > .section-content, ' +
-    '.section-title, .section-subtitle, .section-description, ' +
-    '.about-content, .benefits-grid > *, .services-grid > *, ' +
-    '.testimonials-grid > *, .assistants-grid > *, ' +
-    '.projects-grid > *, .portfolio-grid > *, ' +
-    '.cta-content, .cta-text, .cta-buttons, ' +
-    'article, .article-content, .content-block, ' +
-    '.card, .panel, .box, .feature-item'
-  );
-  
-  console.log(`🎬 Инициализация анимаций для ${animatedElements.length} элементов`);
-  
-  // Предзагружаем изображения для элементов, которые скоро появятся
-  const preloadImagesForElements = (elements) => {
-    elements.forEach(el => {
-      const images = el.querySelectorAll('img[loading="lazy"]');
-      images.forEach(img => {
-        // Убираем lazy loading для изображений в элементах, которые скоро появятся
-        // Это предотвращает "люк" - пустые контейнеры
-        img.loading = 'eager';
-        img.removeAttribute('loading');
-        // Принудительно загружаем изображение
-        if (img.src && !img.complete) {
-          const tempImg = new Image();
-          tempImg.src = img.src;
-        }
-      });
-    });
-  };
-  
-  // Apply left/right animation classes and observe
-  animatedElements.forEach((el, index) => {
-    // Skip if already animated or is hero/process (handled separately)
-    if (el.classList.contains('reveal-show') || 
-        el.closest('.hero') || 
-        el.closest('.process-step')) {
-      return;
-    }
-
-    // Alternate left/right based on index
-    const isLeft = index % 2 === 0;
-    const sideClass = isLeft ? 'reveal-base--left' : 'reveal-base--right';
-    const startX = isLeft ? '-60px' : '60px';
-    
-    el.classList.add('reveal-base', sideClass);
-    el.style.setProperty('--reveal-delay', `${(index % 8) * 100}ms`);
-    el.style.setProperty('--reveal-start-x', startX);
-    
-    observer.observe(el);
-    
-    // Предзагружаем изображения для элементов, которые в ближайших 2 экранах
-    const rect = el.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const isNearViewport = rect.top < viewportHeight * 2.5 && rect.top > -viewportHeight;
-    
-    if (isNearViewport) {
-      preloadImagesForElements([el]);
-    }
-  });
-
-  // Add stagger effect to service cards
-  document.querySelectorAll('.service-card, .service-simple-card').forEach((card, index) => {
-    card.style.transitionDelay = `${index * 0.1}s`;
-  });
-
-  // Process steps are handled by initProcessScrollAnimation() - see below
-  
-  // Add stagger effect to stat cards
-  document.querySelectorAll('.stat-card').forEach((card, index) => {
-    card.style.transitionDelay = `${index * 0.1}s`;
-  });
-
-  // Add hover effects to buttons
-  document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
-    btn.addEventListener('mouseenter', () => {
-      btn.style.transform = 'translateY(-2px) scale(1.02)';
-    });
-    
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = 'translateY(0) scale(1)';
-    });
-  });
+  // Scroll reveal animations are handled by initScrollRevealV2() (single source of truth).
 
   // Add ripple effect to buttons
   document.querySelectorAll('button, .btn-primary, .btn-secondary').forEach(button => {
@@ -842,16 +731,6 @@ document.addEventListener('DOMContentLoaded', () => {
   `;
   document.head.appendChild(rippleStyle);
 
-  // Page loading animation
-  document.body.style.opacity = '0';
-  document.body.style.transition = 'opacity 0.5s ease';
-  
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.body.style.opacity = '1';
-    }, 100);
-  });
-
   // Projects reel video play on click
   document.querySelectorAll('.projects-reel-card').forEach(card => {
     const video = card.querySelector('.projects-reel-video');
@@ -876,186 +755,6 @@ document.addEventListener('DOMContentLoaded', () => {
     card.addEventListener('click', togglePlay);
   });
 
-  // Add smooth reveal animation for sections
-  const sections = document.querySelectorAll('section');
-  const sectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('section-visible');
-        sectionObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.01,
-    rootMargin: '50% 0px -10% 0px'
-  });
-
-  sections.forEach(section => {
-    // Пропускаем hero секцию, она должна быть видна сразу
-    if (!section.classList.contains('hero') && !section.id.includes('hero')) {
-      section.classList.add('section-hidden');
-      sectionObserver.observe(section);
-    }
-  });
-
-  // Подстраховка: сразу показываем блоки, уже попавшие в вьюпорт (важно для мобильных под героем)
-  const isElementMostlyVisible = (el, visiblePart = 0.1) => {
-    const rect = el.getBoundingClientRect();
-    const viewHeight = window.innerHeight || document.documentElement.clientHeight;
-    const viewWidth = window.innerWidth || document.documentElement.clientWidth;
-    const visibleWidth = Math.min(rect.right, viewWidth) - Math.max(rect.left, 0);
-    const visibleHeight = Math.min(rect.bottom, viewHeight) - Math.max(rect.top, 0);
-    if (visibleWidth <= 0 || visibleHeight <= 0) return false;
-
-    const visibleArea = visibleWidth * visibleHeight;
-    const totalArea = (rect.width || 1) * (rect.height || 1);
-    return visibleArea / totalArea >= visiblePart;
-  };
-
-  const revealInViewport = () => {
-    animatedElements.forEach(el => {
-      if (!el.classList.contains('reveal-show') && isElementMostlyVisible(el, 0.08)) {
-        el.classList.add('reveal-show');
-        el.classList.remove('reveal-base', 'reveal-base--left', 'reveal-base--right');
-        el.style.transitionDelay = '0s';
-        el.style.setProperty('--reveal-delay', '0ms');
-        try {
-          observer.unobserve(el);
-        } catch (e) {
-          // element might not have been observed yet
-        }
-      }
-    });
-
-    sections.forEach(section => {
-      if (!section.classList.contains('section-visible') && isElementMostlyVisible(section, 0.1)) {
-        section.classList.add('section-visible');
-        section.classList.remove('section-hidden');
-        try {
-          sectionObserver.unobserve(section);
-        } catch (e) {
-          // safe fallback
-        }
-      }
-    });
-  };
-
-  // Не показываем элементы сразу - пусть они появляются при прокрутке
-  // revealInViewport(); // Закомментировано, чтобы элементы появлялись только при прокрутке
-  
-  // Показываем только элементы, которые уже видны при загрузке (выше fold)
-  window.addEventListener('load', () => {
-    // Показываем только элементы, которые уже в viewport при загрузке
-    animatedElements.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      const isAboveFold = rect.top < window.innerHeight && rect.top > -100;
-      if (isAboveFold && !el.classList.contains('reveal-show')) {
-        el.classList.add('reveal-show');
-        el.classList.remove('reveal-base');
-        try {
-          observer.unobserve(el);
-        } catch (e) {}
-      }
-    });
-    
-    sections.forEach(section => {
-      if (!section.classList.contains('hero') && !section.id.includes('hero')) {
-        const rect = section.getBoundingClientRect();
-        const isAboveFold = rect.top < window.innerHeight && rect.top > -100;
-        if (isAboveFold && !section.classList.contains('section-visible')) {
-          section.classList.add('section-visible');
-          section.classList.remove('section-hidden');
-          try {
-            sectionObserver.unobserve(section);
-          } catch (e) {}
-        }
-      }
-    });
-  });
-  
-  window.addEventListener('resize', () => {
-    revealInViewport();
-  });
-
-  // Add section animation styles
-  const sectionStyle = document.createElement('style');
-  sectionStyle.textContent = `
-    .reveal-base {
-      opacity: 0;
-      transform: translateX(0);
-      transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: transform, opacity;
-    }
-
-    .reveal-base--left {
-      transform: translateX(-60px);
-    }
-
-    .reveal-base--right {
-      transform: translateX(60px);
-    }
-
-    .reveal-show {
-      opacity: 1;
-      transform: translateX(0);
-      animation: reveal-slide 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms) both;
-    }
-
-    @keyframes reveal-slide {
-      0% { 
-        opacity: 0; 
-        transform: translateX(var(--reveal-start-x, 0));
-      }
-      100% { 
-        opacity: 1; 
-        transform: translateX(0);
-      }
-    }
-
-    .section-hidden {
-      opacity: 0;
-      transform: translateY(28px);
-      filter: none;
-      transition: opacity 0.55s ease, transform 0.6s ease;
-      will-change: transform, opacity;
-    }
-    
-    .section-visible {
-      opacity: 1;
-      transform: translateY(0);
-      animation: section-pop 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    @keyframes section-pop {
-      0% { opacity: 0; transform: translateY(28px); }
-      55% { opacity: 1; transform: translateY(-6px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .section-hidden {
-        opacity: 1;
-        transform: none;
-        filter: none;
-      }
-      .section-visible {
-        animation: none;
-        transform: none;
-      }
-      .reveal-base,
-      .reveal-base--left,
-      .reveal-base--right {
-        opacity: 1;
-        transform: none;
-      }
-      .reveal-show {
-        animation: none;
-        transform: none;
-      }
-    }
-  `;
-  document.head.appendChild(sectionStyle);
-
   initCookieBanner();
   
   // Hero video sound toggle
@@ -1066,10 +765,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Process scroll animation
   initProcessScrollAnimation();
-});
 
-document.addEventListener('DOMContentLoaded', () => initScrollRevealV2());
-window.addEventListener('load', () => initScrollRevealV2(true));
+  // Scroll reveal animations (single system)
+  initScrollRevealV2();
+});
 
 // Hero video sound toggle functionality
 function initHeroSoundToggle() {
@@ -1152,8 +851,6 @@ function initScrollRevealV2(force = false) {
   scrollRevealInitialized = true;
 
   try {
-    ensureScrollRevealStyles();
-
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isDesktop = window.matchMedia('(min-width: 901px)').matches;
     const selectors = [
@@ -1164,7 +861,11 @@ function initScrollRevealV2(force = false) {
       '.stat-card',
       '.contact-card',
       '.highlight-service-card',
+      '.section-title',
+      '.section-subtitle',
+      '.section-description',
       '.projects-banner-inner',
+      '.projects-banner-title',
       '.projects-reel-card',
       '.portfolio-card',
       '.assistant-card',
@@ -1176,23 +877,12 @@ function initScrollRevealV2(force = false) {
       '.assistants-grid > *',
       '.projects-grid > *',
       '.portfolio-grid > *',
-      '.cta-content',
-      '.cta-text',
-      '.cta-buttons',
+      '.cta-panel',
+      '.cta-copy > *',
       '.card',
       '.panel',
       '.box',
-      '.feature-item',
-      '.value-highlight',
-      '.projects-banner-section',
-      '.cta-section',
-      '.process-section',
-      '.assistants-section',
-      '.testimonials',
-      '.benefits-section',
-      '.services',
-      '.about',
-      'section'
+      '.feature-item'
     ];
 
     const candidates = Array.from(new Set(Array.from(document.querySelectorAll(selectors.join(',')))));
@@ -1200,7 +890,9 @@ function initScrollRevealV2(force = false) {
 
     const prepareElement = (el, index = 0) => {
       if (!el || el.dataset.scrollRevealReady === '1') return;
-      if (el.classList.contains('hero') || el.dataset.animate === 'off') return;
+      if (el.dataset.animate === 'off') return;
+      if (el.classList.contains('hero') || el.closest('.hero')) return;
+      if (el.classList.contains('process-step') || el.closest('.process-step')) return;
       el.dataset.scrollRevealReady = '1';
       el.classList.add('scroll-animate');
       const customDelay = el.getAttribute('data-animate-delay') || el.dataset.animateDelay;
@@ -1209,7 +901,11 @@ function initScrollRevealV2(force = false) {
 
       // Directional reveal: alternate left/right on desktop, keep neutral on mobile unless overridden
       const directionAttr = el.dataset.animateDirection || el.getAttribute('data-animate-direction');
-      const direction = directionAttr || (isDesktop ? (index % 2 === 0 ? 'left' : 'right') : 'up');
+      const isTextBlock = el.matches?.(
+        '.section-title, .section-subtitle, .section-description, .projects-banner-title, .cta-copy > *'
+      );
+      const direction =
+        directionAttr || (isTextBlock ? 'up' : (isDesktop ? (index % 2 === 0 ? 'left' : 'right') : 'up'));
       const xOffset = direction === 'left' ? '-56px' : direction === 'right' ? '56px' : '0px';
       const yOffset = direction === 'up' ? '30px' : '20px';
       el.dataset.animateDirection = direction;
@@ -1223,7 +919,25 @@ function initScrollRevealV2(force = false) {
 
     const revealElement = (el) => {
       el.classList.add('scroll-animate--visible');
-      el.classList.remove('section-hidden', 'reveal-base');
+      el.classList.remove(
+        'section-hidden',
+        'section-visible',
+        'reveal-base',
+        'reveal-base--left',
+        'reveal-base--right',
+        'reveal-show'
+      );
+
+      // Animate counters when they come into view (once)
+      const counters = el.querySelectorAll('[data-target]');
+      counters.forEach((counter) => {
+        if (counter.dataset.counterAnimated === '1') return;
+        const target = parseInt(counter.getAttribute('data-target'), 10);
+        if (Number.isFinite(target)) {
+          counter.dataset.counterAnimated = '1';
+          animateCounter(counter, target);
+        }
+      });
     };
 
     const showVisibleImmediately = () => {
@@ -1240,23 +954,6 @@ function initScrollRevealV2(force = false) {
       return;
     }
 
-    const revealIfInViewport = () => {
-      let remaining = 0;
-      prepared.forEach((el) => {
-        if (el.classList.contains('scroll-animate--visible')) return;
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.92 && rect.bottom > window.innerHeight * -0.15) {
-          revealElement(el);
-        } else {
-          remaining += 1;
-        }
-      });
-      if (remaining === 0) {
-        window.removeEventListener('scroll', revealIfInViewport);
-        window.removeEventListener('resize', revealIfInViewport);
-      }
-    };
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -1265,17 +962,14 @@ function initScrollRevealV2(force = false) {
         }
       });
     }, {
-      threshold: 0.01,
-      rootMargin: '50% 0px -10% 0px'
+      threshold: 0.12,
+      rootMargin: '0px 0px -10% 0px'
     });
 
     prepared.forEach((el) => observer.observe(el));
     showVisibleImmediately();
-    revealIfInViewport();
-    window.addEventListener('scroll', revealIfInViewport, { passive: true });
-    window.addEventListener('resize', revealIfInViewport);
-    setTimeout(revealIfInViewport, 450);
-    setTimeout(revealIfInViewport, 1200);
+    // One more pass after layout settles (images/fonts)
+    setTimeout(showVisibleImmediately, 700);
 
     // Реакция на динамически добавленные блоки
     const mutationObserver = new MutationObserver((mutations) => {
@@ -1302,52 +996,9 @@ function initScrollRevealV2(force = false) {
   }
 }
 
-function ensureScrollRevealStyles() {
-  if (document.getElementById('scroll-reveal-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'scroll-reveal-styles';
-  style.textContent = `
-    .scroll-animate {
-      opacity: 0;
-      transform: translate3d(var(--scroll-animate-x, 0), var(--scroll-animate-y, 30px), 0) scale(0.88);
-      filter: blur(0.4px);
-      transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.75s ease;
-      transition-delay: var(--scroll-animate-delay, 0ms);
-      will-change: opacity, transform, filter;
-    }
-
-    .scroll-animate--visible {
-      opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
-      filter: none;
-      animation-delay: var(--scroll-animate-delay, 0ms);
-      animation: scroll-pop 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    @keyframes scroll-pop {
-      0% { opacity: 0; transform: translate3d(var(--scroll-animate-x, 0), var(--scroll-animate-y, 30px), 0) scale(0.86); }
-      48% { opacity: 1; transform: translate3d(0, -6px, 0) scale(1.04); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .scroll-animate {
-        opacity: 1;
-        transform: none;
-        filter: none;
-        transition: none;
-      }
-      .scroll-animate--visible {
-        animation: none;
-      }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-// Фолбек: запустить сразу, если DOM уже готов (дефер-сценарий)
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  initScrollRevealV2(true);
+// Фолбек: если скрипт загрузился после DOMContentLoaded, гарантируем запуск
+if ((document.readyState === 'complete' || document.readyState === 'interactive') && !scrollRevealInitialized) {
+  initScrollRevealV2();
 }
 
 // Hero Animation Initialization (OLD - disabled, using initHeroEnterAnimation instead)

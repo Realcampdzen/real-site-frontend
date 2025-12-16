@@ -5,11 +5,20 @@
 
 class BroCatWidget {
   constructor() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:7',message:'BroCatWidget constructor entry',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     this.isOpen = false;
     this.isTyping = false;
     this.sessionId = this.generateSessionId();
     this.apiBaseUrl = 'http://localhost:3001'; // Проксирование через AI Studio API
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:12',message:'BroCatWidget constructor before init',data:{sessionId:this.sessionId,apiBaseUrl:this.apiBaseUrl},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     this.init();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:13',message:'BroCatWidget constructor exit',data:{sessionId:this.sessionId},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
   }
 
   // Генерация уникального ID сессии
@@ -19,9 +28,21 @@ class BroCatWidget {
 
   // Инициализация виджета
   init() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:21',message:'init entry',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     this.createWidget();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:23',message:'createWidget completed',data:{triggerExists:!!document.getElementById('bro-cat-trigger'),widgetExists:!!document.getElementById('bro-cat-widget')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     this.bindEvents();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:25',message:'bindEvents completed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     // this.checkConnection(); // ВРЕМЕННО ОТКЛЮЧАЕМ ПРОВЕРКУ СОЕДИНЕНИЯ
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:26',message:'init exit',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
   }
 
   // Создание HTML структуры виджета
@@ -133,15 +154,24 @@ class BroCatWidget {
 
   // Открытие виджета
   openWidget() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:135',message:'openWidget entry',data:{isOpenBefore:this.isOpen},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     // Закрываем другие виджеты перед открытием кота
     this.closeOtherWidgets();
     
     const widget = document.getElementById('bro-cat-widget');
     const trigger = document.getElementById('bro-cat-trigger');
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:140',message:'openWidget before classList.add',data:{widgetExists:!!widget,triggerExists:!!trigger},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     
     widget.classList.add('active');
     trigger.classList.add('active');
     this.isOpen = true;
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:145',message:'openWidget after classList.add',data:{isOpen:this.isOpen,widgetHasActive:widget.classList.contains('active'),triggerHasActive:trigger.classList.contains('active')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     
     // Фокус на поле ввода
     setTimeout(() => {
@@ -178,8 +208,14 @@ class BroCatWidget {
 
   // Отправка сообщения
   async sendMessage(customMessage = null) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:180',message:'sendMessage entry',data:{hasCustomMessage:!!customMessage},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
     const input = document.getElementById('bro-cat-input');
     const message = customMessage || input.value.trim();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:183',message:'sendMessage message extracted',data:{messageLength:message.length,hasMessage:!!message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
     
     if (!message) return;
 

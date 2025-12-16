@@ -126,7 +126,7 @@
     if (!prefersReducedMotion && !saveData && !slowNetwork) {
       // Загружаем CSS и JS только если они ещё не загружены
       if (!snowCSSLoaded) {
-        loadStyle('css/snow-effect.css?v=20250117-snow-visible-fix');
+        loadStyle('css/snow-effect.css?v=20250117-snow-icon-size-fix-v6');
       }
       if (!snowJSLoaded) {
         loadScript('js/snow-effect.js?v=20250117-snow-visible-fix');

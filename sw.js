@@ -1,26 +1,38 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_NAME = 'ai-studio-v1.6';
-const STATIC_CACHE = 'ai-studio-static-v1.6';
-const DYNAMIC_CACHE = 'ai-studio-dynamic-v1.6';
+const CACHE_VERSION = 'v1.7-20251216-animfix';
+const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
+const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
+
+// Поддержка деплоя в подкаталог (GitHub Pages, stage и т.п.)
+const SCOPE_URL = new URL(self.registration.scope);
+const BASE_PATH = SCOPE_URL.pathname.replace(/\/$/, '');
+const withBase = (path) => (BASE_PATH ? `${BASE_PATH}${path}` : path);
 
 // Ресурсы для кэширования (только локальные, внешние ресурсы кэшируются динамически)
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/css/mobile-improvements.css',
-  '/js/script.js',
-  '/js/mobile-enhancements.js',
-  '/js/chat.js',
-  '/js/assistants.js',
-  '/js/ai-assistant.js',
-  '/js/glass-ui-hipych.js',
-  '/js/glass-ui-bro-cat.js',
-  '/chat-components/GlassUIWidget.js',
-  '/images/hipych-avatar.jpg',
-  '/images/bro-avatar.jpg',
-  '/images/neon-room.png'
+  withBase('/'),
+  withBase('/index.html'),
+  withBase('/css/style.css'),
+  withBase('/css/critical-fixes.css'),
+  withBase('/css/mobile-improvements.css'),
+  withBase('/css/mobile-advanced.css'),
+  withBase('/js/hero-reveal.js'),
+  withBase('/js/scroll-manager.js'),
+  withBase('/js/video-optimizer.js'),
+  withBase('/js/script.js'),
+  withBase('/js/chat.js'),
+  withBase('/js/services-carousel.js'),
+  withBase('/js/performance-loader.js'),
+  withBase('/js/mobile-enhancements.js'),
+  withBase('/js/glass-ui-hipych.js'),
+  withBase('/js/glass-ui-bro-cat.js'),
+  withBase('/js/glass-ui-valyusha.js'),
+  withBase('/chat-components/GlassUIWidget.js'),
+  withBase('/images/hipych-avatar.jpg'),
+  withBase('/images/bro-avatar.jpg'),
+  withBase('/images/neon-room.png')
 ];
 
 // Установка Service Worker
@@ -85,64 +97,57 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
+  const sameOrigin = url.origin === self.location.origin;
 
-  // Стратегия для HTML страниц
-  if (request.headers.get('accept').includes('text/html')) {
+  // Не трогаем не-GET запросы
+  if (request.method !== 'GET') {
+    return;
+  }
+
+  // HTML (navigation) — network-first, иначе сайт "залипает" на старом index.html
+  const accepts = request.headers.get('accept') || '';
+  const isHTML = request.mode === 'navigate' || accepts.includes('text/html');
+  if (isHTML) {
     event.respondWith(
-      caches.match(request)
-        .then((cachedResponse) => {
-          if (cachedResponse) {
-            // Возвращаем кэшированную версию
-            return cachedResponse;
-          }
-          
-          // Пытаемся загрузить из сети
-          return fetch(request)
-            .then((networkResponse) => {
-              // Кэшируем новую версию
-              return caches.open(DYNAMIC_CACHE)
-                .then((cache) => {
-                  cache.put(request, networkResponse.clone());
-                  return networkResponse;
-                });
-            })
-            .catch(() => {
-              // Возвращаем офлайн страницу
-              return caches.match('/index.html');
+      fetch(request)
+        .then((networkResponse) => {
+          if (sameOrigin && networkResponse && networkResponse.ok) {
+            const copy = networkResponse.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => {
+              cache.put(request, copy).catch(() => {});
             });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return (
+            caches.match(request) ||
+            caches.match(withBase('/index.html'))
+          );
         })
     );
     return;
   }
 
   // Стратегия для статических ресурсов
-  if (isStaticAsset(request.url)) {
+  if (sameOrigin && isStaticAsset(request.url) && !url.pathname.endsWith('/sw.js')) {
     event.respondWith(
-      caches.match(request)
-        .then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          
-          return fetch(request)
-            .then((networkResponse) => {
-              // Кэшируем только успешные ответы
-              if (networkResponse.ok) {
-                return caches.open(STATIC_CACHE)
-                  .then((cache) => {
-                    cache.put(request, networkResponse.clone());
-                    return networkResponse;
-                  });
-              }
-              return networkResponse;
-            })
-            .catch((error) => {
-              // Игнорируем ошибки для внешних ресурсов (CSP может блокировать)
-              console.warn('⚠️ Service Worker: Ошибка загрузки ресурса', request.url, error.message);
-              // Возвращаем ошибку, чтобы браузер мог обработать её самостоятельно
-              throw error;
-            });
-        })
+      caches.match(request).then((cachedResponse) => {
+        const fetchPromise = fetch(request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.ok) {
+              const copy = networkResponse.clone();
+              caches.open(STATIC_CACHE).then((cache) => {
+                cache.put(request, copy).catch(() => {});
+              });
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
+
+        // stale-while-revalidate
+        return cachedResponse || fetchPromise;
+      })
     );
     return;
   }

@@ -654,8 +654,15 @@ class ServiceWorkerManager {
     // В продакшене регистрируем Service Worker
     if ('serviceWorker' in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
+        // Важно: относительный путь, чтобы работало и в подкаталоге (GitHub Pages / stage)
+        const registration = await navigator.serviceWorker.register('sw.js');
         console.log('✅ Service Worker зарегистрирован:', registration);
+        // Пытаемся проверить обновления на каждом заходе
+        try {
+          await registration.update();
+        } catch (e) {
+          // ignore
+        }
         
         // Обновление SW
         registration.addEventListener('updatefound', () => {

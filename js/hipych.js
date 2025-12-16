@@ -5,11 +5,20 @@
 
 class HipychWidget {
   constructor() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:7',message:'HipychWidget constructor entry',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     this.isOpen = false;
     this.isTyping = false;
     this.sessionId = this.generateSessionId();
     this.apiBaseUrl = 'http://localhost:3001'; // Проксирование через AI Studio API
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:12',message:'HipychWidget constructor before init',data:{sessionId:this.sessionId,apiBaseUrl:this.apiBaseUrl},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     this.init();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:13',message:'HipychWidget constructor exit',data:{sessionId:this.sessionId},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
   }
 
   // Генерация уникального ID сессии
@@ -19,9 +28,21 @@ class HipychWidget {
 
   // Инициализация виджета
   init() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:21',message:'init entry',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     this.createWidget();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:23',message:'createWidget completed',data:{triggerExists:!!document.getElementById('hipych-trigger'),widgetExists:!!document.getElementById('hipych-widget')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     this.bindEvents();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:25',message:'bindEvents completed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     this.checkConnection();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:26',message:'init exit',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
   }
 
   // Создание HTML структуры виджета
@@ -140,15 +161,24 @@ class HipychWidget {
 
   // Открытие виджета
   openWidget() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:142',message:'openWidget entry',data:{isOpenBefore:this.isOpen},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     // Закрываем другие виджеты перед открытием Хипыча
     this.closeOtherWidgets();
     
     const widget = document.getElementById('hipych-widget');
     const trigger = document.getElementById('hipych-trigger');
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:147',message:'openWidget before classList.add',data:{widgetExists:!!widget,triggerExists:!!trigger},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     
     widget.classList.add('active');
     trigger.classList.add('active');
     this.isOpen = true;
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:151',message:'openWidget after classList.add',data:{isOpen:this.isOpen,widgetHasActive:widget.classList.contains('active'),triggerHasActive:trigger.classList.contains('active')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     
     // Фокус на поле ввода
     setTimeout(() => {
@@ -185,8 +215,14 @@ class HipychWidget {
 
   // Отправка сообщения
   async sendMessage(customMessage = null) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:187',message:'sendMessage entry',data:{hasCustomMessage:!!customMessage},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
     const input = document.getElementById('hipych-input');
     const message = customMessage || input.value.trim();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:190',message:'sendMessage message extracted',data:{messageLength:message.length,hasMessage:!!message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
     
     if (!message) return;
 
@@ -204,6 +240,9 @@ class HipychWidget {
     this.showTyping();
 
     try {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:206',message:'sendMessage before fetch',data:{apiUrl:`${this.apiBaseUrl}/api/hipych/chat`,messageLength:message.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
       // Отправляем запрос к Хипычу через AI Studio API
       const response = await fetch(`${this.apiBaseUrl}/api/hipych/chat`, {
         method: 'POST',
@@ -217,8 +256,14 @@ class HipychWidget {
           source: 'ai_studio_website'
         })
       });
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:220',message:'sendMessage fetch response received',data:{status:response.status,ok:response.ok},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
 
       const data = await response.json();
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:222',message:'sendMessage data parsed',data:{hasResponse:!!data.response},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
       
       // Скрываем индикатор печатания
       this.hideTyping();
@@ -232,6 +277,9 @@ class HipychWidget {
       }
 
     } catch (error) {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:234',message:'sendMessage error caught',data:{errorName:error.name,errorMessage:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
       console.error('Ошибка при отправке сообщения:', error);
       this.hideTyping();
       this.updateConnectionStatus(false);
@@ -298,10 +346,19 @@ class HipychWidget {
 
   // Проверка подключения к Хипычу
   async checkConnection() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:300',message:'checkConnection entry',data:{apiUrl:`${this.apiBaseUrl}/api/hipych/status`},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+    // #endregion
     try {
       const response = await fetch(`${this.apiBaseUrl}/api/hipych/status`);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:302',message:'checkConnection response received',data:{status:response.status,ok:response.ok},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
       this.updateConnectionStatus(response.ok);
     } catch (error) {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'hipych.js:305',message:'checkConnection error caught',data:{errorName:error.name,errorMessage:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
       console.error('Ошибка проверки соединения:', error);
       this.updateConnectionStatus(false);
     }

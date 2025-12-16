@@ -18,7 +18,6 @@ class GlassUIBroCat {
             "⭐ Окупаюсь за месяц! Мой хозяин уже в плюсе! *мурчит*",
             "🎭 Заказать клона: @Stivanovv - и твой бизнес оживет!"
         ];
-        
         this.init();
     }
 
@@ -278,12 +277,51 @@ class GlassUIBroCat {
     }
 
     async handleMessage(message) {
-        // Имитируем кошачью задержку (коты любят подумать)
-        await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 2200));
+        try {
+            // Показываем индикатор загрузки
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    userId: 'user-' + Date.now()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.reply || this.getFallbackResponse(message);
+        } catch (error) {
+            console.error('🐱 Ошибка при запросе к Коту Бро:', error);
+            // Fallback на статичные ответы
+            return this.getFallbackResponse(message);
+        }
+    }
+
+    getFallbackResponse(message) {
+        const lowerMessage = message.toLowerCase();
         
-        // Возвращаем случайный кошачий ответ
-        const response = this.responses[Math.floor(Math.random() * this.responses.length)];
-        return response;
+        // Проверяем ключевые слова для более релевантных ответов
+        if (lowerMessage.includes('привет') || lowerMessage.includes('здравствуй')) {
+            return "Мяу! 🐱 *потягивается* Я Бро, рыжий и пушистый! Что хочешь, двуногий?";
+        }
+        if (lowerMessage.includes('кот') || lowerMessage.includes('бро')) {
+            return this.responses[1];
+        }
+        if (lowerMessage.includes('бот') || lowerMessage.includes('персона')) {
+            return "Мяу! 🐱 Я персона-бот маскот для ВК группы по недвижимости! Создаю там атмосферу и помогаю с выбором квартир. Персона-боты — это топ! Хочешь такого же? @Stivanovv создаст! 😸";
+        }
+        if (lowerMessage.includes('недвижимость') || lowerMessage.includes('квартир')) {
+            return "Мр-мяу! 🏠 Я помогаю с выбором квартир в ВК группе! Но здесь на сайте я показываю, как персона-боты оживляют соцсети. Хочешь такого же для своего проекта? 😸";
+        }
+        
+        // Случайный ответ из массива
+        return this.responses[Math.floor(Math.random() * this.responses.length)];
     }
 
     handleClose() {

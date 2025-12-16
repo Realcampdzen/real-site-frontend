@@ -62,7 +62,7 @@
   max-width: 600px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
   align-items: center;
 }
 
@@ -84,7 +84,7 @@
 
 .skeleton-buttons {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   width: 100%;
   justify-content: center;
 }
@@ -134,13 +134,13 @@
 
 .skeleton-portfolio-card .skeleton-text {
   height: 40px;
-  margin: 12px;
+  margin: 0.75rem;
   border-radius: 8px;
 }
 
 .skeleton-row {
   display: grid;
-  gap: 16px;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -165,8 +165,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
   background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 0 0 20px 20px;
@@ -264,7 +264,7 @@
   }
   
   .pull-to-refresh-indicator {
-    padding: 10px 20px;
+    padding: 0.625rem 1.25rem;
   }
   
   .pull-to-refresh-icon {

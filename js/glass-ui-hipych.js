@@ -18,7 +18,6 @@ class GlassUIHipych {
             "Настройка донатов, алертов, ботов - все умею! 💰",
             "Вместе сделаем твой стрим профессиональным! 🎬"
         ];
-        
         this.init();
     }
 
@@ -227,12 +226,48 @@ class GlassUIHipych {
     }
 
     async handleMessage(message) {
-        // Имитируем задержку обработки
-        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+        try {
+            // Показываем индикатор загрузки
+            const response = await fetch('/api/hipych/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    userId: 'user-' + Date.now()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.reply || this.getFallbackResponse(message);
+        } catch (error) {
+            console.error('🎮 Ошибка при запросе к Хипычу:', error);
+            // Fallback на статичные ответы
+            return this.getFallbackResponse(message);
+        }
+    }
+
+    getFallbackResponse(message) {
+        const lowerMessage = message.toLowerCase();
         
-        // Возвращаем случайный ответ
-        const response = this.responses[Math.floor(Math.random() * this.responses.length)];
-        return response;
+        // Проверяем ключевые слова для более релевантных ответов
+        if (lowerMessage.includes('привет') || lowerMessage.includes('здравствуй')) {
+            return this.responses[0];
+        }
+        if (lowerMessage.includes('стрим') || lowerMessage.includes('настрой')) {
+            return this.responses[2];
+        }
+        if (lowerMessage.includes('бот') || lowerMessage.includes('персона')) {
+            return "Го! 🎮 Персона-боты с AI — это имба! Я сам такой бот для телеграм канала! Оживляю соцсети, модерирую чат, провожу розыгрыши. Хочешь такого же? @Stivanovv всё настроит! 🔥";
+        }
+        
+        // Случайный ответ из массива
+        return this.responses[Math.floor(Math.random() * this.responses.length)];
     }
 
     // Универсальная функция для закрытия всех других чатов
