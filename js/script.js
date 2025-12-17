@@ -1,7 +1,7 @@
 // AI Studio - Enhanced Interactive Features
 
 // Build marker (helps debug cache/service worker issues)
-window.__AI_STUDIO_BUILD = '20251216-animfix';
+window.__AI_STUDIO_BUILD = '20251216-reveal-force';
 
 const CONTACTS = {
     phone: { href: 'tel:+79319671483', display: '+79319671483' },
@@ -851,6 +851,8 @@ function initScrollRevealV2(force = false) {
   scrollRevealInitialized = true;
 
   try {
+    // NOTE: We do NOT fully disable scroll-reveal when prefers-reduced-motion is enabled.
+    // In real-world setups this led to "no animations anywhere except process section".
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isDesktop = window.matchMedia('(min-width: 901px)').matches;
     const selectors = [
@@ -885,7 +887,18 @@ function initScrollRevealV2(force = false) {
       '.feature-item'
     ];
 
-    const candidates = Array.from(new Set(Array.from(document.querySelectorAll(selectors.join(',')))));
+    // Defensive selector collection: if any selector is invalid in a given browser,
+    // we still animate the rest (prevents total reveal shutdown).
+    const candidateSet = new Set();
+    selectors.forEach((selector) => {
+      try {
+        document.querySelectorAll(selector).forEach((el) => candidateSet.add(el));
+      } catch (e) {
+        // Keep going; one bad selector must not kill all animations
+        console.warn('[scroll-reveal] invalid selector skipped:', selector, e && e.message ? e.message : e);
+      }
+    });
+    const candidates = Array.from(candidateSet);
     const prepared = [];
 
     const prepareElement = (el, index = 0) => {
@@ -894,21 +907,16 @@ function initScrollRevealV2(force = false) {
       if (el.classList.contains('hero') || el.closest('.hero')) return;
       if (el.classList.contains('process-step') || el.closest('.process-step')) return;
       el.dataset.scrollRevealReady = '1';
-      el.classList.add('scroll-animate');
-      const customDelay = el.getAttribute('data-animate-delay') || el.dataset.animateDelay;
-      const delayValue = customDelay ? parseInt(customDelay, 10) : 0;
-      const delayMs = Math.max(0, delayValue || 0);
-      el.dataset.scrollRevealDelay = String(delayMs);
-      el.style.setProperty('--scroll-animate-delay', `${delayMs}ms`);
+      // Ensure no leftover classes from previous systems
+      el.classList.remove('scroll-animate', 'scroll-animate--visible');
+      el.classList.remove('reveal-base', 'reveal-base--left', 'reveal-base--right', 'reveal-show');
 
       // Directional reveal: alternate left/right (like process-step), unless overridden
       const directionAttr = el.dataset.animateDirection || el.getAttribute('data-animate-direction');
       const direction = directionAttr || (index % 2 === 0 ? 'left' : 'right');
-      const baseOffset = isDesktop ? 60 : 40;
-      const xOffset =
-        direction === 'left' ? `-${baseOffset}px` : direction === 'right' ? `${baseOffset}px` : '0px';
       el.dataset.animateDirection = direction;
-      el.style.setProperty('--scroll-animate-x', xOffset);
+      const sideClass = direction === 'right' ? 'reveal-base--right' : 'reveal-base--left';
+      el.classList.add('reveal-base', sideClass);
       prepared.push(el);
     };
 
@@ -918,13 +926,12 @@ function initScrollRevealV2(force = false) {
     const revealElement = (el) => {
       if (!el || el.dataset.scrollRevealed === '1') return;
       el.dataset.scrollRevealed = '1';
-      el.classList.add('scroll-animate--visible');
+      el.classList.add('is-visible');
       el.classList.remove(
         'section-hidden',
         'section-visible',
-        'reveal-base',
-        'reveal-base--left',
-        'reveal-base--right',
+        'scroll-animate',
+        'scroll-animate--visible',
         'reveal-show'
       );
 
@@ -940,14 +947,10 @@ function initScrollRevealV2(force = false) {
       });
 
       // Cleanup: remove reveal classes after animation so hover transforms work normally
-      const delayMs = parseInt(el.dataset.scrollRevealDelay || '0', 10) || 0;
       const cleanup = () => {
         if (el.dataset.scrollRevealCleaned === '1') return;
         el.dataset.scrollRevealCleaned = '1';
-        el.classList.remove('scroll-animate');
-        el.classList.remove('scroll-animate--visible');
-        el.style.removeProperty('--scroll-animate-delay');
-        el.style.removeProperty('--scroll-animate-x');
+        el.classList.remove('reveal-base', 'reveal-base--left', 'reveal-base--right');
         el.removeEventListener('transitionend', onEnd);
       };
       const onEnd = (e) => {
@@ -955,19 +958,20 @@ function initScrollRevealV2(force = false) {
         cleanup();
       };
       el.addEventListener('transitionend', onEnd);
-      setTimeout(cleanup, 900 + delayMs);
+      setTimeout(cleanup, 900);
     };
 
     const showVisibleImmediately = () => {
       prepared.forEach((el) => {
         const rect = el.getBoundingClientRect();
         if (rect.top < window.innerHeight && rect.bottom > 0) {
-          revealElement(el);
+          // Ensure initial (hidden) styles are applied before revealing
+          requestAnimationFrame(() => revealElement(el));
         }
       });
     };
 
-    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+    if (!('IntersectionObserver' in window)) {
       prepared.forEach(revealElement);
       return;
     }
@@ -975,19 +979,24 @@ function initScrollRevealV2(force = false) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          revealElement(entry.target);
-          observer.unobserve(entry.target);
+          // Reveal on next frame so the transition reliably plays
+          requestAnimationFrame(() => {
+            revealElement(entry.target);
+            try {
+              observer.unobserve(entry.target);
+            } catch (e) {}
+          });
         }
       });
     }, {
-      threshold: 0.01,
-      rootMargin: '0px 0px 15% 0px'
+      // Trigger later so user actually sees the slide-in (prevents "played before I saw it")
+      threshold: 0.18,
+      rootMargin: '0px 0px -12% 0px'
     });
 
     prepared.forEach((el) => observer.observe(el));
-    showVisibleImmediately();
-    // One more pass after layout settles (images/fonts)
-    setTimeout(showVisibleImmediately, 700);
+    // One pass for elements already in viewport (avoid hidden gaps on load)
+    requestAnimationFrame(showVisibleImmediately);
 
     // Реакция на динамически добавленные блоки
     const mutationObserver = new MutationObserver((mutations) => {
@@ -998,10 +1007,8 @@ function initScrollRevealV2(force = false) {
           const targets = matchedSelf ? [node] : Array.from(node.querySelectorAll?.(selectors.join(',')) || []);
           targets.forEach((target, idx) => {
             prepareElement(target, idx);
-            if (target.dataset.scrollRevealReady === '1' && !prefersReducedMotion) {
+            if (target.dataset.scrollRevealReady === '1') {
               observer.observe(target);
-            } else if (target.dataset.scrollRevealReady === '1') {
-              revealElement(target);
             }
           });
         });

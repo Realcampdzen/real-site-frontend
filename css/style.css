@@ -9014,35 +9014,41 @@ body.new-year-page {
 }
 }
 
-/* Scroll reveal animations (simple + smooth, like process-step) */
-.scroll-animate {
+/* Scroll reveal animations — unified (same idea as .process-step) */
+.reveal-base {
   opacity: 0;
-  transform: translate3d(var(--scroll-animate-x, 0px), 0, 0);
+  transform: translateX(0);
   transition:
     opacity 0.55s ease,
     transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--scroll-animate-delay, 0ms);
   will-change: opacity, transform;
 }
 
-.scroll-animate--visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  animation: none;
-  filter: none;
+.reveal-base--left {
+  transform: translateX(-60px);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .scroll-animate {
-    opacity: 1;
-    transform: none;
-    transition: none;
-    will-change: auto;
+.reveal-base--right {
+  transform: translateX(60px);
+}
+
+.reveal-base.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (max-width: 900px) {
+  .reveal-base--left {
+    transform: translateX(-40px);
   }
-  .scroll-animate--visible {
-    animation: none;
+
+  .reveal-base--right {
+    transform: translateX(40px);
   }
 }
+
+/* Note: we intentionally do NOT disable these reveals via prefers-reduced-motion,
+   because it caused "animations missing everywhere except process steps" on some setups. */
 
 /* Виджеты ботов теперь разрешены на странице новогодних предложений */
 /* Hero Animation */
