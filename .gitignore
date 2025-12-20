@@ -49,4 +49,15 @@ tasks.json
 tasks/
 
 # Deployment folder (optional - можно включить если хотите версионировать)
-# deploy-ready/ 
+deploy-ready/
+
+# Local Cloudflare API repo clone (kept only for local work, not part of this repo)
+cf-api/
+
+# Local helper outputs
+files-to-upload.txt
+
+# Cursor/Taskmaster local state files that should not be committed
+.cursor/worktrees.json
+.cursor/rules/taskmaster/hamster.mdc
+.taskmaster/docs/hero_animation_prd.txt

@@ -8,7 +8,8 @@ class SnowEffect {
     this.storageKey = 'snow-effect-enabled';
 
     this.isMobile = window.innerWidth < 768;
-    this.flakeCount = this.isMobile ? 40 : 90;
+    // Крупные снежинки выглядят лучше при меньшем количестве
+    this.flakeCount = this.isMobile ? 30 : 70;
 
     const saved = localStorage.getItem(this.storageKey);
     this.isActive = saved === null ? true : saved === 'true';
@@ -66,7 +67,7 @@ class SnowEffect {
       const wasMobile = this.isMobile;
       this.isMobile = window.innerWidth < 768;
       if (wasMobile !== this.isMobile) {
-        this.flakeCount = this.isMobile ? 40 : 90;
+        this.flakeCount = this.isMobile ? 30 : 70;
         if (this.flakes.length) {
           this.createFlakes();
         }
@@ -226,22 +227,39 @@ class SnowEffect {
       const el = document.createElement('div');
       el.className = 'snowflake';
 
-      const sizes = ['small', 'medium', 'large'];
-      const size = sizes[Math.floor(Math.random() * sizes.length)];
+      // Взвешенное распределение размеров: маленьких больше, очень больших — мало
+      const r = Math.random();
+      const size = r < 0.42 ? 'small' : r < 0.74 ? 'medium' : r < 0.94 ? 'large' : 'xlarge';
       el.classList.add(`snowflake--${size}`);
 
       el.textContent = '❄';
 
       const x = Math.random() * width;
       const y = Math.random() * height;
-      const speed = this.isMobile
-        ? 0.4 + Math.random() * 0.6
-        : 0.6 + Math.random() * 0.9;
+
+      // Скорость падения — чуть выше для крупных снежинок, чтобы диагональ читалась
+      let speedMin = this.isMobile ? 0.45 : 0.65;
+      let speedMax = this.isMobile ? 0.95 : 1.25;
+      if (size === 'medium') {
+        speedMin = this.isMobile ? 0.55 : 0.8;
+        speedMax = this.isMobile ? 1.05 : 1.4;
+      } else if (size === 'large') {
+        speedMin = this.isMobile ? 0.65 : 0.95;
+        speedMax = this.isMobile ? 1.2 : 1.6;
+      } else if (size === 'xlarge') {
+        speedMin = this.isMobile ? 0.7 : 1.05;
+        speedMax = this.isMobile ? 1.3 : 1.8;
+      }
+      const speed = speedMin + Math.random() * (speedMax - speedMin);
+
+      // "Ветер" вправо (диагональ слева → направо)
+      const wind = (this.isMobile ? 0.08 : 0.12) + Math.random() * (this.isMobile ? 0.16 : 0.24);
+      const windSeed = Math.random() * 1000;
 
       this.container.appendChild(el);
 
       // Enhanced properties for better interaction
-      const mass = size === 'small' ? 0.5 : size === 'medium' ? 0.75 : 1;
+      const mass = size === 'small' ? 0.6 : size === 'medium' ? 0.85 : size === 'large' ? 1.05 : 1.25;
       this.flakes.push({ 
         el, 
         x, 
@@ -249,10 +267,12 @@ class SnowEffect {
         speed, 
         size,
         mass,
+        wind,
+        windSeed,
         vx: 0, // velocity X for inertia
         vy: 0, // velocity Y for inertia
         rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * 2,
+        rotationSpeed: (Math.random() - 0.5) * 1.4,
         scale: 1,
         targetScale: 1
       });
@@ -262,6 +282,7 @@ class SnowEffect {
   update() {
     const height = window.innerHeight;
     const width = window.innerWidth;
+    const margin = 60;
 
     // Smooth mouse position update
     if (this.enableCursorInteraction) {
@@ -271,8 +292,9 @@ class SnowEffect {
 
     for (const flake of this.flakes) {
       // Base movement with velocity
-      flake.vy += flake.speed * 0.1;
-      flake.vx += Math.sin(flake.y / 50) * 0.03;
+      flake.vy += flake.speed * 0.12;
+      // Диагональное падение (ветер вправо) + лёгкая волна, чтобы не было "стройных линий"
+      flake.vx += flake.wind * 0.08 + Math.sin((flake.y + flake.windSeed) / 90) * 0.02;
 
       // Cursor interaction
       if (this.enableCursorInteraction && this.isMouseVisible) {
@@ -317,8 +339,8 @@ class SnowEffect {
       flake.scale = this.lerp(flake.scale, flake.targetScale, 0.1);
 
       // Reset position when out of screen
-      if (flake.y > height + 20) {
-        flake.y = -20;
+      if (flake.y > height + margin) {
+        flake.y = -margin;
         flake.x = Math.random() * width;
         flake.vx = 0;
         flake.vy = 0;
@@ -326,8 +348,8 @@ class SnowEffect {
       }
 
       // Keep within horizontal bounds with wrapping
-      if (flake.x < -20) flake.x = width + 20;
-      if (flake.x > width + 20) flake.x = -20;
+      if (flake.x < -margin) flake.x = width + margin;
+      if (flake.x > width + margin) flake.x = -margin;
 
       // Apply transform with scale and rotation
       flake.el.style.transform = `translate3d(${flake.x}px, ${flake.y}px, 0) scale(${flake.scale}) rotate(${flake.rotation}deg)`;

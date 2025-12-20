@@ -1,4 +1,5 @@
-const OPENAI_API_URL = 'http://localhost:3001/chat';
+const API_BASE = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
+const OPENAI_API_URL = API_BASE ? `${API_BASE}/chat` : 'http://localhost:3001/chat';
 
 // Проверяем, загружается ли аватар кота Бро
 function checkBroAvatarLoading() {

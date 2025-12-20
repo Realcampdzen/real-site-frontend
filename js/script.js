@@ -3,6 +3,10 @@
 // Build marker (helps debug cache/service worker issues)
 window.__AI_STUDIO_BUILD = '20251216-reveal-force';
 
+// Cloudflare Pages API base (NIC.RU is static, so API lives on Pages)
+// Override in console if needed: window.__AI_API_BASE__ = 'http://localhost:3001'
+window.__AI_API_BASE__ = window.__AI_API_BASE__ || 'https://real-vibe-ai-studio.pages.dev';
+
 const CONTACTS = {
     phone: { href: 'tel:+79319671483', display: '+79319671483' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Cache buster: 2025-01-17-snow-visible-fix -->
+  <!-- Cache buster: 2025-12-21-snow-behind-containers-v1 -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -18,7 +18,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css" as="style">
+  <link rel="preload" href="css/style.css?v=20251216-reveal-force" as="style">
   <link rel="preload" href="css/mobile-improvements.css" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +40,7 @@
   <link rel="stylesheet" href="css/mobile-advanced.css" media="(max-width: 900px)">
   
   <!-- Snow Effect CSS - загружаем напрямую для немедленной видимости кнопки -->
-  <link rel="stylesheet" href="css/snow-effect.css?v=20250117-snow-icon-size-fix-v6">
+  <link rel="stylesheet" href="css/snow-effect.css?v=20251221-snow-behind-containers-v1">
   
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -769,10 +769,10 @@
   <script src="js/script.js?v=20251216-reveal-force" defer></script> 
   <script src="js/chat.js?v=20251216-reveal-force" defer></script> 
   <script src="js/services-carousel.js?v=20251216-reveal-force" defer></script>
-  <script src="js/performance-loader.js?v=20250117-snow-visible-fix" defer></script>
+  <script src="js/performance-loader.js?v=20251221-snow-behind-containers-v1" defer></script>
   
   <!-- Snow Effect JS - загружаем напрямую для немедленной видимости кнопки -->
-  <script src="js/snow-effect.js?v=20250117-snow-visible-fix"></script>
+  <script src="js/snow-effect.js?v=20251221-snow-behind-containers-v1"></script>
 
   <script>
     // Handle service card clicks - prevent navigation if clicking on interactive elements

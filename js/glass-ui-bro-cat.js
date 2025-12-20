@@ -279,7 +279,10 @@ class GlassUIBroCat {
     async handleMessage(message) {
         try {
             // Показываем индикатор загрузки
-            const response = await fetch('/chat', {
+            const apiBase = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
+            const endpoint = apiBase ? `${apiBase}/chat` : '/chat';
+
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -295,7 +298,7 @@ class GlassUIBroCat {
             }
 
             const data = await response.json();
-            return data.reply || this.getFallbackResponse(message);
+            return data.reply || data.response || this.getFallbackResponse(message);
         } catch (error) {
             console.error('🐱 Ошибка при запросе к Коту Бро:', error);
             // Fallback на статичные ответы

@@ -288,9 +288,13 @@ class GlassUIValyusha {
                 message: message,
                 userId: 'user-' + Date.now()
             };
-            console.log('💜 НейроВалюша: отправляю запрос к /api/valyusha/chat', requestBody);
+
+            const apiBase = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
+            const endpoint = apiBase ? `${apiBase}/api/valyusha/chat` : '/api/valyusha/chat';
+
+            console.log('💜 НейроВалюша: отправляю запрос к', endpoint, requestBody);
             
-            const response = await fetch('/api/valyusha/chat', {
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -309,9 +313,10 @@ class GlassUIValyusha {
             const data = await response.json();
             console.log('💜 НейроВалюша: получены данные:', data);
             
-            if (data.reply) {
-                console.log('💜 НейроВалюша: возвращаю ответ от AI:', data.reply.substring(0, 100));
-                return data.reply;
+            const reply = data.reply || data.response;
+            if (reply) {
+                console.log('💜 НейроВалюша: возвращаю ответ от AI:', reply.substring(0, 100));
+                return reply;
             } else {
                 console.warn('💜 НейроВалюша: ответ пустой, используем fallback');
                 return this.getFallbackResponse(message);
