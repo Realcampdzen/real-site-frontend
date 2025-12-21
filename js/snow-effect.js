@@ -41,9 +41,11 @@ class SnowEffect {
   constructor() {
     this.container = null;
     this.navbarSnowContainer = null;
+    this.heroSnowContainer = null;
     this.toggleButton = null;
     this.flakes = [];
     this.navbarFlakes = [];
+    this.heroFlakes = [];
     this.isActive = false;
     this.storageKey = 'snow-effect-enabled';
 
@@ -114,6 +116,7 @@ class SnowEffect {
     }
 
     this.ensureNavbarSnowContainer();
+    this.ensureHeroSnowContainer();
     if (!this.isActive) {
       this.container.style.display = 'none';
       this.container.style.visibility = 'hidden';
@@ -122,6 +125,11 @@ class SnowEffect {
         this.navbarSnowContainer.style.display = 'none';
         this.navbarSnowContainer.style.visibility = 'hidden';
         this.navbarSnowContainer.style.opacity = '0';
+      }
+      if (this.heroSnowContainer) {
+        this.heroSnowContainer.style.display = 'none';
+        this.heroSnowContainer.style.visibility = 'hidden';
+        this.heroSnowContainer.style.opacity = '0';
       }
     }
 
@@ -132,6 +140,7 @@ class SnowEffect {
     if (!this.deferForPerformance) {
       this.createFlakes();
       this.createNavbarFlakes();
+      this.createHeroFlakes();
     }
 
     if (this.isActive && !this.deferForPerformance) {
@@ -144,11 +153,20 @@ class SnowEffect {
       if (wasMobile !== this.isMobile) {
         this.flakeCount = this.isMobile ? 30 : 70;
         this.navbarFlakeCount = this.isMobile ? 14 : 24;
+        this.heroFlakeCount = this.isMobile ? 12 : 20;
+        if (this.limitedNetwork) {
+          this.flakeCount = this.isMobile ? 20 : 50;
+          this.navbarFlakeCount = this.isMobile ? 10 : 18;
+          this.heroFlakeCount = this.isMobile ? 10 : 16;
+        }
         if (this.flakes.length) {
           this.createFlakes();
         }
         if (this.navbarFlakes.length) {
           this.createNavbarFlakes();
+        }
+        if (this.heroFlakes.length) {
+          this.createHeroFlakes();
         }
       }
     });
@@ -389,6 +407,32 @@ class SnowEffect {
     }
   }
 
+  ensureHeroSnowContainer() {
+    const heroReel = document.querySelector('.hero-reel');
+    if (!heroReel) return;
+
+    let el = document.getElementById('snow-hero-container');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'snow-hero-container';
+      el.setAttribute('aria-hidden', 'true');
+
+      // Вставляем между видео и overlay, чтобы снег был виден на первом экране, но не мешал кликам
+      const overlay = heroReel.querySelector('.hero-reel-overlay');
+      if (overlay) {
+        heroReel.insertBefore(el, overlay);
+      } else {
+        heroReel.appendChild(el);
+      }
+    }
+
+    this.heroSnowContainer = el;
+    this.heroFlakeCount = this.isMobile ? 12 : 20;
+    if (this.limitedNetwork) {
+      this.heroFlakeCount = this.isMobile ? 10 : 16;
+    }
+  }
+
   createNavbarFlakes() {
     if (!this.navbarSnowContainer) return;
 
@@ -444,7 +488,64 @@ class SnowEffect {
     }
   }
 
-  updateFlake(flake, width, height, allowInteraction) {
+  createHeroFlakes() {
+    if (!this.heroSnowContainer) return;
+
+    this.heroFlakes.forEach((f) => f.el.remove());
+    this.heroFlakes = [];
+
+    const rect = this.heroSnowContainer.getBoundingClientRect();
+    const width = rect.width || window.innerWidth;
+    const height = rect.height || 520;
+    const count = this.heroFlakeCount || (this.isMobile ? 12 : 20);
+
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('div');
+      el.className = 'snowflake';
+
+      const r = Math.random();
+      const size = r < 0.42 ? 'small' : r < 0.74 ? 'medium' : r < 0.97 ? 'large' : 'xlarge';
+      el.classList.add(`snowflake--${size}`);
+      el.setAttribute('aria-hidden', 'true');
+
+      const x = Math.random() * width;
+      const y = Math.random() * height;
+
+      // Между "общим" и "шапкой": видимо на первом экране, но без перегруза
+      let speedMin = this.isMobile ? 0.5 : 0.75;
+      let speedMax = this.isMobile ? 1.05 : 1.35;
+      if (size === 'large' || size === 'xlarge') {
+        speedMin += 0.1;
+        speedMax += 0.2;
+      }
+      const speed = speedMin + Math.random() * (speedMax - speedMin);
+
+      const wind = (this.isMobile ? 0.12 : 0.18) + Math.random() * (this.isMobile ? 0.22 : 0.32);
+      const windSeed = Math.random() * 1000;
+
+      this.heroSnowContainer.appendChild(el);
+
+      const mass = size === 'small' ? 0.6 : size === 'medium' ? 0.85 : size === 'large' ? 1.05 : 1.25;
+      this.heroFlakes.push({
+        el,
+        x,
+        y,
+        speed,
+        size,
+        mass,
+        wind,
+        windSeed,
+        vx: 0,
+        vy: 0,
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 1.1,
+        scale: 1,
+        targetScale: 1,
+      });
+    }
+  }
+
+  updateFlake(flake, width, height, allowInteraction, offsetX = 0, offsetY = 0) {
     const margin = 60;
 
     // Base movement with velocity
@@ -455,11 +556,12 @@ class SnowEffect {
 
     // Cursor interaction (включается флагом allowInteraction)
     if (allowInteraction && this.enableCursorInteraction && this.isMouseVisible) {
-      const distance = this.getDistance(flake, this.mouse);
+      const localMouse = { x: this.mouse.x - offsetX, y: this.mouse.y - offsetY };
+      const distance = this.getDistance(flake, localMouse);
 
       if (distance < this.interactionRadius) {
         const force = (this.interactionRadius - distance) / this.interactionRadius;
-        const angle = Math.atan2(flake.y - this.mouse.y, flake.x - this.mouse.x);
+        const angle = Math.atan2(flake.y - localMouse.y, flake.x - localMouse.x);
 
         const massMultiplier = 1 / flake.mass;
         const repulsionX = Math.cos(angle) * force * this.repulsionForce * massMultiplier;
@@ -518,13 +620,24 @@ class SnowEffect {
     }
 
     for (const flake of this.flakes) {
-      this.updateFlake(flake, width, height, true);
+      this.updateFlake(flake, width, height, true, 0, 0);
     }
 
     if (this.navbarSnowContainer && this.navbarFlakes.length) {
-      const navHeight = this.navbarSnowContainer.getBoundingClientRect().height || 72;
+      const navRect = this.navbarSnowContainer.getBoundingClientRect();
+      const navWidth = navRect.width || width;
+      const navHeight = navRect.height || 72;
       for (const flake of this.navbarFlakes) {
-        this.updateFlake(flake, width, navHeight, true);
+        this.updateFlake(flake, navWidth, navHeight, true, navRect.left, navRect.top);
+      }
+    }
+
+    if (this.heroSnowContainer && this.heroFlakes.length) {
+      const heroRect = this.heroSnowContainer.getBoundingClientRect();
+      const heroWidth = heroRect.width || width;
+      const heroHeight = heroRect.height || height;
+      for (const flake of this.heroFlakes) {
+        this.updateFlake(flake, heroWidth, heroHeight, true, heroRect.left, heroRect.top);
       }
     }
   }
@@ -536,11 +649,15 @@ class SnowEffect {
 
   start() {
     if (this.animationFrame) return;
+    this.ensureHeroSnowContainer();
     if (!this.flakes.length) {
       this.createFlakes();
     }
     if (!this.navbarFlakes.length) {
       this.createNavbarFlakes();
+    }
+    if (this.heroSnowContainer && !this.heroFlakes.length) {
+      this.createHeroFlakes();
     }
     this.setupMouseTracking();
     this.container.style.opacity = '1';
@@ -550,6 +667,11 @@ class SnowEffect {
       this.navbarSnowContainer.style.opacity = '1';
       this.navbarSnowContainer.style.visibility = 'visible';
       this.navbarSnowContainer.style.display = 'block';
+    }
+    if (this.heroSnowContainer) {
+      this.heroSnowContainer.style.opacity = '1';
+      this.heroSnowContainer.style.visibility = 'visible';
+      this.heroSnowContainer.style.display = 'block';
     }
     this.animationFrame = requestAnimationFrame(() => this.loop());
   }
@@ -566,6 +688,11 @@ class SnowEffect {
       this.navbarSnowContainer.style.opacity = '0';
       this.navbarSnowContainer.style.visibility = 'hidden';
       this.navbarSnowContainer.style.display = 'none';
+    }
+    if (this.heroSnowContainer) {
+      this.heroSnowContainer.style.opacity = '0';
+      this.heroSnowContainer.style.visibility = 'hidden';
+      this.heroSnowContainer.style.display = 'none';
     }
   }
 
