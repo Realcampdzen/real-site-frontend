@@ -13,7 +13,7 @@
   const saveData = !!(connection && connection.saveData);
   const slowNetwork =
     connection &&
-    ['slow-2g', '2g', '3g'].includes(connection.effectiveType);
+    ['slow-2g', '2g'].includes(connection.effectiveType);
   const prefersReducedMotion =
     window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -126,10 +126,10 @@
     if (!prefersReducedMotion && !saveData && !slowNetwork) {
       // Загружаем CSS и JS только если они ещё не загружены
       if (!snowCSSLoaded) {
-        loadStyle('css/snow-effect.css?v=20251221-snow-dots-header-v3');
+        loadStyle('css/snow-effect.css?v=20251221-snow-dots-header-v4');
       }
       if (!snowJSLoaded) {
-        loadScript('js/snow-effect.js?v=20251221-snow-dots-header-v3');
+        loadScript('js/snow-effect.js?v=20251221-snow-dots-header-v4');
       }
     } else {
       const snowContainer = document.getElementById('snow-container');

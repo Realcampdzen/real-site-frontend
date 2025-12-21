@@ -72,8 +72,19 @@ class SnowEffect {
     this.connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     this.prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.saveData = !!(this.connection && this.connection.saveData);
-    this.slowNetwork = this.connection && ['slow-2g', '2g', '3g'].includes(this.connection.effectiveType);
+    this.effectiveType = this.connection ? this.connection.effectiveType : null;
+
+    // На реальных девайсах effectiveType часто возвращает "3g" даже при нормальной скорости.
+    // Поэтому отключаем снег только на очень медленных сетях (slow-2g / 2g) и при Save-Data / reduced motion.
+    this.slowNetwork = this.connection && ['slow-2g', '2g'].includes(this.effectiveType);
+    this.limitedNetwork = this.connection && this.effectiveType === '3g';
+
     this.deferForPerformance = this.prefersReducedMotion || this.saveData || this.slowNetwork;
+
+    // Если сеть ограниченная (3g), просто уменьшаем плотность/нагрузку, но снег оставляем.
+    if (this.limitedNetwork) {
+      this.flakeCount = this.isMobile ? 20 : 50;
+    }
 
     if (this.deferForPerformance) {
       this.isActive = false; // Не запускаем анимацию автоматически на экономии трафика/замедленном устройстве
@@ -373,6 +384,9 @@ class SnowEffect {
     this.navbarSnowContainer = el;
     // Отдельное количество для шапки
     this.navbarFlakeCount = this.isMobile ? 14 : 24;
+    if (this.limitedNetwork) {
+      this.navbarFlakeCount = this.isMobile ? 10 : 18;
+    }
   }
 
   createNavbarFlakes() {
