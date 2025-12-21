@@ -98,17 +98,36 @@ foreach ($file in $debugFiles) {
 }
 
 # PRODUCTION: Remove test features
-# TODO: Add logic here to remove/modify test features when ready
-# Examples:
-# - Remove test bot connections (if not connected to AI)
-# - Remove incomplete sections
-# - Remove placeholder images
-# - Disable test features in HTML/JS
+# This section applies production-only tweaks to the generated deploy-ready/ bundle.
+# We keep staging/dev features in the root files, but disable unfinished parts for production here.
+
+# Disable incomplete "Примеры работ" showcase on production (index.html):
+# - Section: #projects-showreel
+# - Hero CTA button: scrollToSection('projects-showreel')
+$prodIndexPath = Join-Path $deployFolder "index.html"
+if (Test-Path $prodIndexPath) {
+    try {
+        $html = Get-Content -Path $prodIndexPath -Raw -ErrorAction Stop
+
+        $showreelSectionOpen = '<section id="projects-showreel" class="projects-banner-section">'
+        $showreelSectionHidden = "<!-- ВРЕМЕННО СКРЫТО ДЛЯ PRODUCTION -->`r`n<section id=""projects-showreel"" class=""projects-banner-section"" style=""display: none !important;"">"
+        $html = $html.Replace($showreelSectionOpen, $showreelSectionHidden)
+
+        $showreelBtnOpen = '<button class="btn-primary" onclick="event.stopPropagation(); scrollToSection(''projects-showreel'')">'
+        $showreelBtnHidden = "<!-- ВРЕМЕННО СКРЫТО ДЛЯ PRODUCTION -->`r`n<button class=""btn-primary"" onclick=""event.stopPropagation(); scrollToSection('projects-showreel')"" style=""display: none !important;"">"
+        $html = $html.Replace($showreelBtnOpen, $showreelBtnHidden)
+
+        Set-Content -Path $prodIndexPath -Value $html -Encoding UTF8
+        Write-Host "  ✅ PROD: disabled projects-showreel section + hero button" -ForegroundColor Green
+    } catch {
+        Write-Host "  ⚠️  PROD: failed to apply production hides to index.html ($($_.Exception.Message))" -ForegroundColor Yellow
+    }
+}
 
 Write-Host ""
 Write-Host "📝 Production cleanup:" -ForegroundColor Cyan
-Write-Host "  ℹ️  Note: Test features removal can be added here when needed" -ForegroundColor Gray
-Write-Host "  ℹ️  Examples: incomplete bots, placeholder images, test sections" -ForegroundColor Gray
+Write-Host "  ℹ️  Applied production-only tweaks to deploy-ready bundle" -ForegroundColor Gray
+Write-Host "  ℹ️  Examples: hide incomplete sections, disable test features" -ForegroundColor Gray
 
 # Count files
 $fileCount = (Get-ChildItem -Path $deployFolder -Recurse -File | Measure-Object).Count
