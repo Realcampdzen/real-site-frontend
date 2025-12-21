@@ -448,7 +448,8 @@ class SnowEffect {
     const margin = 60;
 
     // Base movement with velocity
-    flake.vy += flake.speed * 0.12;
+    // Немного быстрее падение (было 0.12)
+    flake.vy += flake.speed * 0.14;
     // Диагональное падение (ветер вправо) + лёгкая волна
     flake.vx += flake.wind * 0.18 + Math.sin((flake.y + flake.windSeed) / 90) * 0.02;
 

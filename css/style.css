@@ -86,6 +86,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* На мобильных браузерах скролл-контейнер часто = html, поэтому фиксируем overflow-x тут тоже */
+  overflow-x: hidden;
 }
 
 body {

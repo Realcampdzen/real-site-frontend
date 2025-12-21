@@ -126,10 +126,10 @@
     if (!prefersReducedMotion && !saveData && !slowNetwork) {
       // Загружаем CSS и JS только если они ещё не загружены
       if (!snowCSSLoaded) {
-        loadStyle('css/snow-effect.css?v=20251221-snow-dots-header-v4');
+        loadStyle('css/snow-effect.css?v=20251221-snow-dots-header-v5');
       }
       if (!snowJSLoaded) {
-        loadScript('js/snow-effect.js?v=20251221-snow-dots-header-v4');
+        loadScript('js/snow-effect.js?v=20251221-snow-dots-header-v5');
       }
     } else {
       const snowContainer = document.getElementById('snow-container');
