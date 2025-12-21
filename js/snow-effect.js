@@ -1,9 +1,49 @@
 // Простой снег на requestAnimationFrame (без CSS-анимаций)
+
+// --- Snow feature flags ------------------------------------------------------
+// По умолчанию снег включен всегда (кроме prefers-reduced-motion / Save-Data / slow сети),
+// а кнопка переключения скрыта.
+//
+// Как быстро вернуть кнопку:
+// - URL: добавить `?snowToggle=1`
+// - localStorage:
+//   - snow-toggle-visible = "true"  (показывает кнопку, но без переключения)
+//   - snow-toggle-enabled = "true"  (показывает кнопку и включает переключение on/off)
+// - код: выставить SNOW_TOGGLE_CODE_ENABLED = true
+const SNOW_TOGGLE_CODE_ENABLED = false;
+const SNOW_TOGGLE_URL_PARAM = 'snowToggle';
+const SNOW_TOGGLE_VISIBLE_STORAGE_KEY = 'snow-toggle-visible';
+const SNOW_TOGGLE_ENABLED_STORAGE_KEY = 'snow-toggle-enabled';
+
+function readBoolFromStorage(key) {
+  try {
+    return localStorage.getItem(key) === 'true';
+  } catch (e) {
+    return false;
+  }
+}
+
+function readBoolFromQuery(param) {
+  try {
+    const value = new URLSearchParams(window.location.search).get(param);
+    return value === '1' || value === 'true';
+  } catch (e) {
+    return false;
+  }
+}
+
+function resolveSnowToggleMode() {
+  const enabled = SNOW_TOGGLE_CODE_ENABLED || readBoolFromQuery(SNOW_TOGGLE_URL_PARAM) || readBoolFromStorage(SNOW_TOGGLE_ENABLED_STORAGE_KEY);
+  const visible = enabled || readBoolFromStorage(SNOW_TOGGLE_VISIBLE_STORAGE_KEY);
+  return { enabled, visible };
+}
 class SnowEffect {
   constructor() {
     this.container = null;
+    this.navbarSnowContainer = null;
     this.toggleButton = null;
     this.flakes = [];
+    this.navbarFlakes = [];
     this.isActive = false;
     this.storageKey = 'snow-effect-enabled';
 
@@ -11,8 +51,22 @@ class SnowEffect {
     // Крупные снежинки выглядят лучше при меньшем количестве
     this.flakeCount = this.isMobile ? 30 : 70;
 
-    const saved = localStorage.getItem(this.storageKey);
-    this.isActive = saved === null ? true : saved === 'true';
+    this.toggleMode = resolveSnowToggleMode();
+    this.toggleEnabled = this.toggleMode.enabled;
+    this.toggleVisible = this.toggleMode.visible;
+
+    if (this.toggleEnabled) {
+      let saved = null;
+      try {
+        saved = localStorage.getItem(this.storageKey);
+      } catch (e) {
+        saved = null;
+      }
+      this.isActive = saved === null ? true : saved === 'true';
+    } else {
+      // Снег должен идти автоматически, без переключателя
+      this.isActive = true;
+    }
 
     this.animationFrame = null;
     this.connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -47,16 +101,26 @@ class SnowEffect {
       this.container.id = 'snow-container';
       document.body.appendChild(this.container);
     }
+
+    this.ensureNavbarSnowContainer();
     if (!this.isActive) {
       this.container.style.display = 'none';
       this.container.style.visibility = 'hidden';
       this.container.style.opacity = '0';
+      if (this.navbarSnowContainer) {
+        this.navbarSnowContainer.style.display = 'none';
+        this.navbarSnowContainer.style.visibility = 'hidden';
+        this.navbarSnowContainer.style.opacity = '0';
+      }
     }
 
-    this.createToggleButton();
+    if (this.toggleVisible && !this.deferForPerformance) {
+      this.createToggleButton();
+    }
 
     if (!this.deferForPerformance) {
       this.createFlakes();
+      this.createNavbarFlakes();
     }
 
     if (this.isActive && !this.deferForPerformance) {
@@ -68,8 +132,12 @@ class SnowEffect {
       this.isMobile = window.innerWidth < 768;
       if (wasMobile !== this.isMobile) {
         this.flakeCount = this.isMobile ? 30 : 70;
+        this.navbarFlakeCount = this.isMobile ? 14 : 24;
         if (this.flakes.length) {
           this.createFlakes();
+        }
+        if (this.navbarFlakes.length) {
+          this.createNavbarFlakes();
         }
       }
     });
@@ -119,7 +187,13 @@ class SnowEffect {
       this.toggleButton.title = 'Снег выключен для экономии ресурсов. Нажмите, чтобы включить.';
     }
 
-    this.toggleButton.addEventListener('click', () => this.toggle());
+    if (this.toggleEnabled) {
+      this.toggleButton.addEventListener('click', () => this.toggle());
+    } else {
+      this.toggleButton.disabled = true;
+      this.toggleButton.setAttribute('aria-disabled', 'true');
+      this.toggleButton.title = 'Снег включен автоматически';
+    }
 
     // Убеждаемся, что кнопка видна сразу
     this.toggleButton.style.display = 'flex';
@@ -138,11 +212,14 @@ class SnowEffect {
         // Ставим снежинку перед бургером, если он есть
         const mobileMenuBtn = navRight.querySelector('.mobile-menu-btn');
         navRight.insertBefore(this.toggleButton, mobileMenuBtn || null);
+        // Если навбар есть — гарантируем слой снега внутри него
+        this.ensureNavbarSnowContainer();
         return true;
       } else if (navbar) {
         // Фолбэк: добавляем в сам navbar как иконку
         this.toggleButton.classList.add('nav-icon-btn', 'snow-toggle-btn');
         navbar.appendChild(this.toggleButton);
+        this.ensureNavbarSnowContainer();
         return true;
       }
       return false;
@@ -229,10 +306,11 @@ class SnowEffect {
 
       // Взвешенное распределение размеров: маленьких больше, очень больших — мало
       const r = Math.random();
-      const size = r < 0.42 ? 'small' : r < 0.74 ? 'medium' : r < 0.94 ? 'large' : 'xlarge';
+      const size = r < 0.42 ? 'small' : r < 0.74 ? 'medium' : r < 0.97 ? 'large' : 'xlarge';
       el.classList.add(`snowflake--${size}`);
 
-      el.textContent = '❄';
+      // Круглая "точка" рисуется через CSS (background + border-radius)
+      el.setAttribute('aria-hidden', 'true');
 
       const x = Math.random() * width;
       const y = Math.random() * height;
@@ -252,8 +330,8 @@ class SnowEffect {
       }
       const speed = speedMin + Math.random() * (speedMax - speedMin);
 
-      // "Ветер" вправо (диагональ слева → направо)
-      const wind = (this.isMobile ? 0.08 : 0.12) + Math.random() * (this.isMobile ? 0.16 : 0.24);
+      // "Ветер" вправо (диагональ слева → направо) — усилили, чтобы заметнее уносило вправо
+      const wind = (this.isMobile ? 0.12 : 0.18) + Math.random() * (this.isMobile ? 0.22 : 0.32);
       const windSeed = Math.random() * 1000;
 
       this.container.appendChild(el);
@@ -279,10 +357,144 @@ class SnowEffect {
     }
   }
 
+  ensureNavbarSnowContainer() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+
+    let el = document.getElementById('snow-navbar-container');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'snow-navbar-container';
+      el.setAttribute('aria-hidden', 'true');
+      // Вставляем до .nav-container, чтобы кнопки гарантированно были выше по слою
+      navbar.insertBefore(el, navbar.firstChild || null);
+    }
+
+    this.navbarSnowContainer = el;
+    // Отдельное количество для шапки
+    this.navbarFlakeCount = this.isMobile ? 14 : 24;
+  }
+
+  createNavbarFlakes() {
+    if (!this.navbarSnowContainer) return;
+
+    this.navbarFlakes.forEach(f => f.el.remove());
+    this.navbarFlakes = [];
+
+    const width = window.innerWidth;
+    const height = this.navbarSnowContainer.getBoundingClientRect().height || 72;
+
+    for (let i = 0; i < this.navbarFlakeCount; i++) {
+      const el = document.createElement('div');
+      el.className = 'snowflake';
+
+      const r = Math.random();
+      const size = r < 0.42 ? 'small' : r < 0.74 ? 'medium' : r < 0.97 ? 'large' : 'xlarge';
+      el.classList.add(`snowflake--${size}`);
+      el.setAttribute('aria-hidden', 'true');
+
+      const x = Math.random() * width;
+      const y = Math.random() * height;
+
+      // Чуть медленнее, чтобы в шапке смотрелось спокойнее
+      let speedMin = this.isMobile ? 0.4 : 0.55;
+      let speedMax = this.isMobile ? 0.85 : 1.05;
+      if (size === 'large' || size === 'xlarge') {
+        speedMin += 0.1;
+        speedMax += 0.15;
+      }
+      const speed = speedMin + Math.random() * (speedMax - speedMin);
+
+      const wind = (this.isMobile ? 0.12 : 0.18) + Math.random() * (this.isMobile ? 0.20 : 0.30);
+      const windSeed = Math.random() * 1000;
+
+      this.navbarSnowContainer.appendChild(el);
+
+      const mass = size === 'small' ? 0.6 : size === 'medium' ? 0.85 : size === 'large' ? 1.05 : 1.25;
+      this.navbarFlakes.push({
+        el,
+        x,
+        y,
+        speed,
+        size,
+        mass,
+        wind,
+        windSeed,
+        vx: 0,
+        vy: 0,
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 1.1,
+        scale: 1,
+        targetScale: 1
+      });
+    }
+  }
+
+  updateFlake(flake, width, height, allowInteraction) {
+    const margin = 60;
+
+    // Base movement with velocity
+    flake.vy += flake.speed * 0.12;
+    // Диагональное падение (ветер вправо) + лёгкая волна
+    flake.vx += flake.wind * 0.18 + Math.sin((flake.y + flake.windSeed) / 90) * 0.02;
+
+    // Cursor interaction (включается флагом allowInteraction)
+    if (allowInteraction && this.enableCursorInteraction && this.isMouseVisible) {
+      const distance = this.getDistance(flake, this.mouse);
+
+      if (distance < this.interactionRadius) {
+        const force = (this.interactionRadius - distance) / this.interactionRadius;
+        const angle = Math.atan2(flake.y - this.mouse.y, flake.x - this.mouse.x);
+
+        const massMultiplier = 1 / flake.mass;
+        const repulsionX = Math.cos(angle) * force * this.repulsionForce * massMultiplier;
+        const repulsionY = Math.sin(angle) * force * this.repulsionForce * massMultiplier;
+
+        flake.vx += repulsionX;
+        flake.vy += repulsionY;
+
+        flake.rotationSpeed += (Math.random() - 0.5) * force * 3;
+        flake.targetScale = 0.6 + force * 0.4;
+      } else {
+        flake.targetScale = 1;
+      }
+    } else {
+      flake.targetScale = 1;
+    }
+
+    // Apply velocity with damping
+    flake.x += flake.vx;
+    flake.y += flake.vy;
+    // Чуть меньше трения по X, чтобы ветер чувствовался сильнее
+    flake.vx *= 0.96;
+    flake.vy *= 0.95;
+
+    // Update rotation
+    flake.rotation += flake.rotationSpeed;
+    flake.rotationSpeed *= 0.98;
+
+    // Smooth scale transition
+    flake.scale = this.lerp(flake.scale, flake.targetScale, 0.1);
+
+    // Reset position when out of screen
+    if (flake.y > height + margin) {
+      flake.y = -margin;
+      flake.x = Math.random() * width;
+      flake.vx = 0;
+      flake.vy = 0;
+      flake.rotation = Math.random() * 360;
+    }
+
+    // Keep within horizontal bounds with wrapping
+    if (flake.x < -margin) flake.x = width + margin;
+    if (flake.x > width + margin) flake.x = -margin;
+
+    flake.el.style.transform = `translate3d(${flake.x}px, ${flake.y}px, 0) scale(${flake.scale}) rotate(${flake.rotation}deg)`;
+  }
+
   update() {
     const height = window.innerHeight;
     const width = window.innerWidth;
-    const margin = 60;
 
     // Smooth mouse position update
     if (this.enableCursorInteraction) {
@@ -291,68 +503,14 @@ class SnowEffect {
     }
 
     for (const flake of this.flakes) {
-      // Base movement with velocity
-      flake.vy += flake.speed * 0.12;
-      // Диагональное падение (ветер вправо) + лёгкая волна, чтобы не было "стройных линий"
-      flake.vx += flake.wind * 0.08 + Math.sin((flake.y + flake.windSeed) / 90) * 0.02;
+      this.updateFlake(flake, width, height, true);
+    }
 
-      // Cursor interaction
-      if (this.enableCursorInteraction && this.isMouseVisible) {
-        const distance = this.getDistance(flake, this.mouse);
-        
-        if (distance < this.interactionRadius) {
-          const force = (this.interactionRadius - distance) / this.interactionRadius;
-          const angle = Math.atan2(flake.y - this.mouse.y, flake.x - this.mouse.x);
-          
-          // Apply repulsion force with mass consideration
-          const massMultiplier = 1 / flake.mass;
-          const repulsionX = Math.cos(angle) * force * this.repulsionForce * massMultiplier;
-          const repulsionY = Math.sin(angle) * force * this.repulsionForce * massMultiplier;
-          
-          flake.vx += repulsionX;
-          flake.vy += repulsionY;
-          
-          // Add rotation when interacting
-          flake.rotationSpeed += (Math.random() - 0.5) * force * 3;
-          
-          // Scale down when close to cursor
-          flake.targetScale = 0.6 + force * 0.4;
-        } else {
-          // Return to normal scale
-          flake.targetScale = 1;
-        }
-      } else {
-        flake.targetScale = 1;
+    if (this.navbarSnowContainer && this.navbarFlakes.length) {
+      const navHeight = this.navbarSnowContainer.getBoundingClientRect().height || 72;
+      for (const flake of this.navbarFlakes) {
+        this.updateFlake(flake, width, navHeight, true);
       }
-
-      // Apply velocity with damping
-      flake.x += flake.vx;
-      flake.y += flake.vy;
-      flake.vx *= 0.95; // Damping
-      flake.vy *= 0.95; // Damping
-
-      // Update rotation
-      flake.rotation += flake.rotationSpeed;
-      flake.rotationSpeed *= 0.98; // Damping
-
-      // Smooth scale transition
-      flake.scale = this.lerp(flake.scale, flake.targetScale, 0.1);
-
-      // Reset position when out of screen
-      if (flake.y > height + margin) {
-        flake.y = -margin;
-        flake.x = Math.random() * width;
-        flake.vx = 0;
-        flake.vy = 0;
-        flake.rotation = Math.random() * 360;
-      }
-
-      // Keep within horizontal bounds with wrapping
-      if (flake.x < -margin) flake.x = width + margin;
-      if (flake.x > width + margin) flake.x = -margin;
-
-      // Apply transform with scale and rotation
-      flake.el.style.transform = `translate3d(${flake.x}px, ${flake.y}px, 0) scale(${flake.scale}) rotate(${flake.rotation}deg)`;
     }
   }
 
@@ -366,10 +524,18 @@ class SnowEffect {
     if (!this.flakes.length) {
       this.createFlakes();
     }
+    if (!this.navbarFlakes.length) {
+      this.createNavbarFlakes();
+    }
     this.setupMouseTracking();
     this.container.style.opacity = '1';
     this.container.style.visibility = 'visible';
     this.container.style.display = 'block';
+    if (this.navbarSnowContainer) {
+      this.navbarSnowContainer.style.opacity = '1';
+      this.navbarSnowContainer.style.visibility = 'visible';
+      this.navbarSnowContainer.style.display = 'block';
+    }
     this.animationFrame = requestAnimationFrame(() => this.loop());
   }
 
@@ -381,9 +547,15 @@ class SnowEffect {
     this.container.style.opacity = '0';
     this.container.style.visibility = 'hidden';
     this.container.style.display = 'none';
+    if (this.navbarSnowContainer) {
+      this.navbarSnowContainer.style.opacity = '0';
+      this.navbarSnowContainer.style.visibility = 'hidden';
+      this.navbarSnowContainer.style.display = 'none';
+    }
   }
 
   toggle() {
+    if (!this.toggleEnabled) return;
     this.isActive = !this.isActive;
     localStorage.setItem(this.storageKey, this.isActive ? 'true' : 'false');
 

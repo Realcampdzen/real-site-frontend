@@ -19,6 +19,7 @@
   --gradient-gold: linear-gradient(135deg, #f1c27c, #f7931a);
 
   /* Header palette */
+  /* Чёрная шапка — контент не должен быть виден под ней при скролле */
   --nav-bg: #000000;
   --nav-border: rgba(255, 255, 255, 0.08);
   --nav-pill-bg: #f1f3f4;
@@ -440,6 +441,7 @@ body::before {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-primary);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
   background: transparent;
   padding: 0;
   border-radius: 0;
@@ -500,6 +502,7 @@ body::before {
   background: transparent;
   color: #ffffff;
   font-size: 44px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
   text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
   box-shadow: none;
@@ -663,9 +666,9 @@ body::before {
   }
 
   .nav-icon-btn {
-    width: 46px;
-    height: 46px;
-    font-size: 22px;
+    width: 50px;
+    height: 50px;
+    font-size: 26px;
   }
 
   .nav-icon-btn + .nav-icon-btn {

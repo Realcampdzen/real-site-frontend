@@ -181,11 +181,18 @@
   /* WhatsApp */
   .nav-right .nav-icon-btn[data-contact-link="whatsapp"] {
     display: flex !important;
+    width: 65px !important;
+    height: 65px !important;
+    font-size: 34px !important;
   }
   
   /* Telegram */
   .nav-right .nav-icon-btn[data-contact-link="telegram"] {
     display: flex !important;
+    width: 65px !important;
+    height: 65px !important;
+    font-size: 34px !important;
+    margin-left: -1rem !important;
   }
   
   /* Скрываем иконку телефона */
