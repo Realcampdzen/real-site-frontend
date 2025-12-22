@@ -30,6 +30,11 @@
 - `POST /api/hipych/chat` — Хипыч
 - `POST /api/valyusha/chat` — НейроВалюша
 
+## Webhooks (соцсети)
+
+- `POST /api/vk/callback` — VK Callback API (комментарии под постами)
+- `POST /api/tg/webhook` — Telegram Bot API webhook (комментарии в привязанной группе-обсуждении)
+
 Формат ответа для совместимости:
 
 ```json
@@ -43,6 +48,22 @@ Cloudflare Dashboard → Workers & Pages → `real-vibe-ai-studio` → Settings 
 - **Secret**: `OPENAI_API_KEY`
   - **Name**: строго `OPENAI_API_KEY`
   - **Value**: только значение ключа `sk-...` / `sk-proj-...` (без `OPENAI_API_KEY=`, без кавычек)
+
+### Для НейроВалюши в соцсетях (VK / Telegram)
+
+Добавить Secrets (Production):
+
+- **VK**
+  - `VK_GROUP_ID`
+  - `VK_SECRET` (secret key из Callback API)
+  - `VK_CONFIRMATION_CODE` (confirmation string из Callback API)
+  - `VK_ACCESS_TOKEN` (токен сообщества с правами на `wall`)
+- **Telegram**
+  - `TELEGRAM_BOT_TOKEN`
+  - `TELEGRAM_WEBHOOK_SECRET` (сверяем с заголовком `X-Telegram-Bot-Api-Secret-Token`)
+  - `TELEGRAM_CHANNEL_ID` (опционально, чтобы отвечать только на посты конкретного канала)
+
+Для “памяти 10 сообщений” и дедупликации рекомендуется KV биндинг `NEUROVALYUSHA_KV` (см. `cf-api/NEUROVALYUSHA_SETUP.md`).
 
 ## Деплой API в Cloudflare (текущий способ — upload)
 
