@@ -1,7 +1,9 @@
 // Простой снег на requestAnimationFrame (без CSS-анимаций)
 
 // --- Snow feature flags ------------------------------------------------------
-// По умолчанию снег включен всегда (кроме prefers-reduced-motion / Save-Data / slow сети),
+// По умолчанию снег включен всегда.
+// При prefers-reduced-motion / Save-Data / slow сети уменьшаем плотность и нагрузку,
+// но НЕ выключаем снег полностью (на проде он должен стартовать на десктопе при загрузке).
 // а кнопка переключения скрыта.
 //
 // Как быстро вернуть кнопку:
@@ -77,19 +79,16 @@ class SnowEffect {
     this.effectiveType = this.connection ? this.connection.effectiveType : null;
 
     // На реальных девайсах effectiveType часто возвращает "3g" даже при нормальной скорости.
-    // Поэтому отключаем снег только на очень медленных сетях (slow-2g / 2g) и при Save-Data / reduced motion.
+    // Поэтому используем это только для снижения плотности, а не для полного отключения.
     this.slowNetwork = this.connection && ['slow-2g', '2g'].includes(this.effectiveType);
     this.limitedNetwork = this.connection && this.effectiveType === '3g';
 
-    this.deferForPerformance = this.prefersReducedMotion || this.saveData || this.slowNetwork;
+    this.performanceReduced = this.prefersReducedMotion || this.saveData || this.slowNetwork || this.limitedNetwork;
+    this.deferForPerformance = false;
 
-    // Если сеть ограниченная (3g), просто уменьшаем плотность/нагрузку, но снег оставляем.
-    if (this.limitedNetwork) {
-      this.flakeCount = this.isMobile ? 20 : 50;
-    }
-
-    if (this.deferForPerformance) {
-      this.isActive = false; // Не запускаем анимацию автоматически на экономии трафика/замедленном устройстве
+    // Если есть ограничения — уменьшаем плотность/нагрузку, но снег оставляем.
+    if (this.performanceReduced) {
+      this.flakeCount = this.isMobile ? 18 : 45;
     }
     
     // Cursor interaction properties
@@ -98,11 +97,17 @@ class SnowEffect {
     this.interactionRadius = 150;
     this.repulsionForce = 2.5; // Increased for better visibility with inertia
     this.mouseSmoothing = 0.2;
-    this.enableCursorInteraction = true;
+    // На слабых условиях отключаем интеракцию, чтобы снизить нагрузку.
+    this.enableCursorInteraction = !this.performanceReduced;
     this.isMouseVisible = false;
     this.lastMouseUpdate = 0;
-    this.mouseUpdateThrottle = 16; // ~60fps max updates
+    this.mouseUpdateThrottle = this.performanceReduced ? 40 : 16; // ~25fps vs ~60fps updates
     this.mouseTrackingAttached = false;
+
+    // FPS throttle (уменьшаем нагрузку при ограничениях)
+    this.targetFps = this.performanceReduced ? 30 : 60;
+    this.frameInterval = 1000 / this.targetFps;
+    this.lastFrameTime = 0;
     
     this.init();
   }
@@ -133,17 +138,17 @@ class SnowEffect {
       }
     }
 
-    if (this.toggleVisible && !this.deferForPerformance) {
+    if (this.toggleVisible) {
       this.createToggleButton();
     }
 
-    if (!this.deferForPerformance) {
+    if (this.isActive) {
       this.createFlakes();
       this.createNavbarFlakes();
       this.createHeroFlakes();
     }
 
-    if (this.isActive && !this.deferForPerformance) {
+    if (this.isActive) {
       this.start();
     }
 
@@ -154,8 +159,8 @@ class SnowEffect {
         this.flakeCount = this.isMobile ? 30 : 70;
         this.navbarFlakeCount = this.isMobile ? 14 : 24;
         this.heroFlakeCount = this.isMobile ? 12 : 20;
-        if (this.limitedNetwork) {
-          this.flakeCount = this.isMobile ? 20 : 50;
+        if (this.performanceReduced) {
+          this.flakeCount = this.isMobile ? 18 : 45;
           this.navbarFlakeCount = this.isMobile ? 10 : 18;
           this.heroFlakeCount = this.isMobile ? 10 : 16;
         }
@@ -180,7 +185,7 @@ class SnowEffect {
     });
 
     // Mouse tracking for cursor interaction подключается при первом запуске
-    if (!this.deferForPerformance && this.isActive) {
+    if (this.isActive && this.enableCursorInteraction) {
       this.setupMouseTracking();
     }
   }
@@ -402,7 +407,7 @@ class SnowEffect {
     this.navbarSnowContainer = el;
     // Отдельное количество для шапки
     this.navbarFlakeCount = this.isMobile ? 14 : 24;
-    if (this.limitedNetwork) {
+    if (this.performanceReduced) {
       this.navbarFlakeCount = this.isMobile ? 10 : 18;
     }
   }
@@ -428,7 +433,7 @@ class SnowEffect {
 
     this.heroSnowContainer = el;
     this.heroFlakeCount = this.isMobile ? 12 : 20;
-    if (this.limitedNetwork) {
+    if (this.performanceReduced) {
       this.heroFlakeCount = this.isMobile ? 10 : 16;
     }
   }
@@ -642,9 +647,19 @@ class SnowEffect {
     }
   }
 
-  loop() {
-    this.update();
-    this.animationFrame = requestAnimationFrame(() => this.loop());
+  loop(timestamp) {
+    if (!this.lastFrameTime) {
+      this.lastFrameTime = timestamp;
+    }
+    const delta = timestamp - this.lastFrameTime;
+
+    // Throttle FPS при performanceReduced, чтобы не грузить CPU
+    if (delta >= this.frameInterval) {
+      this.lastFrameTime = timestamp - (delta % this.frameInterval);
+      this.update();
+    }
+
+    this.animationFrame = requestAnimationFrame((t) => this.loop(t));
   }
 
   start() {
@@ -659,7 +674,9 @@ class SnowEffect {
     if (this.heroSnowContainer && !this.heroFlakes.length) {
       this.createHeroFlakes();
     }
-    this.setupMouseTracking();
+    if (this.enableCursorInteraction) {
+      this.setupMouseTracking();
+    }
     this.container.style.opacity = '1';
     this.container.style.visibility = 'visible';
     this.container.style.display = 'block';
@@ -673,7 +690,8 @@ class SnowEffect {
       this.heroSnowContainer.style.visibility = 'visible';
       this.heroSnowContainer.style.display = 'block';
     }
-    this.animationFrame = requestAnimationFrame(() => this.loop());
+    this.lastFrameTime = 0;
+    this.animationFrame = requestAnimationFrame((t) => this.loop(t));
   }
 
   stop() {
